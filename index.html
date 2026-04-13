@@ -504,6 +504,9 @@
                             <button class="btn-fav absolute top-3 right-3 p-2 bg-[var(--glass-bg)] backdrop-blur-md rounded-full hover:brightness-125 transition" data-id="${mat.id}">
                                 <svg class="w-5 h-5 heart-icon ${mat.isFavorite ? 'active' : 'text-[var(--text-muted)]'}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
                             </button>
+                            <button class="btn-delete absolute bottom-3 right-3 p-2 bg-[var(--glass-bg)] backdrop-blur-md rounded-full hover:bg-red-500/80 transition text-[var(--text-main)]" data-id="${mat.id}" title="삭제">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
                         </div>
                         <h3 class="text-body-strong text-[var(--text-main)] truncate px-1">${mat.name}</h3>
                     `;
@@ -517,19 +520,22 @@
                                 <p class="text-caption text-[var(--text-muted)] mt-1">Scale: ${mat.scale}x | Angle: ${mat.angle}°</p>
                             </div>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <button class="btn-download p-3 rounded-full hover:bg-[var(--hover-bg)] transition flex-shrink-0 text-[var(--text-main)]" data-id="${mat.id}" title="이미지 다운로드">
+                        <div class="flex items-center gap-1">
+                            <button class="btn-download p-2 rounded-full hover:bg-[var(--hover-bg)] transition flex-shrink-0 text-[var(--text-main)]" data-id="${mat.id}" title="이미지 다운로드">
                                 <i data-lucide="download-cloud" class="w-5 h-5"></i>
                             </button>
-                            <button class="btn-fav p-3 rounded-full hover:bg-[var(--hover-bg)] transition flex-shrink-0" data-id="${mat.id}">
-                                <svg class="w-6 h-6 heart-icon ${mat.isFavorite ? 'active' : 'text-[var(--text-muted)]'}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                            <button class="btn-fav p-2 rounded-full hover:bg-[var(--hover-bg)] transition flex-shrink-0" data-id="${mat.id}">
+                                <svg class="w-5 h-5 heart-icon ${mat.isFavorite ? 'active' : 'text-[var(--text-muted)]'}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                            </button>
+                            <button class="btn-delete p-2 rounded-full hover:bg-red-500/20 hover:text-red-500 transition flex-shrink-0 text-[var(--text-muted)]" data-id="${mat.id}" title="삭제">
+                                <i data-lucide="trash-2" class="w-5 h-5"></i>
                             </button>
                         </div>
                     `;
                 }
 
                 item.addEventListener('click', (e) => {
-                    if(e.target.closest('.btn-fav') || e.target.closest('.btn-download')) return; 
+                    if(e.target.closest('.btn-fav') || e.target.closest('.btn-download') || e.target.closest('.btn-delete')) return; 
                     loadMaterialToViewer(mat);
                     document.getElementById('btn-3d').click();
                 });
@@ -551,6 +557,21 @@
                     mat.isFavorite = !mat.isFavorite;
                     saveLibrary();
                     renderLibrary();
+                });
+
+                item.querySelector('.btn-delete').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if(confirm(`'${mat.name}' 재질을 삭제하시겠습니까?`)) {
+                        materialsLib = materialsLib.filter(m => m.id !== mat.id);
+                        saveLibrary();
+                        if(activeMaterialId === mat.id) {
+                            activeMaterialId = null;
+                            if(materialsLib.length > 0) {
+                                loadMaterialToViewer(materialsLib[0]);
+                            }
+                        }
+                        renderLibrary();
+                    }
                 });
 
                 listEl.appendChild(item);
