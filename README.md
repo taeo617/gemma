@@ -294,9 +294,6 @@
                         <h2 class="text-title text-[var(--text-main)] mb-1">추출된 맵 데이터 (High-Res)</h2>
                         <p class="text-body text-[var(--text-muted)]">이미지를 클릭하면 원본 크기로 확인할 수 있습니다.</p>
                     </div>
-                    <button id="btn-download-all-2d" class="apple-btn-primary flex items-center gap-2">
-                        <i data-lucide="download-cloud" class="w-4 h-4"></i> 맵 일괄 저장
-                    </button>
                 </div>
                 
                 <div class="grid grid-cols-3 gap-6 max-w-5xl mx-auto">
@@ -421,8 +418,9 @@
                 </div>
 
                 <div class="p-8 pt-0 flex flex-col gap-3 mt-auto">
-                    <button id="download-kmp" class="w-full apple-btn-primary flex items-center justify-center gap-2 py-3">
-                        <i data-lucide="download" class="w-5 h-5"></i> KeyShot KMP 내보내기
+                    <!-- Changed from KeyShot KMP Export to Batch Map Download -->
+                    <button id="btn-download-all-2d" class="w-full apple-btn-primary flex items-center justify-center gap-2 py-3">
+                        <i data-lucide="download-cloud" class="w-5 h-5"></i> 이미지 다운로드
                     </button>
                     <button id="btn-new-material" class="w-full text-caption text-[var(--text-main)] hover:underline flex items-center justify-center gap-2 py-2">
                         새로운 재질 생성하기
@@ -1126,7 +1124,7 @@
             dropZone.classList.remove('hidden');
         });
 
-        // --- 다운로드 (일괄 저장 & KMP) 로직 ---
+        // --- 다운로드 (일괄 저장) 로직 ---
         document.getElementById('btn-download-all-2d').addEventListener('click', () => {
             if(!currentMaps || !currentMaps.albedo) {
                 alert("다운로드할 맵 데이터가 없습니다.");
@@ -1136,7 +1134,7 @@
             const btn = document.getElementById('btn-download-all-2d');
             const originalText = btn.innerHTML;
             // 버튼 상태를 로딩 중으로 변경
-            btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> 압축 중...';
+            btn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> 압축 중...';
             lucide.createIcons();
 
             const zip = new JSZip();
@@ -1168,25 +1166,6 @@
                 btn.innerHTML = originalText;
                 lucide.createIcons();
             });
-        });
-
-        document.getElementById('download-kmp').addEventListener('click', () => {
-            const matName = document.getElementById('result-mat-name')?.textContent || "PBR_Material";
-            
-            // KMP 가상 데이터 구조
-            const mockKmpData = `<?xml version='1.0'?>\n<keyshot_material>\n  <name>${matName}</name>\n  <type>advanced</type>\n  <data>Simulated KMP mapping for PBR material.</data>\n</keyshot_material>`;
-            const blob = new Blob([mockKmpData], { type: 'application/octet-stream' });
-            const url = window.URL.createObjectURL(blob);
-            
-            const a = document.createElement('a');
-            a.style.display = 'none';
-            a.href = url;
-            a.download = `${matName}.kmp`;
-            document.body.appendChild(a);
-            a.click();
-            
-            window.URL.revokeObjectURL(url);
-            document.body.removeChild(a);
         });
 
         window.onload = init3DViewer;
