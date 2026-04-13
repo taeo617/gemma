@@ -1,17 +1,16 @@
+---
+layout: false
+---
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vibe PBR - Texture & Material Library</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Three.js & OrbitControls -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- JSZip for Zip Downloads -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
         /* Apple Design System & Theme Variables */
@@ -138,7 +137,6 @@
 </head>
 <body class="h-screen flex flex-col">
 
-    <!-- Login Modal -->
     <div id="login-modal" class="fixed inset-0 z-[60] hidden flex items-center justify-center bg-[var(--overlay-bg)] backdrop-blur-[20px] transition-opacity duration-300">
         <div class="apple-card p-10 max-w-sm w-full text-center relative">
             <button id="btn-close-login" class="absolute top-4 right-4 text-[var(--text-muted)] hover:text-[var(--text-main)] transition">
@@ -158,7 +156,6 @@
         </div>
     </div>
 
-    <!-- Initial Popup Modal -->
     <div id="initial-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-[var(--overlay-bg)] backdrop-blur-[20px] transition-opacity duration-300">
         <div class="apple-card p-10 max-w-md w-full text-center">
             <div class="w-16 h-16 bg-[var(--bg-main)] border border-[var(--border-color)] rounded-[12px] flex items-center justify-center mx-auto mb-6">
@@ -174,7 +171,6 @@
         </div>
     </div>
 
-    <!-- Guide Modal -->
     <div id="guide-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-[var(--overlay-bg)] backdrop-blur-[20px] transition-opacity duration-300">
         <div class="apple-card p-10 max-w-4xl w-[90%] max-h-[90vh] overflow-y-auto relative">
             <button id="btn-close-guide" class="absolute top-6 right-6 text-[var(--text-muted)] hover:text-[var(--text-main)] transition">
@@ -185,7 +181,6 @@
                 <h2 class="text-title text-[var(--text-main)] mb-2">AI PBR Studio 프로세스 및 KeyShot 적용 가이드</h2>
             </div>
 
-            <!-- 프로세스 인포그래픽 -->
             <div class="flex items-start justify-between gap-4 relative px-4 mb-12">
                 <div class="absolute top-8 left-16 right-16 h-[1px] bg-[var(--border-color)] z-0"></div>
                 <div class="relative z-10 flex flex-col items-center flex-1">
@@ -206,7 +201,6 @@
                 </div>
             </div>
             
-            <!-- KeyShot 매뉴얼 -->
             <div class="bg-[var(--bg-main)] rounded-[12px] p-6 border border-[var(--border-color)] text-left">
                 <h3 class="text-card-title text-[var(--text-main)] mb-4 flex items-center gap-2"><i data-lucide="book-open" class="w-5 h-5"></i> KeyShot 재질 노드 연결 방법</h3>
                 <ul class="space-y-4 text-caption text-[var(--text-sub)]">
@@ -219,7 +213,6 @@
         </div>
     </div>
 
-    <!-- Image Preview Lightbox Modal -->
     <div id="lightbox-modal" class="fixed inset-0 z-[70] hidden flex items-center justify-center bg-black/80 backdrop-blur-[10px] transition-opacity duration-300">
         <button id="btn-close-lightbox" class="absolute top-6 right-6 text-white/50 hover:text-white transition z-10 p-2 bg-black/20 rounded-full">
             <i data-lucide="x" class="w-8 h-8"></i>
@@ -229,7 +222,6 @@
         </div>
     </div>
 
-    <!-- Header -->
     <header class="apple-nav-glass h-[56px] border-b border-[var(--border-color)] flex items-center justify-between px-6 shrink-0 z-10 w-full fixed top-0">
         <div class="flex items-center gap-8">
             <span class="text-body-strong tracking-tight text-[var(--text-main)] flex items-center gap-2">
@@ -241,7 +233,6 @@
             </nav>
         </div>
         <div class="flex items-center gap-5 text-caption">
-            <!-- Dark / Light Theme Toggle -->
             <button id="btn-theme-toggle" class="hover:text-[var(--text-main)] text-[var(--text-sub)] transition flex items-center justify-center w-8 h-8 rounded-full bg-[var(--bg-card)] border border-[var(--border-color)] shadow-sm">
                 <i data-lucide="sun" class="w-4 h-4"></i>
             </button>
@@ -251,12 +242,9 @@
         </div>
     </header>
 
-    <!-- Main Workspace -->
     <main class="flex-1 flex overflow-hidden relative mt-[56px]">
         
-        <!-- Center: Viewer Area -->
         <div class="flex-1 flex flex-col relative bg-[var(--bg-main)]">
-            <!-- View Tabs -->
             <div class="absolute top-6 left-1/2 -translate-x-1/2 bg-[var(--bg-card)] rounded-[980px] p-1 z-10 flex shadow-lg border border-[var(--border-color)]">
                 <button id="btn-3d" class="apple-pill-tab active text-[var(--text-main)] flex items-center gap-2">
                     <i data-lucide="box" class="w-4 h-4"></i> 3D 뷰어
@@ -269,7 +257,6 @@
                 </button>
             </div>
 
-            <!-- 3D Canvas -->
             <div id="view-3d" class="w-full h-full relative flex flex-col">
                 <div id="canvas-container" class="flex-1 w-full"></div>
 
@@ -278,7 +265,6 @@
                     <button id="btn-zoom-out" class="w-10 h-10 bg-[var(--bg-card)] border border-[var(--border-color)] hover:bg-[var(--hover-bg)] text-[var(--text-main)] rounded-full flex items-center justify-center transition shadow-md"><i data-lucide="minus" class="w-5 h-5"></i></button>
                 </div>
 
-                <!-- AI Processing Overlay -->
                 <div id="loading" class="absolute inset-0 bg-[var(--overlay-bg)] backdrop-blur-[10px] flex items-center justify-center z-20 hidden">
                     <div class="flex flex-col items-center gap-6">
                         <i data-lucide="loader-2" class="w-12 h-12 text-[var(--apple-blue)] animate-spin"></i>
@@ -287,7 +273,6 @@
                 </div>
             </div>
 
-            <!-- 2D Maps Grid -->
             <div id="view-2d" class="w-full h-full hidden overflow-y-auto p-12 pt-24 bg-[var(--bg-main)]">
                 <div class="max-w-5xl mx-auto mb-8 flex justify-between items-end">
                     <div>
@@ -318,7 +303,6 @@
                 </div>
             </div>
 
-            <!-- Library View -->
             <div id="view-library" class="w-full h-full hidden overflow-y-auto p-12 pt-24 bg-[var(--bg-main)]">
                 <div class="max-w-5xl mx-auto mb-8 flex justify-between items-end border-b border-[var(--border-color)] pb-6">
                     <div>
@@ -332,15 +316,12 @@
                 </div>
                 
                 <div id="library-list" class="max-w-5xl mx-auto">
-                    <!-- 라이브러리 아이템 렌더링 영역 -->
-                </div>
+                    </div>
             </div>
             
         </div>
 
-        <!-- Right: Control Panel -->
         <div class="w-[380px] apple-surface flex flex-col z-20 shadow-2xl border-l border-[var(--border-color)]">
-            <!-- Upload Section -->
             <div id="panel-upload" class="p-8 flex-1 flex flex-col">
                 <h1 class="text-card-title text-[var(--text-main)] mb-2">새 재질 생성</h1>
                 <p class="text-caption text-[var(--text-muted)] mb-8">질감 이미지를 업로드하여 Seamless PBR로 변환합니다.</p>
@@ -363,7 +344,6 @@
                 </div>
             </div>
 
-            <!-- Result Section -->
             <div id="panel-result" class="hidden flex-col h-full overflow-y-auto">
                 <div class="p-8 pb-6 border-b border-[var(--border-color)]">
                     <div class="flex items-center gap-2 mb-2">
@@ -385,10 +365,8 @@
                     </div>
                 </div>
 
-                <!-- NEW: Scale & Angle Controls in Panel -->
                 <div class="px-8 py-6 flex-1 flex flex-col gap-8">
                     
-                    <!-- Scale Slider -->
                     <div>
                         <div class="flex justify-between items-center mb-4">
                             <span class="text-body text-[var(--text-main)]">Scale</span>
@@ -401,7 +379,6 @@
                         </div>
                     </div>
 
-                    <!-- Angle Slider -->
                     <div>
                         <div class="flex justify-between items-center mb-4">
                             <span class="text-body text-[var(--text-main)]">Angle</span>
@@ -418,7 +395,6 @@
                 </div>
 
                 <div class="p-8 pt-0 flex flex-col gap-3 mt-auto">
-                    <!-- Changed from KeyShot KMP Export to Batch Map Download -->
                     <button id="btn-download-all-2d" class="w-full apple-btn-primary flex items-center justify-center gap-2 py-3">
                         <i data-lucide="download-cloud" class="w-5 h-5"></i> 이미지 다운로드
                     </button>
@@ -495,6 +471,9 @@
                     item.innerHTML = `
                         <div class="relative w-full aspect-square mb-4 rounded-lg overflow-hidden bg-[var(--bg-main)] border border-[var(--border-color)]">
                             <img src="${mat.maps.albedo}" class="w-full h-full object-cover hover:scale-105 transition duration-500">
+                            <button class="btn-download absolute top-3 left-3 p-2 bg-[var(--glass-bg)] backdrop-blur-md rounded-full hover:brightness-125 transition text-[var(--text-main)]" data-id="${mat.id}" title="이미지 다운로드">
+                                <i data-lucide="download-cloud" class="w-4 h-4"></i>
+                            </button>
                             <button class="btn-fav absolute top-3 right-3 p-2 bg-[var(--glass-bg)] backdrop-blur-md rounded-full hover:brightness-125 transition" data-id="${mat.id}">
                                 <svg class="w-5 h-5 heart-icon ${mat.isFavorite ? 'active' : 'text-[var(--text-muted)]'}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
                             </button>
@@ -511,16 +490,27 @@
                                 <p class="text-caption text-[var(--text-muted)] mt-1">Scale: ${mat.scale}x | Angle: ${mat.angle}°</p>
                             </div>
                         </div>
-                        <button class="btn-fav p-3 rounded-full hover:bg-[var(--hover-bg)] transition flex-shrink-0" data-id="${mat.id}">
-                            <svg class="w-6 h-6 heart-icon ${mat.isFavorite ? 'active' : 'text-[var(--text-muted)]'}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-                        </button>
+                        <div class="flex items-center gap-2">
+                            <button class="btn-download p-3 rounded-full hover:bg-[var(--hover-bg)] transition flex-shrink-0 text-[var(--text-main)]" data-id="${mat.id}" title="이미지 다운로드">
+                                <i data-lucide="download-cloud" class="w-5 h-5"></i>
+                            </button>
+                            <button class="btn-fav p-3 rounded-full hover:bg-[var(--hover-bg)] transition flex-shrink-0" data-id="${mat.id}">
+                                <svg class="w-6 h-6 heart-icon ${mat.isFavorite ? 'active' : 'text-[var(--text-muted)]'}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                            </button>
+                        </div>
                     `;
                 }
 
                 item.addEventListener('click', (e) => {
-                    if(e.target.closest('.btn-fav')) return; 
+                    if(e.target.closest('.btn-fav') || e.target.closest('.btn-download')) return; 
                     loadMaterialToViewer(mat);
                     document.getElementById('btn-3d').click();
+                });
+                
+                // 각 라이브러리 아이템 내 다운로드 버튼 클릭 이벤트
+                item.querySelector('.btn-download').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    downloadMaterialMaps(mat, e.currentTarget);
                 });
 
                 item.querySelector('.btn-fav').addEventListener('click', (e) => {
@@ -532,6 +522,7 @@
 
                 listEl.appendChild(item);
             });
+            lucide.createIcons();
         };
 
         const createNewMaterialEntry = (maps, typeName = "커스텀 재질") => {
@@ -1124,23 +1115,23 @@
             dropZone.classList.remove('hidden');
         });
 
-        // --- 다운로드 (일괄 저장) 로직 ---
-        document.getElementById('btn-download-all-2d').addEventListener('click', () => {
-            if(!currentMaps || !currentMaps.albedo) {
+        // --- 다운로드 (일괄 저장) 로직 모듈화 ---
+        const downloadMaterialMaps = (mat, btnElement = null, loadingText = null) => {
+            if(!mat || !mat.maps || !mat.maps.albedo) {
                 alert("다운로드할 맵 데이터가 없습니다.");
                 return;
             }
             
-            const btn = document.getElementById('btn-download-all-2d');
-            const originalText = btn.innerHTML;
-            // 버튼 상태를 로딩 중으로 변경
-            btn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> 압축 중...';
-            lucide.createIcons();
+            let originalHTML = "";
+            if (btnElement) {
+                originalHTML = btnElement.innerHTML;
+                btnElement.innerHTML = loadingText ? `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> ${loadingText}` : '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i>';
+                lucide.createIcons();
+            }
 
             const zip = new JSZip();
-            const matName = document.getElementById('result-mat-name')?.textContent || "PBR_Material";
+            const matName = mat.name || "PBR_Material";
 
-            // base64 데이터를 zip에 추가하는 헬퍼 함수
             const addFile = (fileName, dataUrl) => {
                 if(dataUrl) {
                     const base64Data = dataUrl.split(',')[1];
@@ -1148,24 +1139,35 @@
                 }
             };
 
-            addFile(`${matName}_Albedo.jpg`, currentMaps.albedo);
-            addFile(`${matName}_Bump.jpg`, currentMaps.bump);
-            addFile(`${matName}_Roughness.jpg`, currentMaps.roughness);
-            addFile(`${matName}_Normal.jpg`, currentMaps.normal);
+            addFile(`${matName}_Albedo.jpg`, mat.maps.albedo);
+            addFile(`${matName}_Bump.jpg`, mat.maps.bump);
+            addFile(`${matName}_Roughness.jpg`, mat.maps.roughness);
+            addFile(`${matName}_Normal.jpg`, mat.maps.normal);
 
-            // ZIP 생성 및 다운로드 트리거
-            zip.generateAsync({type:"blob"}).then(function(content) {
-                const a = document.createElement('a');
-                a.href = URL.createObjectURL(content);
-                a.download = `${matName}_Maps.zip`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                
-                // 버튼 원상복구
-                btn.innerHTML = originalText;
-                lucide.createIcons();
-            });
+            // UI 렌더링 후 압축을 시작하도록 setTimeout 처리
+            setTimeout(() => {
+                zip.generateAsync({type:"blob"}).then(function(content) {
+                    const a = document.createElement('a');
+                    a.href = URL.createObjectURL(content);
+                    a.download = `${matName}_Maps.zip`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    
+                    if (btnElement) {
+                        btnElement.innerHTML = originalHTML;
+                        lucide.createIcons();
+                    }
+                });
+            }, 50);
+        };
+
+        // 오른쪽 결과 패널의 메인 다운로드 버튼 클릭
+        document.getElementById('btn-download-all-2d').addEventListener('click', (e) => {
+            const mat = materialsLib.find(m => m.id === activeMaterialId);
+            if (mat) {
+                downloadMaterialMaps(mat, e.currentTarget, "압축 중...");
+            }
         });
 
         window.onload = init3DViewer;
