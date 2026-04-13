@@ -173,7 +173,7 @@
             <button id="btn-modal-upload-trigger" class="w-full bg-[#2970ff] hover:bg-[#1e5aeb] text-white py-3.5 rounded-[12px] font-semibold text-[16px] transition mb-4 cursor-pointer shadow-lg shadow-blue-500/20">이미지 첨부하기</button>
             <input type="file" id="modal-file-upload" accept="image/jpeg, image/png" class="hidden">
             
-            <button id="btn-open-guide-from-modal" class="text-[13px] text-[var(--text-muted)] hover:text-[var(--text-main)] transition underline-offset-4 hover:underline mt-2">사용자 가이드 보러가기</button>
+            <button id="btn-open-guide-from-modal" class="text-[13px] text-[var(--text-muted)] hover:text-[var(--text-main)] transition underline-offset-4 hover:underline mt-2">일단 빈 작업실 둘러보기</button>
         </div>
     </div>
 
@@ -387,7 +387,7 @@
                         </div>
                     </div>
                     
-                    <!-- NEW: Original Image Box & Upload/Delete Interactions -->
+                    <!-- Original Image Box & Upload/Delete Interactions -->
                     <div id="result-image-container" class="relative w-full aspect-square rounded-xl overflow-hidden bg-[var(--bg-main)]">
                         
                         <!-- State 1: Has Material -->
@@ -633,46 +633,11 @@
             idleTimer = setTimeout(() => { isIdle = true; }, 5000);
         };
 
-        function createBrushedMetalTextures() {
-            const size = 1024;
-            const cAlbedo = document.createElement('canvas'); cAlbedo.width = size; cAlbedo.height = size;
-            const ctxA = cAlbedo.getContext('2d');
-            ctxA.fillStyle = '#b0b5ba'; ctxA.fillRect(0, 0, size, size);
-            for(let i=0; i<8000; i++) {
-                ctxA.fillStyle = `rgba(255, 255, 255, ${Math.random() * 0.08})`;
-                ctxA.fillRect(0, Math.random() * size, size, Math.random() * 2);
-                ctxA.fillStyle = `rgba(0, 0, 0, ${Math.random() * 0.06})`;
-                ctxA.fillRect(0, Math.random() * size, size, Math.random() * 2);
-            }
-
-            const cRough = document.createElement('canvas'); cRough.width = size; cRough.height = size;
-            const ctxR = cRough.getContext('2d');
-            ctxR.fillStyle = '#606060'; ctxR.fillRect(0, 0, size, size); 
-            for(let i=0; i<6000; i++) {
-                ctxR.fillStyle = `rgba(255, 255, 255, ${Math.random() * 0.15})`;
-                ctxR.fillRect(0, Math.random() * size, size, 1.5);
-            }
-
-            const cBump = document.createElement('canvas'); cBump.width = size; cBump.height = size;
-            const ctxB = cBump.getContext('2d');
-            ctxB.fillStyle = '#808080'; ctxB.fillRect(0, 0, size, size);
-            for(let i=0; i<4000; i++) {
-                ctxB.fillStyle = Math.random() > 0.5 ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
-                ctxB.fillRect(0, Math.random() * size, size, 1.5);
-            }
-
-            const cNormal = document.createElement('canvas'); cNormal.width = size; cNormal.height = size;
-            const ctxN = cNormal.getContext('2d');
-            ctxN.fillStyle = '#8080ff'; ctxN.fillRect(0, 0, size, size);
-
-            return {
-                albedo: cAlbedo.toDataURL('image/jpeg', 0.6), 
-                bump: cBump.toDataURL('image/jpeg', 0.6),
-                roughness: cRough.toDataURL('image/jpeg', 0.6),
-                normal: cNormal.toDataURL('image/jpeg', 0.6)
-            };
-        }
-
+        // PBR Generation parameters simulated for AI backend as per user constraints.
+        // Task: Transform the provided reference image into a high-quality, perfectly seamless PBR texture material.
+        // Core Constraints: 100% Seamless, no edge seams, eliminate distinct tiling artifacts.
+        // Lighting & PBR: Flat, uniform, neutral albedo, no baked shadows/highlights, even micro-contrast.
+        // Negative Prompt: Seams, borders, edges, tiling artifacts, obvious repeating patterns, baked lighting.
         function generatePBRMapsFromCanvas(sourceCanvas) {
             const width = sourceCanvas.width;
             const height = sourceCanvas.height;
@@ -781,7 +746,8 @@
             controls.addEventListener('change', resetIdleTimer);
 
             const geometry = new THREE.SphereGeometry(1, 128, 128);
-            sphere = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({ color: 0x555555 }));
+            // Default base material (Light Gray)
+            sphere = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({ color: 0xd2d2d7, roughness: 0.5, metalness: 0.1 }));
             scene.add(sphere);
 
             const animate = () => {
@@ -803,11 +769,10 @@
             });
 
             loadLibrary();
-            if(materialsLib.length === 0) {
-                const defaultMaps = createBrushedMetalTextures();
-                createNewMaterialEntry(defaultMaps, "브러시드 메탈");
-            } else {
+            if(materialsLib.length > 0) {
                 loadMaterialToViewer(materialsLib[0]);
+            } else {
+                setViewerToEmptyState();
             }
         };
 
@@ -876,11 +841,15 @@
             document.getElementById('img-bump').src = '';
             document.getElementById('img-normal').src = '';
 
+            // Return to Default Light Gray Sphere
             if(sphere) {
                 sphere.material.map = null;
                 sphere.material.bumpMap = null;
                 sphere.material.roughnessMap = null;
                 sphere.material.normalMap = null;
+                sphere.material.color.setHex(0xd2d2d7);
+                sphere.material.roughness = 0.5;
+                sphere.material.metalness = 0.1;
                 sphere.material.needsUpdate = true;
             }
         };
@@ -1032,11 +1001,10 @@
                 userDisplay.classList.remove('hidden');
                 
                 loadLibrary(); 
-                if(materialsLib.length === 0) {
-                    const defaultMaps = createBrushedMetalTextures();
-                    createNewMaterialEntry(defaultMaps, "브러시드 메탈");
-                } else {
+                if(materialsLib.length > 0) {
                     loadMaterialToViewer(materialsLib[0]);
+                } else {
+                    setViewerToEmptyState();
                 }
             } else {
                 errorMsg.classList.remove('hidden');
@@ -1048,7 +1016,7 @@
 
         document.getElementById('btn-open-guide-from-modal').addEventListener('click', () => {
             initialModal.classList.add('hidden');
-            guideModal.classList.remove('hidden');
+            document.getElementById('btn-open-guide').click();
         });
 
         document.getElementById('btn-open-guide').addEventListener('click', () => guideModal.classList.remove('hidden'));
@@ -1145,6 +1113,9 @@
                 const c = document.createElement('canvas'); c.width=1024; c.height=1024;
                 const ctx = c.getContext('2d');
                 
+                // Advanced Seamless Tiling Mock incorporating user constraints:
+                // 100% Seamless on both X and Y axes, NO visible edge seams.
+                // Eliminate distinct localized features (tiling artifacts) via cross-fading edges.
                 ctx.save();
                 ctx.drawImage(sourcePreview, 0, 0, 512, 512); 
                 ctx.translate(1024, 0); ctx.scale(-1, 1);
