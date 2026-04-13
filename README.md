@@ -199,7 +199,6 @@
                 AI PBR Studio
             </span>
             <nav class="flex gap-6 text-nav text-[rgba(255,255,255,0.8)]">
-                <button id="btn-toggle-library" class="hover:text-white transition flex items-center gap-1"><i data-lucide="library" class="w-3 h-3"></i> 라이브러리</button>
                 <button id="btn-open-guide" class="hover:text-white transition">사용 가이드</button>
             </nav>
         </div>
@@ -212,26 +211,18 @@
     <!-- Main Workspace -->
     <main class="flex-1 flex overflow-hidden relative mt-[48px]">
         
-        <!-- Left: Library Panel (Toggled) -->
-        <div id="panel-library" class="w-[280px] apple-surface border-r border-[#333336] flex flex-col z-20 transition-all duration-300 transform translate-x-0 relative">
-            <div class="p-5 border-b border-[#333336]">
-                <h2 class="text-card-title text-white">마이 재질</h2>
-                <p class="text-nav text-[rgba(255,255,255,0.48)] mt-1">저장된 데이터베이스</p>
-            </div>
-            <div id="library-list" class="flex-1 overflow-y-auto p-4 space-y-2">
-                <!-- 라이브러리 아이템 렌더링 영역 -->
-            </div>
-        </div>
-
         <!-- Center: Viewer Area -->
         <div class="flex-1 flex flex-col relative bg-[#000000]">
             <!-- View Tabs -->
             <div class="absolute top-6 left-1/2 -translate-x-1/2 bg-[#1d1d1f] rounded-[980px] p-1 z-10 flex shadow-lg border border-[#333336]">
-                <button id="btn-3d" class="apple-pill-tab active text-[rgba(255,255,255,0.48)] flex items-center gap-2">
+                <button id="btn-3d" class="apple-pill-tab active text-white flex items-center gap-2">
                     <i data-lucide="box" class="w-4 h-4"></i> 3D 뷰어
                 </button>
                 <button id="btn-2d" class="apple-pill-tab text-[rgba(255,255,255,0.48)] flex items-center gap-2">
                     <i data-lucide="image" class="w-4 h-4"></i> 2D 데이터
+                </button>
+                <button id="btn-library" class="apple-pill-tab text-[rgba(255,255,255,0.48)] flex items-center gap-2">
+                    <i data-lucide="library" class="w-4 h-4"></i> 라이브러리
                 </button>
             </div>
 
@@ -297,6 +288,24 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Library View -->
+            <div id="view-library" class="w-full h-full hidden overflow-y-auto p-12 bg-[#000000]">
+                <div class="max-w-5xl mx-auto mb-8 flex justify-between items-end border-b border-[#333336] pb-6">
+                    <div>
+                        <h2 class="text-title text-white mb-2">마이 재질</h2>
+                        <p class="text-body text-[rgba(255,255,255,0.48)]">저장된 데이터베이스. 클릭하여 3D 뷰어에 적용하세요.</p>
+                    </div>
+                    <div class="flex bg-[#1d1d1f] rounded-lg p-1 border border-[#333336]">
+                        <button id="btn-view-grid" class="p-2 rounded-md bg-[#333336] text-white transition"><i data-lucide="grid" class="w-5 h-5"></i></button>
+                        <button id="btn-view-list" class="p-2 rounded-md text-[rgba(255,255,255,0.48)] hover:text-white transition"><i data-lucide="list" class="w-5 h-5"></i></button>
+                    </div>
+                </div>
+                
+                <div id="library-list" class="max-w-5xl mx-auto">
+                    <!-- 라이브러리 아이템 렌더링 영역 -->
+                </div>
+            </div>
             
         </div>
 
@@ -355,7 +364,7 @@
 
         // --- Auth & Library Logic ---
         let currentUserId = 'guest';
-        let isLibraryOpen = true;
+        let libraryViewMode = 'grid'; // 'grid' 앨범형태, 'list' 리스트형태
         let activeMaterialId = null;
         let materialsLib = [];
 
@@ -375,29 +384,54 @@
             const listEl = document.getElementById('library-list');
             listEl.innerHTML = '';
             
+            if (libraryViewMode === 'grid') {
+                listEl.className = 'max-w-5xl mx-auto grid grid-cols-3 gap-6';
+            } else {
+                listEl.className = 'max-w-5xl mx-auto flex flex-col space-y-3';
+            }
+            
             if(materialsLib.length === 0) {
-                listEl.innerHTML = '<p class="text-nav text-[rgba(255,255,255,0.3)] text-center mt-10">생성된 재질이 없습니다.</p>';
+                listEl.className = 'max-w-5xl mx-auto';
+                listEl.innerHTML = '<p class="text-body text-[rgba(255,255,255,0.3)] text-center mt-20">생성된 재질이 없습니다.</p>';
                 return;
             }
 
             materialsLib.forEach(mat => {
                 const item = document.createElement('div');
                 const isActive = mat.id === activeMaterialId;
-                item.className = `p-3 rounded-lg flex items-center justify-between cursor-pointer transition border ${isActive ? 'bg-[#333336] border-[var(--apple-blue)]' : 'bg-[#1d1d1f] hover:bg-[#272729] border-transparent'}`;
                 
-                item.innerHTML = `
-                    <div class="flex items-center gap-3 flex-1 overflow-hidden">
-                        <img src="${mat.maps.albedo}" class="w-10 h-10 rounded shadow-sm border border-black/50 object-cover flex-shrink-0">
-                        <span class="text-caption text-white truncate font-medium">${mat.name}</span>
-                    </div>
-                    <button class="btn-fav p-2 rounded-full hover:bg-black/20 transition flex-shrink-0" data-id="${mat.id}">
-                        <svg class="w-4 h-4 heart-icon ${mat.isFavorite ? 'active' : 'text-[rgba(255,255,255,0.3)]'}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-                    </button>
-                `;
+                if (libraryViewMode === 'grid') {
+                    item.className = `apple-card p-4 flex flex-col cursor-pointer transition border ${isActive ? 'border-[var(--apple-blue)] bg-[#2a2a2d]' : 'border-transparent hover:border-[#424245]'}`;
+                    item.innerHTML = `
+                        <div class="relative w-full aspect-square mb-4 rounded-lg overflow-hidden bg-black border border-[#333336]">
+                            <img src="${mat.maps.albedo}" class="w-full h-full object-cover">
+                            <button class="btn-fav absolute top-3 right-3 p-2 bg-black/60 backdrop-blur-md rounded-full hover:bg-black/80 transition" data-id="${mat.id}">
+                                <svg class="w-5 h-5 heart-icon ${mat.isFavorite ? 'active' : 'text-[rgba(255,255,255,0.5)]'}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                            </button>
+                        </div>
+                        <h3 class="text-body-strong text-white truncate px-1">${mat.name}</h3>
+                    `;
+                } else {
+                    item.className = `p-4 rounded-xl flex items-center justify-between cursor-pointer transition border ${isActive ? 'bg-[#333336] border-[var(--apple-blue)]' : 'bg-[#1d1d1f] hover:bg-[#272729] border-transparent'}`;
+                    item.innerHTML = `
+                        <div class="flex items-center gap-5 flex-1 overflow-hidden">
+                            <img src="${mat.maps.albedo}" class="w-16 h-16 rounded-lg shadow-sm border border-black/50 object-cover flex-shrink-0">
+                            <div>
+                                <h3 class="text-body-strong text-white truncate">${mat.name}</h3>
+                                <p class="text-caption text-[rgba(255,255,255,0.48)] mt-1">Scale: ${mat.scale}x | Angle: ${mat.angle}°</p>
+                            </div>
+                        </div>
+                        <button class="btn-fav p-3 rounded-full hover:bg-black/20 transition flex-shrink-0" data-id="${mat.id}">
+                            <svg class="w-6 h-6 heart-icon ${mat.isFavorite ? 'active' : 'text-[rgba(255,255,255,0.3)]'}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                        </button>
+                    `;
+                }
 
-                // 아이템 클릭 시 3D 뷰어 업데이트
-                item.querySelector('div').addEventListener('click', () => {
+                // 아이템 클릭 시 3D 뷰어 업데이트 및 탭 전환
+                item.addEventListener('click', (e) => {
+                    if(e.target.closest('.btn-fav')) return; // 하트 클릭 시 뷰어 전환 무시
                     loadMaterialToViewer(mat);
+                    document.getElementById('btn-3d').click(); // 3D 뷰어로 탭 자동 전환
                 });
 
                 // 찜하기 토글
@@ -644,19 +678,6 @@
         });
 
         // --- UI Interactions ---
-        // Library Toggle
-        const panelLibrary = document.getElementById('panel-library');
-        document.getElementById('btn-toggle-library').addEventListener('click', () => {
-            isLibraryOpen = !isLibraryOpen;
-            if(isLibraryOpen) {
-                panelLibrary.classList.remove('hidden');
-                setTimeout(() => panelLibrary.classList.remove('-translate-x-full'), 10);
-            } else {
-                panelLibrary.classList.add('-translate-x-full');
-                setTimeout(() => panelLibrary.classList.add('hidden'), 300);
-            }
-        });
-
         // Login System
         const modalLogin = document.getElementById('login-modal');
         const btnLoginToggle = document.getElementById('btn-login-toggle');
@@ -778,19 +799,53 @@
         // View Tabs
         const btn3D = document.getElementById('btn-3d');
         const btn2D = document.getElementById('btn-2d');
+        const btnLibrary = document.getElementById('btn-library');
         const view3D = document.getElementById('view-3d');
         const view2D = document.getElementById('view-2d');
+        const viewLibrary = document.getElementById('view-library');
 
-        btn3D.addEventListener('click', () => {
-            view3D.classList.remove('hidden'); view2D.classList.add('hidden');
-            btn3D.classList.add('active'); btn2D.classList.remove('active');
-            btn3D.style.color = '#ffffff'; btn2D.style.color = 'rgba(255,255,255,0.48)';
+        const switchTab = (tabName) => {
+            view3D.classList.add('hidden');
+            view2D.classList.add('hidden');
+            viewLibrary.classList.add('hidden');
+            
+            btn3D.classList.remove('active'); btn3D.style.color = 'rgba(255,255,255,0.48)';
+            btn2D.classList.remove('active'); btn2D.style.color = 'rgba(255,255,255,0.48)';
+            btnLibrary.classList.remove('active'); btnLibrary.style.color = 'rgba(255,255,255,0.48)';
+
+            if(tabName === '3d') {
+                view3D.classList.remove('hidden');
+                btn3D.classList.add('active'); btn3D.style.color = '#ffffff';
+            } else if(tabName === '2d') {
+                view2D.classList.remove('hidden');
+                btn2D.classList.add('active'); btn2D.style.color = '#ffffff';
+            } else if(tabName === 'library') {
+                viewLibrary.classList.remove('hidden');
+                btnLibrary.classList.add('active'); btnLibrary.style.color = '#ffffff';
+                renderLibrary();
+            }
+        };
+
+        btn3D.addEventListener('click', () => switchTab('3d'));
+        btn2D.addEventListener('click', () => switchTab('2d'));
+        btnLibrary.addEventListener('click', () => switchTab('library'));
+
+        // Library View Toggles (Grid vs List)
+        const btnViewGrid = document.getElementById('btn-view-grid');
+        const btnViewList = document.getElementById('btn-view-list');
+
+        btnViewGrid.addEventListener('click', () => {
+            libraryViewMode = 'grid';
+            btnViewGrid.className = 'p-2 rounded-md bg-[#333336] text-white transition';
+            btnViewList.className = 'p-2 rounded-md text-[rgba(255,255,255,0.48)] hover:text-white transition';
+            renderLibrary();
         });
 
-        btn2D.addEventListener('click', () => {
-            view2D.classList.remove('hidden'); view3D.classList.add('hidden');
-            btn2D.classList.add('active'); btn3D.classList.remove('active');
-            btn2D.style.color = '#ffffff'; btn3D.style.color = 'rgba(255,255,255,0.48)';
+        btnViewList.addEventListener('click', () => {
+            libraryViewMode = 'list';
+            btnViewList.className = 'p-2 rounded-md bg-[#333336] text-white transition';
+            btnViewGrid.className = 'p-2 rounded-md text-[rgba(255,255,255,0.48)] hover:text-white transition';
+            renderLibrary();
         });
 
         // Zoom Controls
