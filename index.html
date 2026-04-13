@@ -107,7 +107,7 @@
         .apple-link { color: var(--apple-blue-dark); text-decoration: none; transition: all 0.2s ease; cursor: pointer; }
         .apple-link:hover { text-decoration: underline; }
 
-        /* Custom UI Slider (Matched to Reference Image) */
+        /* Custom UI Slider */
         input[type=range] {
             -webkit-appearance: none; width: 100%; background: transparent; height: 24px; outline: none;
         }
@@ -140,7 +140,7 @@
 
     <!-- Login Modal -->
     <div id="login-modal" class="fixed inset-0 z-[60] hidden flex items-center justify-center bg-[var(--overlay-bg)] backdrop-blur-[20px] transition-opacity duration-300">
-        <div class="apple-card p-10 max-w-sm w-full text-center relative">
+        <div class="apple-card p-10 max-w-sm w-full text-center relative border border-[var(--border-color)]">
             <button id="btn-close-login" class="absolute top-4 right-4 text-[var(--text-muted)] hover:text-[var(--text-main)] transition">
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
@@ -179,7 +179,7 @@
 
     <!-- Guide Modal -->
     <div id="guide-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-[var(--overlay-bg)] backdrop-blur-[20px] transition-opacity duration-300">
-        <div class="apple-card p-10 max-w-4xl w-[90%] max-h-[90vh] overflow-y-auto relative">
+        <div class="apple-card p-10 max-w-4xl w-[90%] max-h-[90vh] overflow-y-auto relative border border-[var(--border-color)]">
             <button id="btn-close-guide" class="absolute top-6 right-6 text-[var(--text-muted)] hover:text-[var(--text-main)] transition">
                 <i data-lucide="x" class="w-6 h-6"></i>
             </button>
@@ -349,9 +349,9 @@
                 <p class="text-caption text-[var(--text-muted)] mb-8">질감 이미지를 업로드하여 Seamless PBR로 변환합니다.</p>
                 
                 <label for="file-upload" id="drop-zone" class="bg-[var(--bg-card)] border border-dashed border-[var(--border-color)] hover:border-[var(--apple-blue)] rounded-[12px] p-8 flex flex-col items-center justify-center text-center cursor-pointer transition flex-1 min-h-[250px]">
-                    <i data-lucide="plus" class="w-8 h-8 text-[var(--text-muted)] mb-3"></i>
-                    <span class="text-body text-[var(--text-main)] mb-1">여기를 클릭하여 첨부</span>
-                    <span class="text-nav text-[var(--text-muted)]">고해상도 이미지 권장</span>
+                    <i data-lucide="plus" class="w-8 h-8 text-[var(--text-muted)] mb-3 pointer-events-none"></i>
+                    <span class="text-body text-[var(--text-main)] mb-1 pointer-events-none">여기를 클릭하거나 파일을 드래그</span>
+                    <span class="text-nav text-[var(--text-muted)] pointer-events-none">고해상도 이미지 권장</span>
                     <input id="file-upload" type="file" accept="image/jpeg, image/png" class="hidden">
                 </label>
                 
@@ -376,7 +376,7 @@
                     <h1 class="text-title text-[var(--text-main)] mb-1" id="result-mat-name">커스텀 텍스처</h1>
                     <p class="text-caption text-[var(--text-muted)] mb-6">라이브러리에 자동 등록되었습니다.</p>
                     
-                    <div class="bg-[var(--bg-card)] p-4 rounded-xl border border-[var(--border-color)] flex justify-between">
+                    <div class="bg-[var(--bg-card)] p-4 rounded-xl border border-[var(--border-color)] flex justify-between mb-5">
                         <div class="text-center w-full border-r border-[var(--border-color)]">
                             <div class="text-body-strong text-[var(--text-main)]">4 Maps</div>
                             <div class="text-nav text-[var(--text-muted)]">High-Res</div>
@@ -386,9 +386,39 @@
                             <div class="text-nav text-[var(--text-muted)]">Tiling Ready</div>
                         </div>
                     </div>
+                    
+                    <!-- NEW: Original Image Box & Upload/Delete Interactions -->
+                    <div id="result-image-container" class="relative w-full aspect-square rounded-xl overflow-hidden bg-[var(--bg-main)]">
+                        
+                        <!-- State 1: Has Material -->
+                        <div id="result-image-content" class="w-full h-full relative group border border-[var(--border-color)] rounded-xl overflow-hidden">
+                            <img id="result-original-image" src="" class="w-full h-full object-cover">
+                            
+                            <!-- Hover Overlay: Create New Material -->
+                            <div id="btn-box-upload" class="absolute inset-0 bg-[var(--glass-bg)] backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center cursor-pointer z-10">
+                                <i data-lucide="plus-circle" class="w-8 h-8 text-[var(--apple-blue)] mb-3"></i>
+                                <span class="text-body-strong text-[var(--text-main)]">새로운 재질 생성하기</span>
+                            </div>
+
+                            <!-- Delete Material Button -->
+                            <button id="btn-delete-current" class="absolute top-3 right-3 p-2.5 bg-[var(--glass-bg)] backdrop-blur-md rounded-full hover:bg-red-500 hover:text-white transition text-[var(--text-muted)] shadow-md z-20" title="현재 재질 삭제">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+
+                        <!-- State 2: Empty (Delete was pressed) -->
+                        <div id="result-empty-content" class="hidden w-full h-full border-2 border-dashed border-[var(--border-color)] hover:border-[var(--apple-blue)] rounded-xl bg-[var(--bg-card)] flex flex-col items-center justify-center cursor-pointer transition z-0">
+                            <i data-lucide="image-plus" class="w-8 h-8 text-[var(--text-muted)] mb-3 pointer-events-none"></i>
+                            <span class="text-body-strong text-[var(--text-main)] mb-1 pointer-events-none">이미지를 첨부하세요</span>
+                            <span class="text-nav text-[var(--text-muted)] pointer-events-none">클릭하여 파일 선택</span>
+                        </div>
+
+                        <!-- Hidden File Input for Box Interaction -->
+                        <input type="file" id="box-file-upload" accept="image/jpeg, image/png" class="hidden">
+                    </div>
                 </div>
 
-                <!-- NEW: Scale & Angle Controls in Panel -->
+                <!-- Scale & Angle Controls in Panel -->
                 <div class="px-8 py-6 flex-1 flex flex-col gap-8">
                     
                     <!-- Scale Slider -->
@@ -421,12 +451,8 @@
                 </div>
 
                 <div class="p-8 pt-0 flex flex-col gap-3 mt-auto">
-                    <!-- Changed from KeyShot KMP Export to Batch Map Download -->
                     <button id="btn-download-all-2d" class="w-full apple-btn-primary flex items-center justify-center gap-2 py-3">
                         <i data-lucide="download-cloud" class="w-5 h-5"></i> 이미지 다운로드
-                    </button>
-                    <button id="btn-new-material" class="w-full text-caption text-[var(--text-main)] hover:underline flex items-center justify-center gap-2 py-2">
-                        새로운 재질 생성하기
                     </button>
                 </div>
             </div>
@@ -451,7 +477,6 @@
                 themeIcon.setAttribute('data-lucide', 'sun');
             }
             lucide.createIcons();
-            // Update Slider Backgrounds on theme change
             updateMaterialTransform(); 
         });
 
@@ -540,7 +565,6 @@
                     document.getElementById('btn-3d').click();
                 });
                 
-                // 각 라이브러리 아이템 내 다운로드 버튼 클릭 이벤트 (로그인 체크)
                 item.querySelector('.btn-download').addEventListener('click', (e) => {
                     e.stopPropagation();
                     if (currentUserId === 'guest') {
@@ -568,6 +592,8 @@
                             activeMaterialId = null;
                             if(materialsLib.length > 0) {
                                 loadMaterialToViewer(materialsLib[0]);
+                            } else {
+                                setViewerToEmptyState();
                             }
                         }
                         renderLibrary();
@@ -599,7 +625,6 @@
         let scene, camera, renderer, controls, sphere, container;
         let currentMaps = {};
         
-        // 아이들 타이머 로직 (5초 대기 시 멈춘 시점에서 메쉬 자동 회전)
         let idleTimer;
         let isIdle = true;
         const resetIdleTimer = () => {
@@ -608,7 +633,6 @@
             idleTimer = setTimeout(() => { isIdle = true; }, 5000);
         };
 
-        // High-Res (1024x1024) Mock Generation for Brushed Metal
         function createBrushedMetalTextures() {
             const size = 1024;
             const cAlbedo = document.createElement('canvas'); cAlbedo.width = size; cAlbedo.height = size;
@@ -642,14 +666,13 @@
             ctxN.fillStyle = '#8080ff'; ctxN.fillRect(0, 0, size, size);
 
             return {
-                albedo: cAlbedo.toDataURL('image/jpeg', 0.6), // 0.6 to save localstorage quota
+                albedo: cAlbedo.toDataURL('image/jpeg', 0.6), 
                 bump: cBump.toDataURL('image/jpeg', 0.6),
                 roughness: cRough.toDataURL('image/jpeg', 0.6),
                 normal: cNormal.toDataURL('image/jpeg', 0.6)
             };
         }
 
-        // 실제 픽셀 연산을 통해 Albedo 이미지에서 Bump, Roughness, Normal 맵을 추출하는 함수
         function generatePBRMapsFromCanvas(sourceCanvas) {
             const width = sourceCanvas.width;
             const height = sourceCanvas.height;
@@ -661,28 +684,22 @@
             const roughData = new Uint8ClampedArray(data.length);
             const normalData = new Uint8ClampedArray(data.length);
 
-            // 명도(Luminance) 미리 계산
             const luminance = new Float32Array(width * height);
             for (let i = 0; i < data.length; i += 4) {
-                // RGB 값을 기반으로 명도 계산
                 const lum = 0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2];
                 luminance[i/4] = lum;
 
-                // Bump Map: 흑백(Grayscale) 처리
                 bumpData[i] = bumpData[i+1] = bumpData[i+2] = lum;
                 bumpData[i+3] = 255;
 
-                // Roughness Map: 반전된 명도 (밝은 곳을 거칠게)
                 roughData[i] = roughData[i+1] = roughData[i+2] = 255 - lum;
                 roughData[i+3] = 255;
             }
 
-            // Normal Map: 소벨(Sobel) 필터를 이용한 기울기(Gradient) 계산
             for (let y = 0; y < height; y++) {
                 for (let x = 0; x < width; x++) {
                     const i = (y * width + x) * 4;
 
-                    // 경계값 처리
                     const xLeft   = Math.max(0, x - 1);
                     const xRight  = Math.min(width - 1, x + 1);
                     const yUp     = Math.max(0, y - 1);
@@ -693,22 +710,19 @@
                     const lUp     = luminance[yUp * width + x];
                     const lDown   = luminance[yDown * width + x];
 
-                    // X, Y 축 기울기 강도
                     const dX = (lRight - lLeft) * 2.0; 
                     const dY = (lDown - lUp) * 2.0;
-                    const dZ = 255.0; // 높이 뎁스 강도
+                    const dZ = 255.0; 
 
-                    // 벡터 정규화
                     const length = Math.sqrt(dX * dX + dY * dY + dZ * dZ);
                     const nX = dX / length;
                     const nY = dY / length;
                     const nZ = dZ / length;
 
-                    // 노말맵 색상 매핑 (-1 ~ 1 범위를 0 ~ 255 RGB로 변환)
-                    normalData[i]     = Math.floor((nX + 1.0) * 127.5); // R
-                    normalData[i + 1] = Math.floor((nY + 1.0) * 127.5); // G
-                    normalData[i + 2] = Math.floor(nZ * 255.0);         // B
-                    normalData[i + 3] = 255;                            // A
+                    normalData[i]     = Math.floor((nX + 1.0) * 127.5); 
+                    normalData[i + 1] = Math.floor((nY + 1.0) * 127.5); 
+                    normalData[i + 2] = Math.floor(nZ * 255.0);         
+                    normalData[i + 3] = 255;                            
                 }
             }
 
@@ -717,7 +731,7 @@
                 c.width = width; c.height = height;
                 const cCtx = c.getContext('2d');
                 cCtx.putImageData(new ImageData(arrayData, width, height), 0, 0);
-                return c.toDataURL('image/jpeg', 0.8); // 고화질 출력 (0.8)
+                return c.toDataURL('image/jpeg', 0.8); 
             };
 
             return {
@@ -757,7 +771,6 @@
             controls.minDistance = 1.5;
             controls.maxDistance = 6;
             
-            // 컨트롤러 기본값 복원 (좌클릭 회전)
             controls.mouseButtons = {
                 LEFT: THREE.MOUSE.ROTATE,
                 MIDDLE: THREE.MOUSE.PAN,
@@ -773,12 +786,9 @@
 
             const animate = () => {
                 requestAnimationFrame(animate);
-                
-                // 사용자가 멈춘 뷰 각도에서 구체 메쉬가 한 방향으로 자동 회전 (카메라 리셋 안함)
                 if(isIdle && !controls.state) {
                     sphere.rotation.y += 0.0015;
                 }
-                
                 controls.update();
                 renderer.render(scene, camera);
             };
@@ -806,6 +816,12 @@
             currentMaps = matData.maps;
             
             document.getElementById('result-mat-name').textContent = matData.name;
+            
+            // Result Panel Image States Update
+            document.getElementById('result-empty-content').classList.add('hidden');
+            document.getElementById('result-empty-content').classList.remove('flex');
+            document.getElementById('result-image-content').classList.remove('hidden');
+            document.getElementById('result-original-image').src = currentMaps.albedo;
             
             document.getElementById('slider-scale').value = matData.scale;
             document.getElementById('val-scale').textContent = `${matData.scale}`;
@@ -843,10 +859,30 @@
             applyTexture(currentMaps.normal, 'normalMap');
 
             renderLibrary();
-            // Show result panel if it's hidden
             document.getElementById('panel-upload').classList.add('hidden');
             document.getElementById('panel-result').classList.remove('hidden');
             document.getElementById('panel-result').classList.add('flex');
+        };
+
+        const setViewerToEmptyState = () => {
+            document.getElementById('result-mat-name').textContent = "재질 없음";
+            
+            // Show empty state inside the 1:1 box
+            document.getElementById('result-image-content').classList.add('hidden');
+            document.getElementById('result-empty-content').classList.remove('hidden');
+            document.getElementById('result-empty-content').classList.add('flex');
+
+            document.getElementById('img-albedo').src = '';
+            document.getElementById('img-bump').src = '';
+            document.getElementById('img-normal').src = '';
+
+            if(sphere) {
+                sphere.material.map = null;
+                sphere.material.bumpMap = null;
+                sphere.material.roughnessMap = null;
+                sphere.material.normalMap = null;
+                sphere.material.needsUpdate = true;
+            }
         };
 
         const updateSliderBg = (slider) => {
@@ -855,7 +891,6 @@
             const val = parseFloat(slider.value);
             const percentage = (val - min) / (max - min);
             
-            // 16px 원형 버튼 기준 중앙 위치 정밀 계산 (파란색 바 끊김 방지)
             slider.style.setProperty('--slider-percent', `calc(8px + (100% - 16px) * ${percentage})`);
         };
 
@@ -887,7 +922,26 @@
         document.getElementById('slider-scale').addEventListener('input', updateMaterialTransform);
         document.getElementById('slider-angle').addEventListener('input', updateMaterialTransform);
 
-        // --- Direct Text Input for Scale & Angle (더블클릭 기능) ---
+        // Delete current material in result panel box
+        document.getElementById('btn-delete-current').addEventListener('click', (e) => {
+            e.stopPropagation(); // prevent opening file upload
+            if(!activeMaterialId) return;
+            const mat = materialsLib.find(m => m.id === activeMaterialId);
+            if(confirm(`'${mat.name}' 재질을 삭제하시겠습니까?`)) {
+                materialsLib = materialsLib.filter(m => m.id !== activeMaterialId);
+                saveLibrary();
+                activeMaterialId = null;
+                
+                if(materialsLib.length > 0) {
+                    loadMaterialToViewer(materialsLib[0]);
+                } else {
+                    setViewerToEmptyState();
+                }
+                renderLibrary();
+            }
+        });
+
+        // Direct Text Input for Scale & Angle
         const setupDirectInput = (id, isScale) => {
             const span = document.getElementById(id);
             span.addEventListener('dblclick', function() {
@@ -897,7 +951,6 @@
                 const input = document.createElement('input');
                 input.type = 'number';
                 input.value = currentVal;
-                // 스타일 처리
                 input.className = 'w-full bg-transparent text-center text-[var(--apple-blue)] font-mono outline-none';
                 if(isScale) { input.step = "0.1"; input.min = "0.1"; input.max = "5"; }
                 else { input.step = "1"; input.min = "0"; input.max = "360"; }
@@ -905,11 +958,9 @@
                 const finishEdit = () => {
                     let newVal = parseFloat(input.value);
                     if (isNaN(newVal)) newVal = currentVal;
-                    // min max bounding
                     newVal = isScale ? Math.max(0.1, Math.min(5, newVal)) : Math.max(0, Math.min(360, newVal));
                     
                     document.getElementById(isScale ? 'slider-scale' : 'slider-angle').value = newVal;
-                    // span 텍스트 원상복구 후 업데이트 함수 호출
                     span.innerHTML = '';
                     updateMaterialTransform();
                 };
@@ -949,8 +1000,7 @@
             }
         });
 
-        // --- UI Interactions ---
-        // Login System
+        // --- Auth Modals ---
         const modalLogin = document.getElementById('login-modal');
         const btnLoginToggle = document.getElementById('btn-login-toggle');
         const inputPw = document.getElementById('input-pw');
@@ -968,6 +1018,7 @@
                 userDisplay.classList.add('hidden');
                 loadLibrary(); 
                 if(materialsLib.length > 0) loadMaterialToViewer(materialsLib[0]);
+                else setViewerToEmptyState();
             }
         });
 
@@ -995,7 +1046,6 @@
         const initialModal = document.getElementById('initial-modal');
         const guideModal = document.getElementById('guide-modal');
 
-        // 초기 모달의 사용자 가이드 버튼 이벤트
         document.getElementById('btn-open-guide-from-modal').addEventListener('click', () => {
             initialModal.classList.add('hidden');
             guideModal.classList.remove('hidden');
@@ -1004,6 +1054,8 @@
         document.getElementById('btn-open-guide').addEventListener('click', () => guideModal.classList.remove('hidden'));
         document.getElementById('btn-close-guide').addEventListener('click', () => guideModal.classList.add('hidden'));
 
+        // --- Box/Drag and Drop Upload ---
+        const boxFileUpload = document.getElementById('box-file-upload');
         const fileInput = document.getElementById('file-upload');
         const modalFileInput = document.getElementById('modal-file-upload');
         const dropZone = document.getElementById('drop-zone');
@@ -1011,16 +1063,31 @@
         const sourcePreview = document.getElementById('source-image-preview');
         const loadingOverlay = document.getElementById('loading');
 
+        // Allow click to upload from the new 1:1 box
+        document.getElementById('btn-box-upload').addEventListener('click', () => boxFileUpload.click());
+        document.getElementById('result-empty-content').addEventListener('click', () => boxFileUpload.click());
+
         const handleFileSelect = (file) => {
             const reader = new FileReader();
             reader.onload = (e) => {
                 sourcePreview.src = e.target.result;
+                
+                // If in upload panel, handle its specific UI
                 dropZone.classList.add('hidden');
                 previewContainer.classList.remove('hidden');
                 previewContainer.classList.add('flex');
             };
             reader.readAsDataURL(file);
         };
+
+        // File Change Events
+        boxFileUpload.addEventListener('change', (e) => {
+            if(e.target.files[0]) {
+                handleFileSelect(e.target.files[0]);
+                document.getElementById('btn-generate').click();
+            }
+            e.target.value = '';
+        });
 
         document.getElementById('btn-modal-upload-trigger').addEventListener('click', () => modalFileInput.click());
         modalFileInput.addEventListener('change', (e) => {
@@ -1029,11 +1096,41 @@
                 initialModal.classList.add('hidden');
                 setTimeout(() => document.getElementById('btn-generate').click(), 300);
             }
+            e.target.value = '';
         });
 
         fileInput.addEventListener('change', (e) => {
             if(e.target.files[0]) handleFileSelect(e.target.files[0]);
+            e.target.value = '';
         });
+
+        // Drag and drop event listeners
+        const resultImageBox = document.getElementById('result-image-container');
+        const dropZones = [dropZone, resultImageBox];
+        
+        dropZones.forEach(zone => {
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                zone.addEventListener(eventName, preventDefaults, false);
+            });
+            ['dragenter', 'dragover'].forEach(eventName => {
+                zone.addEventListener(eventName, () => zone.classList.add('border-[var(--apple-blue)]'), false);
+            });
+            ['dragleave', 'drop'].forEach(eventName => {
+                zone.addEventListener(eventName, () => zone.classList.remove('border-[var(--apple-blue)]'), false);
+            });
+            zone.addEventListener('drop', (e) => {
+                let dt = e.dataTransfer;
+                let files = dt.files;
+                if(files && files[0] && files[0].type.match('image.*')) {
+                    handleFileSelect(files[0]);
+                    if(zone === resultImageBox) {
+                        document.getElementById('btn-generate').click();
+                    }
+                }
+            }, false);
+        });
+
+        function preventDefaults (e) { e.preventDefault(); e.stopPropagation(); }
 
         document.getElementById('btn-cancel').addEventListener('click', () => {
             fileInput.value = '';
@@ -1045,24 +1142,21 @@
         document.getElementById('btn-generate').addEventListener('click', () => {
             loadingOverlay.classList.remove('hidden');
             setTimeout(() => {
-                // High-Res (1024x1024) Canvas for AI generation Mock
                 const c = document.createElement('canvas'); c.width=1024; c.height=1024;
                 const ctx = c.getContext('2d');
                 
-                // Seamless Tiling Mock: Draw the image mirrored in 4 quadrants
                 ctx.save();
-                ctx.drawImage(sourcePreview, 0, 0, 512, 512); // Top-Left
+                ctx.drawImage(sourcePreview, 0, 0, 512, 512); 
                 ctx.translate(1024, 0); ctx.scale(-1, 1);
-                ctx.drawImage(sourcePreview, 0, 0, 512, 512); // Top-Right
+                ctx.drawImage(sourcePreview, 0, 0, 512, 512); 
                 ctx.restore(); ctx.save();
                 ctx.translate(0, 1024); ctx.scale(1, -1);
-                ctx.drawImage(sourcePreview, 0, 0, 512, 512); // Bottom-Left
+                ctx.drawImage(sourcePreview, 0, 0, 512, 512); 
                 ctx.restore(); ctx.save();
                 ctx.translate(1024, 1024); ctx.scale(-1, -1);
-                ctx.drawImage(sourcePreview, 0, 0, 512, 512); // Bottom-Right
+                ctx.drawImage(sourcePreview, 0, 0, 512, 512); 
                 ctx.restore();
 
-                // 픽셀 연산을 통해 범프맵과 노말맵을 실제 데이터로 추출
                 const newMaps = generatePBRMapsFromCanvas(c);
                 
                 createNewMaterialEntry(newMaps, "AI 커스텀 재질");
@@ -1161,20 +1255,7 @@
             if(camera && controls) { camera.translateZ(0.5); controls.update(); resetIdleTimer(); }
         });
 
-        document.getElementById('btn-new-material').addEventListener('click', () => {
-            document.getElementById('panel-result').classList.add('hidden');
-            document.getElementById('panel-result').classList.remove('flex');
-            document.getElementById('panel-upload').classList.remove('hidden');
-            document.getElementById('panel-upload').classList.add('flex');
-            
-            // 초기화
-            fileInput.value = '';
-            previewContainer.classList.add('hidden');
-            previewContainer.classList.remove('flex');
-            dropZone.classList.remove('hidden');
-        });
-
-        // --- 다운로드 (일괄 저장) 로직 모듈화 (로그인 체크 포함) ---
+        // --- 다운로드 (일괄 저장) 로직 ---
         const downloadMaterialMaps = (mat, btnElement = null, loadingText = null) => {
             if(!mat || !mat.maps || !mat.maps.albedo) {
                 alert("다운로드할 맵 데이터가 없습니다.");
@@ -1203,7 +1284,6 @@
             addFile(`${matName}_Roughness.jpg`, mat.maps.roughness);
             addFile(`${matName}_Normal.jpg`, mat.maps.normal);
 
-            // UI 렌더링 후 압축을 시작하도록 setTimeout 처리
             setTimeout(() => {
                 zip.generateAsync({type:"blob"}).then(function(content) {
                     const a = document.createElement('a');
@@ -1221,7 +1301,7 @@
             }, 50);
         };
 
-        // 오른쪽 결과 패널의 메인 다운로드 버튼 클릭 (로그인 체크 추가)
+        // 오른쪽 결과 패널의 메인 다운로드 버튼 클릭
         document.getElementById('btn-download-all-2d').addEventListener('click', (e) => {
             if (currentUserId === 'guest') {
                 document.getElementById('login-modal').classList.remove('hidden');
