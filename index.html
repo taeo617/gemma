@@ -297,11 +297,21 @@
         </div>
         <div class="flex items-center gap-3 text-caption">
             <!-- API Key Input Field -->
-            <div class="flex items-center bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg overflow-hidden h-8" title="Gemini API Key를 입력하면 AI 변환이 활성화됩니다.">
-                <input type="password" id="input-api-key" placeholder="Gemini API Key" class="bg-transparent text-[var(--text-main)] px-3 text-xs outline-none w-32 focus:w-48 transition-all duration-300">
-                <button id="btn-save-api-key" class="bg-[var(--hover-bg)] hover:bg-[var(--apple-blue)] hover:text-white px-3 h-full transition text-[var(--text-muted)] border-l border-[var(--border-color)]">
-                    <i data-lucide="key" class="w-3 h-3"></i>
-                </button>
+            <div id="api-key-container" class="relative flex items-center bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg overflow-hidden h-8 group transition-all duration-300 w-[140px] focus-within:w-[210px] hover:w-[210px]" title="Gemini API Key를 입력하면 AI 변환이 활성화됩니다.">
+                <!-- Input Area -->
+                <div id="api-input-area" class="flex items-center w-full h-full">
+                    <input type="password" id="input-api-key" placeholder="Gemini API Key" class="bg-transparent text-[var(--text-main)] px-3 text-xs outline-none w-full h-full transition-colors placeholder-[var(--text-muted)]">
+                    <button id="btn-save-api-key" class="bg-[var(--hover-bg)] hover:bg-[var(--apple-blue)] hover:text-white px-3 h-full transition text-[var(--text-muted)] border-l border-[var(--border-color)] shrink-0">
+                        <i data-lucide="key" class="w-3 h-3"></i>
+                    </button>
+                </div>
+                <!-- Authenticated State Overlay -->
+                <div id="api-auth-overlay" class="absolute inset-0 bg-[var(--bg-card)] flex items-center justify-between px-3 hidden w-full">
+                    <div class="flex items-center gap-1.5 text-[var(--apple-blue)] text-xs font-semibold whitespace-nowrap">
+                        <i data-lucide="check-circle" class="w-3.5 h-3.5"></i> <span class="mt-px">API 연동됨</span>
+                    </div>
+                    <button id="btn-disconnect-api" class="text-[var(--text-muted)] hover:text-white hover:bg-[#ff3b30] hover:border-[#ff3b30] opacity-0 group-hover:opacity-100 transition-all duration-200 text-[10px] bg-[var(--hover-bg)] px-2 py-1 rounded border border-[var(--border-color)] whitespace-nowrap font-medium cursor-pointer z-10">연결 해제</button>
+                </div>
             </div>
             
             <div class="w-[1px] h-4 bg-[var(--border-color)] mx-1"></div>
@@ -436,7 +446,7 @@
                         <img id="source-image-preview" class="max-w-full max-h-full object-contain">
                     </div>
                     <div class="w-full mt-auto">
-                        <button id="btn-generate" class="w-full apple-btn-primary mb-3 py-3">고화질 5-Maps 추출하기</button>
+                        <button id="btn-generate" class="w-full apple-btn-primary mb-3 py-3">PBR 생성하기</button>
                         <button id="btn-cancel" class="w-full text-caption text-[var(--text-muted)] hover:text-[var(--text-main)] transition py-2">다른 이미지 선택</button>
                     </div>
                 </div>
@@ -605,26 +615,61 @@
         // --- API Key Management (Local Storage) ---
         const inputApiKey = document.getElementById('input-api-key');
         const btnSaveApiKey = document.getElementById('btn-save-api-key');
+        const apiAuthOverlay = document.getElementById('api-auth-overlay');
+        const btnDisconnectApi = document.getElementById('btn-disconnect-api');
         const LOCAL_STORAGE_API_KEY = 'pbr_studio_gemini_api_key';
 
         let savedApiKey = localStorage.getItem(LOCAL_STORAGE_API_KEY) || '';
+
+        const showAuthState = () => {
+            apiAuthOverlay.classList.remove('hidden');
+        };
+
+        const hideAuthState = () => {
+            apiAuthOverlay.classList.add('hidden');
+        };
+
         if (savedApiKey) {
             inputApiKey.value = savedApiKey;
-            btnSaveApiKey.classList.add('text-[var(--apple-blue)]');
+            showAuthState();
         }
+
+        const validateApiKey = async (key) => {
+            try {
+                // Models 리스트를 호출하여 API Key가 실제로 유효한지 검증합니다.
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${key}`);
+                return res.ok;
+            } catch (e) {
+                return false;
+            }
+        };
 
         const handleApiKeySave = async () => {
             const key = inputApiKey.value.trim();
-            if (key) {
+            if (!key) return;
+
+            const originalIcon = btnSaveApiKey.innerHTML;
+            btnSaveApiKey.innerHTML = '<i data-lucide="loader-2" class="w-3 h-3 animate-spin"></i>';
+            lucide.createIcons();
+
+            const isValid = await validateApiKey(key);
+
+            btnSaveApiKey.innerHTML = originalIcon;
+            lucide.createIcons();
+
+            if (isValid) {
                 localStorage.setItem(LOCAL_STORAGE_API_KEY, key);
                 savedApiKey = key;
-                btnSaveApiKey.classList.add('text-[var(--apple-blue)]');
+                showAuthState();
                 await showDialog("Gemini API 인증이 완료되었습니다.");
             } else {
-                localStorage.removeItem(LOCAL_STORAGE_API_KEY);
-                savedApiKey = '';
-                btnSaveApiKey.classList.remove('text-[var(--apple-blue)]');
-                await showDialog("Gemini API 키가 삭제되었습니다.<br>로컬 캔버스 모드로 동작합니다.");
+                inputApiKey.value = '';
+                inputApiKey.classList.add('placeholder:text-[#ff3b30]');
+                inputApiKey.placeholder = '다시 한 번 입력해주세요';
+                setTimeout(() => {
+                    inputApiKey.classList.remove('placeholder:text-[#ff3b30]');
+                    inputApiKey.placeholder = 'Gemini API Key';
+                }, 3000);
             }
         };
 
@@ -634,6 +679,15 @@
                 inputApiKey.blur();
                 handleApiKeySave();
             }
+        });
+
+        btnDisconnectApi.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            localStorage.removeItem(LOCAL_STORAGE_API_KEY);
+            savedApiKey = '';
+            inputApiKey.value = '';
+            hideAuthState();
+            await showDialog("Gemini API 연결이 해제되었습니다.<br>로컬 캔버스 모드로 동작합니다.");
         });
 
 
