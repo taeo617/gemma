@@ -1145,31 +1145,41 @@
                 const c = document.createElement('canvas'); c.width=1024; c.height=1024;
                 const ctx = c.getContext('2d');
                 
-                // Advanced Seamless Tiling Algorithm (Offset + Blending)
+                // Professional Seamless Tiling (Offset + Crossfade Masking)
                 // 1. Draw original to temp canvas
                 const tCanvas = document.createElement('canvas');
                 tCanvas.width = 1024; tCanvas.height = 1024;
                 tCanvas.getContext('2d').drawImage(sourcePreview, 0, 0, 1024, 1024);
 
                 // 2. Draw offset to wrap edges to center (No mirroring!)
-                // This forces the perfect edges of the original image to meet on the outside border
                 ctx.drawImage(tCanvas, 512, 512, 512, 512, 0, 0, 512, 512); // Bottom-Right to Top-Left
                 ctx.drawImage(tCanvas, 0, 512, 512, 512, 512, 0, 512, 512); // Bottom-Left to Top-Right
                 ctx.drawImage(tCanvas, 512, 0, 512, 512, 0, 512, 512, 512); // Top-Right to Bottom-Left
                 ctx.drawImage(tCanvas, 0, 0, 512, 512, 512, 512, 512, 512); // Top-Left to Bottom-Right
 
-                // 3. Create Mask to hide the inner cross seams using the clean center of the original image
+                // 3. Create Rectangular Soft Mask to cover the inner seams
                 const mCanvas = document.createElement('canvas');
                 mCanvas.width = 1024; mCanvas.height = 1024;
                 const mCtx = mCanvas.getContext('2d');
                 mCtx.drawImage(tCanvas, 0, 0);
 
                 mCtx.globalCompositeOperation = 'destination-in';
-                const grad = mCtx.createRadialGradient(512, 512, 150, 512, 512, 500);
-                grad.addColorStop(0, 'rgba(0,0,0,1)');
-                grad.addColorStop(0.5, 'rgba(0,0,0,1)');
-                grad.addColorStop(1, 'rgba(0,0,0,0)');
-                mCtx.fillStyle = grad;
+                
+                // Soft fade edges (approx 20% fade on all sides)
+                const gradX = mCtx.createLinearGradient(0, 0, 1024, 0);
+                gradX.addColorStop(0, 'rgba(0,0,0,0)');
+                gradX.addColorStop(0.25, 'rgba(0,0,0,1)');
+                gradX.addColorStop(0.75, 'rgba(0,0,0,1)');
+                gradX.addColorStop(1, 'rgba(0,0,0,0)');
+                mCtx.fillStyle = gradX;
+                mCtx.fillRect(0, 0, 1024, 1024);
+                
+                const gradY = mCtx.createLinearGradient(0, 0, 0, 1024);
+                gradY.addColorStop(0, 'rgba(0,0,0,0)');
+                gradY.addColorStop(0.25, 'rgba(0,0,0,1)');
+                gradY.addColorStop(0.75, 'rgba(0,0,0,1)');
+                gradY.addColorStop(1, 'rgba(0,0,0,0)');
+                mCtx.fillStyle = gradY;
                 mCtx.fillRect(0, 0, 1024, 1024);
 
                 // 4. Blend it over the offset background
