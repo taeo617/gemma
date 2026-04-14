@@ -357,7 +357,7 @@
                 <div id="loading" class="absolute inset-0 bg-[var(--overlay-bg)] backdrop-blur-[10px] flex items-center justify-center z-20 hidden">
                     <div class="flex flex-col items-center gap-6">
                         <i data-lucide="loader-2" class="w-12 h-12 text-[var(--apple-blue)] animate-spin"></i>
-                        <span id="loading-text" class="text-body-strong text-[var(--text-main)]">AI가 고화질 PBR 5종 맵을 추출 중입니다...</span>
+                        <span id="loading-text" class="text-body-strong text-[var(--text-main)] text-center">AI가 고화질 PBR 5종 맵을 추출 중입니다...</span>
                     </div>
                 </div>
             </div>
@@ -428,28 +428,25 @@
         </div>
 
         <!-- Right: Control Panel -->
-        <div class="w-[380px] apple-surface flex flex-col z-20 shadow-2xl border-l border-[var(--border-color)]">
-            <!-- Upload Section -->
+        <div class="w-[380px] apple-surface flex flex-col z-20 shadow-2xl border-l border-[var(--border-color)] relative">
+            
+            <!-- Generate trigger invisible button logic -->
+            <button id="btn-generate" class="hidden">PBR 자동 생성 (Invisible Trigger)</button>
+
+            <!-- Upload Section (Initial) -->
             <div id="panel-upload" class="p-8 flex-1 flex flex-col">
                 <h1 class="text-card-title text-[var(--text-main)] mb-2">새 재질 생성</h1>
-                <p class="text-caption text-[var(--text-muted)] mb-8">질감 이미지를 업로드하여 Seamless PBR로 변환합니다.</p>
+                <p class="text-caption text-[var(--text-muted)] mb-8">질감 이미지를 첨부하는 즉시 프로세스가 시작됩니다.</p>
                 
                 <label for="file-upload" id="drop-zone" class="bg-[var(--bg-card)] border border-dashed border-[var(--border-color)] hover:border-[var(--apple-blue)] rounded-[12px] p-8 flex flex-col items-center justify-center text-center cursor-pointer transition flex-1 min-h-[250px]">
                     <i data-lucide="plus" class="w-8 h-8 text-[var(--text-muted)] mb-3 pointer-events-none"></i>
                     <span class="text-body text-[var(--text-main)] mb-1 pointer-events-none">여기를 클릭하거나 파일을 드래그</span>
-                    <span class="text-nav text-[var(--text-muted)] pointer-events-none">고해상도 이미지 권장</span>
+                    <span class="text-nav text-[var(--text-muted)] pointer-events-none">자동으로 PBR 맵이 추출됩니다.</span>
                     <input id="file-upload" type="file" accept="image/jpeg, image/png" class="hidden">
                 </label>
                 
-                <div id="image-preview-container" class="hidden mt-4 flex-col items-center flex-1">
-                    <div class="w-full bg-[var(--bg-main)] rounded-xl border border-[var(--border-color)] overflow-hidden mb-6 aspect-square flex items-center justify-center">
-                        <img id="source-image-preview" class="max-w-full max-h-full object-contain">
-                    </div>
-                    <div class="w-full mt-auto">
-                        <button id="btn-generate" class="w-full apple-btn-primary mb-3 py-3">PBR 생성하기</button>
-                        <button id="btn-cancel" class="w-full text-caption text-[var(--text-muted)] hover:text-[var(--text-main)] transition py-2">다른 이미지 선택</button>
-                    </div>
-                </div>
+                <!-- source-image-preview hidden logic -->
+                <img id="source-image-preview" class="hidden">
             </div>
 
             <!-- Result Section -->
@@ -477,13 +474,14 @@
                     <div id="result-image-container" class="relative w-full aspect-square rounded-xl overflow-hidden bg-[var(--bg-main)]">
                         
                         <!-- State 1: Has Material -->
-                        <div id="result-image-content" class="w-full h-full relative group border border-[var(--border-color)] rounded-xl overflow-hidden">
+                        <div id="result-image-content" class="w-full h-full relative group border border-[var(--border-color)] rounded-xl overflow-hidden bg-[#ffffff]">
                             <img id="result-original-image" src="" class="w-full h-full object-cover">
+                            <div id="result-color-overlay" class="absolute inset-0 pointer-events-none mix-blend-multiply bg-[#ffffff]"></div>
                             
                             <!-- Hover Overlay: Create New Material -->
                             <div id="btn-box-upload" class="absolute inset-0 bg-[var(--glass-bg)] backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center cursor-pointer z-10">
                                 <i data-lucide="plus-circle" class="w-8 h-8 text-[var(--apple-blue)] mb-3"></i>
-                                <span class="text-body-strong text-[var(--text-main)]">새로운 이미지 불러오기</span>
+                                <span class="text-body-strong text-[var(--text-main)]">새로운 이미지 자동 변환</span>
                             </div>
 
                             <!-- Delete Material Button (Only clears workspace) -->
@@ -496,7 +494,7 @@
                         <div id="result-empty-content" class="hidden w-full h-full border-2 border-dashed border-[var(--border-color)] hover:border-[var(--apple-blue)] rounded-xl bg-[var(--bg-card)] flex flex-col items-center justify-center cursor-pointer transition z-0">
                             <i data-lucide="image-plus" class="w-8 h-8 text-[var(--text-muted)] mb-3 pointer-events-none"></i>
                             <span class="text-body-strong text-[var(--text-main)] mb-1 pointer-events-none">이미지를 첨부하세요</span>
-                            <span class="text-nav text-[var(--text-muted)] pointer-events-none">클릭하여 파일 선택</span>
+                            <span class="text-nav text-[var(--text-muted)] pointer-events-none">선택 시 즉시 자동 생성</span>
                         </div>
 
                         <!-- Hidden File Input for Box Interaction -->
@@ -504,8 +502,8 @@
                     </div>
                 </div>
 
-                <!-- Scale, Angle, Refraction & Bump Controls in Panel -->
-                <div class="px-8 py-6 flex-1 flex flex-col gap-8">
+                <!-- Scale, Angle, Refraction, Bump & Filters Controls in Panel -->
+                <div class="px-8 py-6 flex flex-col gap-8 flex-1 overflow-y-auto">
                     
                     <!-- Scale Slider -->
                     <div>
@@ -568,7 +566,7 @@
                         <div class="flex items-center gap-4">
                             <i data-lucide="sun" class="w-5 h-5 text-[var(--text-muted)]"></i>
                             <input type="range" id="slider-brightness" min="-100" max="100" step="1" value="0" class="flex-1">
-                            <i data-lucide="sun" class="w-5 h-5 text-[var(--text-muted)]"></i>
+                            <i data-lucide="sun-dim" class="w-5 h-5 text-[var(--text-muted)]"></i>
                         </div>
                     </div>
 
@@ -586,7 +584,7 @@
                     </div>
 
                     <!-- Saturation Slider -->
-                    <div>
+                    <div class="pb-2">
                         <div class="flex justify-between items-center mb-4">
                             <span class="text-body text-[var(--text-main)]">채도 (Saturation)</span>
                             <div class="bg-[var(--bg-card)] px-3 py-1 rounded text-[var(--text-main)] text-body-strong border border-[var(--border-color)] min-w-[64px] text-center cursor-text transition hover:border-[var(--apple-blue)]" id="val-saturation" title="더블클릭하여 직접 입력">0</div>
@@ -598,10 +596,44 @@
                         </div>
                     </div>
 
-                    <button id="btn-save-transform" class="w-full apple-btn-dark text-body py-2 mt-4 transition">현재 수치값 저장</button>
+                    <div class="w-full h-px bg-[var(--border-color)] my-2"></div>
+
+                    <!-- Hue Slider -->
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-body text-[var(--text-main)]">색조 조절 (Hue)</span>
+                            <div class="bg-[var(--bg-card)] px-3 py-1 rounded text-[var(--text-main)] text-body-strong border border-[var(--border-color)] min-w-[64px] text-center cursor-text transition hover:border-[var(--apple-blue)]" id="val-hue" title="더블클릭하여 직접 입력">0°</div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <i data-lucide="rainbow" class="w-5 h-5 text-[var(--text-muted)]"></i>
+                            <div class="w-full relative h-[6px] rounded-full" style="background: linear-gradient(to right, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%);">
+                                <input type="range" id="slider-hue" min="-180" max="180" step="1" value="0" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" style="top: -9px; height: 24px;">
+                            </div>
+                            <i data-lucide="rainbow" class="w-5 h-5 text-[var(--text-muted)]"></i>
+                        </div>
+                    </div>
+
+                    <!-- Tint Color Picker (HEX) -->
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-body text-[var(--text-main)]">색상 틴트 (HEX)</span>
+                            <div class="flex items-center gap-2">
+                                <input type="text" id="val-hex" class="bg-[var(--bg-card)] px-3 py-1 rounded text-[var(--text-main)] text-body-strong border border-[var(--border-color)] w-24 text-center outline-none focus:border-[var(--apple-blue)] uppercase font-mono transition" value="#FFFFFF" maxlength="7">
+                                <div class="relative w-8 h-8 rounded-md overflow-hidden border border-[var(--border-color)] shadow-sm">
+                                    <input type="color" id="picker-hex" class="absolute -top-2 -left-2 w-12 h-12 cursor-pointer" value="#ffffff">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button id="btn-save-transform" class="w-full apple-btn-dark text-body py-3 mt-4 transition border border-[var(--border-color)] shadow-sm">현재 수치값 저장</button>
                 </div>
 
-                <div class="p-8 pt-0 flex flex-col gap-3 mt-auto">
+                <!-- Always visible generation & download buttons -->
+                <div class="p-8 pt-4 flex flex-col gap-3 bg-[var(--bg-panel)] border-t border-[var(--border-color)] z-10 shadow-[0_-10px_20px_rgba(0,0,0,0.2)]">
+                    <button id="btn-upload-new" class="w-full bg-[var(--bg-card)] border border-[var(--border-color)] hover:bg-[var(--hover-bg)] text-[var(--text-main)] font-semibold flex items-center justify-center gap-2 py-3 rounded-lg transition shadow-sm">
+                        <i data-lucide="image-plus" class="w-5 h-5"></i> 새로운 PBR 생성하기
+                    </button>
                     <button id="btn-download-all-2d" class="w-full apple-btn-primary flex items-center justify-center gap-2 py-3">
                         <i data-lucide="download-cloud" class="w-5 h-5"></i> zip 파일 다운로드
                     </button>
@@ -675,7 +707,6 @@
 
         const validateApiKey = async (key) => {
             try {
-                // Models 리스트를 호출하여 API Key가 실제로 유효한지 검증합니다.
                 const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${key}`);
                 return res.ok;
             } catch (e) {
@@ -939,6 +970,8 @@
                 brightness: 0,
                 contrast: 0,
                 saturation: 0,
+                hue: 0,
+                hex: '#FFFFFF',
                 isFavorite: false,
                 usedAI: usedAI
             };
@@ -1085,7 +1118,7 @@
         }
 
         // 실시간 색상 적용을 위한 필터 합성 함수
-        const applyFilters = (imgSrc, b, c, s) => {
+        const applyFilters = (imgSrc, b, c, s, h, hex) => {
             return new Promise((resolve) => {
                 const img = new Image();
                 img.crossOrigin = "Anonymous";
@@ -1094,8 +1127,21 @@
                     canvas.width = img.width;
                     canvas.height = img.height;
                     const ctx = canvas.getContext('2d');
-                    ctx.filter = `brightness(${b + 100}%) contrast(${c + 100}%) saturate(${s + 100}%)`;
+                    
+                    // Draw a white background to avoid transparent edge issues on multiply
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                    ctx.filter = `brightness(${b + 100}%) contrast(${c + 100}%) saturate(${s + 100}%) hue-rotate(${h}deg)`;
                     ctx.drawImage(img, 0, 0);
+                    ctx.filter = 'none';
+
+                    if (hex && hex.toUpperCase() !== '#FFFFFF') {
+                        ctx.globalCompositeOperation = 'multiply';
+                        ctx.fillStyle = hex;
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        ctx.globalCompositeOperation = 'source-over';
+                    }
                     resolve(canvas);
                 };
                 img.src = imgSrc;
@@ -1144,7 +1190,6 @@
             scene.add(sphereGroup);
 
             const geometry = new THREE.SphereGeometry(1, 256, 256);
-            // Needed for AO Map in Three.js
             geometry.setAttribute('uv2', new THREE.BufferAttribute(geometry.attributes.uv.array, 2));
 
             sphere = new THREE.Mesh(geometry, new THREE.MeshPhysicalMaterial({ color: 0xd2d2d7, roughness: 0.5, metalness: 0.1, ior: 1.5 }));
@@ -1211,6 +1256,8 @@
             const b = matData.brightness || 0;
             const c = matData.contrast || 0;
             const s = matData.saturation || 0;
+            const h = matData.hue || 0;
+            const hex = matData.hex || '#FFFFFF';
             
             document.getElementById('slider-brightness').value = b;
             document.getElementById('val-brightness').textContent = `${b}`;
@@ -1218,6 +1265,10 @@
             document.getElementById('val-contrast').textContent = `${c}`;
             document.getElementById('slider-saturation').value = s;
             document.getElementById('val-saturation').textContent = `${s}`;
+            document.getElementById('slider-hue').value = h;
+            document.getElementById('val-hue').textContent = `${h}°`;
+            document.getElementById('picker-hex').value = hex;
+            document.getElementById('val-hex').value = hex;
 
             updateSliderBg(document.getElementById('slider-scale'));
             updateSliderBg(document.getElementById('slider-angle'));
@@ -1227,7 +1278,8 @@
             updateSliderBg(document.getElementById('slider-contrast'));
             updateSliderBg(document.getElementById('slider-saturation'));
 
-            document.getElementById('result-original-image').style.filter = `brightness(${b + 100}%) contrast(${c + 100}%) saturate(${s + 100}%)`;
+            document.getElementById('result-original-image').style.filter = `brightness(${b + 100}%) contrast(${c + 100}%) saturate(${s + 100}%) hue-rotate(${h}deg)`;
+            document.getElementById('result-color-overlay').style.backgroundColor = hex;
 
             document.getElementById('img-color').src = currentMaps.albedo;
             document.getElementById('img-normal').src = currentMaps.normal;
@@ -1246,10 +1298,10 @@
                     
                     sphere.material[type] = tex;
                     
-                    if(type === 'map') sphere.material.color.setHex(0xffffff);
+                    if(type === 'map') sphere.material.color.setHex(parseInt(hex.replace('#', '0x')));
                     if(type === 'displacementMap') {
-                        sphere.material.displacementScale = bumpVal;
-                        sphere.material.displacementBias = -bumpVal * 0.5;
+                        sphere.material.displacementScale = bumpVal * 0.1;
+                        sphere.material.displacementBias = -bumpVal * 0.05;
                     }
                     
                     sphere.material.ior = Math.max(1.0, refVal);
@@ -1260,6 +1312,12 @@
                         sphere.material.metalness = isMetal ? 1.0 : 0.1;
                     }
                     
+                    const absBump = Math.abs(bumpVal);
+                    sphere.material.normalScale.set(
+                        bumpVal >= 0 ? 1 + bumpVal * 2 : -(1 + absBump * 2),
+                        bumpVal >= 0 ? 1 + bumpVal * 2 : -(1 + absBump * 2)
+                    );
+
                     const angleRad = matData.angle * (Math.PI / 180);
                     sphere.rotation.z = -angleRad;
 
@@ -1379,18 +1437,26 @@
             const b = parseFloat(document.getElementById('slider-brightness').value);
             const c = parseFloat(document.getElementById('slider-contrast').value);
             const s = parseFloat(document.getElementById('slider-saturation').value);
+            const h = parseFloat(document.getElementById('slider-hue').value);
+            const hex = document.getElementById('picker-hex').value;
             
             document.getElementById('val-brightness').textContent = `${b}`;
             document.getElementById('val-contrast').textContent = `${c}`;
             document.getElementById('val-saturation').textContent = `${s}`;
+            document.getElementById('val-hue').textContent = `${h}°`;
             
             updateSliderBg(document.getElementById('slider-brightness'));
             updateSliderBg(document.getElementById('slider-contrast'));
             updateSliderBg(document.getElementById('slider-saturation'));
 
             // 2D 썸네일 실시간 변경
-            const filterStr = `brightness(${b + 100}%) contrast(${c + 100}%) saturate(${s + 100}%)`;
+            const filterStr = `brightness(${b + 100}%) contrast(${c + 100}%) saturate(${s + 100}%) hue-rotate(${h}deg)`;
             document.getElementById('result-original-image').style.filter = filterStr;
+            document.getElementById('result-color-overlay').style.backgroundColor = hex;
+
+            if(sphere) {
+                sphere.material.color.setHex(parseInt(hex.replace('#', '0x')));
+            }
 
             // 3D 뷰어 텍스처 실시간 변경 (디바운싱 적용)
             clearTimeout(colorUpdateTimeout);
@@ -1398,7 +1464,7 @@
                 if(!activeMaterialId) return;
                 const mat = materialsLib.find(m => m.id === activeMaterialId);
                 if(mat) {
-                    const filteredCanvas = await applyFilters(mat.baseAlbedo || mat.maps.albedo, b, c, s);
+                    const filteredCanvas = await applyFilters(mat.baseAlbedo || mat.maps.albedo, b, c, s, h, hex);
                     const newAlbedoUrl = filteredCanvas.toDataURL('image/jpeg', 0.8);
                     new THREE.TextureLoader().load(newAlbedoUrl, (tex) => {
                         tex.wrapS = THREE.RepeatWrapping;
@@ -1422,6 +1488,23 @@
         document.getElementById('slider-brightness').addEventListener('input', onColorSliderChange);
         document.getElementById('slider-contrast').addEventListener('input', onColorSliderChange);
         document.getElementById('slider-saturation').addEventListener('input', onColorSliderChange);
+        document.getElementById('slider-hue').addEventListener('input', onColorSliderChange);
+
+        document.getElementById('picker-hex').addEventListener('input', (e) => {
+            document.getElementById('val-hex').value = e.target.value.toUpperCase();
+            onColorSliderChange();
+        });
+        
+        document.getElementById('val-hex').addEventListener('change', (e) => {
+            let val = e.target.value;
+            if(!val.startsWith('#')) val = '#' + val;
+            if(/^#[0-9A-F]{6}$/i.test(val)) {
+                document.getElementById('picker-hex').value = val;
+                onColorSliderChange();
+            } else {
+                e.target.value = document.getElementById('picker-hex').value.toUpperCase();
+            }
+        });
 
         document.getElementById('btn-delete-current').addEventListener('click', (e) => {
             e.stopPropagation();
@@ -1446,6 +1529,7 @@
                 else if(type === 'angle') { step = 1; min = 0; max = 360; }
                 else if(type === 'refraction') { step = 0.1; min = 0.0; max = 3.0; }
                 else if(type === 'bump') { step = 0.01; min = -0.5; max = 0.5; }
+                else if(type === 'hue') { step = 1; min = -180; max = 180; }
                 else if(type === 'brightness' || type === 'contrast' || type === 'saturation') { step = 1; min = -100; max = 100; }
                 
                 input.step = step; input.min = min; input.max = max;
@@ -1459,12 +1543,13 @@
                     else if(type === 'angle') document.getElementById('slider-angle').value = newVal;
                     else if(type === 'refraction') document.getElementById('slider-refraction').value = newVal;
                     else if(type === 'bump') document.getElementById('slider-bump').value = newVal;
+                    else if(type === 'hue') document.getElementById('slider-hue').value = newVal;
                     else if(type === 'brightness') document.getElementById('slider-brightness').value = newVal;
                     else if(type === 'contrast') document.getElementById('slider-contrast').value = newVal;
                     else if(type === 'saturation') document.getElementById('slider-saturation').value = newVal;
                     
                     span.innerHTML = '';
-                    if(type === 'brightness' || type === 'contrast' || type === 'saturation') {
+                    if(type === 'brightness' || type === 'contrast' || type === 'saturation' || type === 'hue') {
                         onColorSliderChange();
                     } else {
                         updateMaterialTransform();
@@ -1487,6 +1572,7 @@
         setupDirectInput('val-angle', 'angle');
         setupDirectInput('val-refraction', 'refraction');
         setupDirectInput('val-bump', 'bump');
+        setupDirectInput('val-hue', 'hue');
         setupDirectInput('val-brightness', 'brightness');
         setupDirectInput('val-contrast', 'contrast');
         setupDirectInput('val-saturation', 'saturation');
@@ -1506,11 +1592,13 @@
                     mat.brightness = parseFloat(document.getElementById('slider-brightness').value);
                     mat.contrast = parseFloat(document.getElementById('slider-contrast').value);
                     mat.saturation = parseFloat(document.getElementById('slider-saturation').value);
+                    mat.hue = parseFloat(document.getElementById('slider-hue').value);
+                    mat.hex = document.getElementById('picker-hex').value;
                     
                     if (!mat.baseAlbedo) mat.baseAlbedo = mat.maps.albedo;
 
                     // 변경된 색상/대비값 등을 적용하여 완전 새로운 2D PBR 맵으로 파생 생성합니다.
-                    const filteredCanvas = await applyFilters(mat.baseAlbedo, mat.brightness, mat.contrast, mat.saturation);
+                    const filteredCanvas = await applyFilters(mat.baseAlbedo, mat.brightness, mat.contrast, mat.saturation, mat.hue, mat.hex);
                     const newMaps = generatePBRMapsFromCanvas(filteredCanvas);
                     
                     mat.maps = newMaps;
@@ -1604,6 +1692,8 @@
         const loadingOverlay = document.getElementById('loading');
         const loadingText = document.getElementById('loading-text');
 
+        // 하단 고정 생성 버튼 클릭 시 파일 선택 트리거
+        document.getElementById('btn-upload-new').addEventListener('click', () => boxFileUpload.click());
         document.getElementById('btn-box-upload').addEventListener('click', () => boxFileUpload.click());
         document.getElementById('result-empty-content').addEventListener('click', () => boxFileUpload.click());
 
@@ -1611,10 +1701,7 @@
             const reader = new FileReader();
             reader.onload = (e) => {
                 sourcePreview.src = e.target.result;
-                
                 dropZone.classList.add('hidden');
-                previewContainer.classList.remove('hidden');
-                previewContainer.classList.add('flex');
             };
             reader.readAsDataURL(file);
         };
@@ -1638,7 +1725,10 @@
         });
 
         fileInput.addEventListener('change', (e) => {
-            if(e.target.files[0]) handleFileSelect(e.target.files[0]);
+            if(e.target.files[0]) {
+                handleFileSelect(e.target.files[0]);
+                document.getElementById('btn-generate').click();
+            }
             e.target.value = '';
         });
 
@@ -1660,19 +1750,15 @@
                 let files = dt.files;
                 if(files && files[0] && files[0].type.match('image.*')) {
                     handleFileSelect(files[0]);
-                    if(zone === resultImageBox) {
-                        document.getElementById('btn-generate').click();
-                    }
+                    document.getElementById('btn-generate').click();
                 }
             }, false);
         });
 
         function preventDefaults (e) { e.preventDefault(); e.stopPropagation(); }
 
-        document.getElementById('btn-cancel').addEventListener('click', () => {
+        document.getElementById('btn-cancel')?.addEventListener('click', () => {
             fileInput.value = '';
-            previewContainer.classList.add('hidden');
-            previewContainer.classList.remove('flex');
             dropZone.classList.remove('hidden');
         });
 
