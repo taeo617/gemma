@@ -401,7 +401,7 @@
                             </div>
 
                             <!-- Delete Material Button (Only clears workspace) -->
-                            <button id="btn-delete-current" class="absolute top-3 right-3 p-2.5 bg-[var(--glass-bg)] backdrop-blur-md rounded-full hover:bg-red-500 hover:text-white transition text-[var(--text-muted)] shadow-md z-20" title="현재 재질 지우기">
+                            <button id="btn-delete-current" class="absolute top-3 right-3 p-2.5 bg-[var(--glass-bg)] backdrop-blur-md rounded-full hover:bg-red-500 hover:text-white transition text-[var(--text-muted)] shadow-md z-20" title="현재 작업 화면에서 지우기">
                                 <i data-lucide="trash-2" class="w-4 h-4"></i>
                             </button>
                         </div>
@@ -418,7 +418,7 @@
                     </div>
                 </div>
 
-                <!-- Scale, Angle & Refraction Controls in Panel -->
+                <!-- Scale, Angle, Refraction & Bump Controls in Panel -->
                 <div class="px-8 py-6 flex-1 flex flex-col gap-8">
                     
                     <!-- Scale Slider -->
@@ -455,8 +455,21 @@
                         </div>
                         <div class="flex items-center gap-4">
                             <i data-lucide="droplet" class="w-5 h-5 text-[var(--text-muted)]"></i>
-                            <input type="range" id="slider-refraction" min="1.0" max="3.0" step="0.1" value="1.5" class="flex-1">
+                            <input type="range" id="slider-refraction" min="0" max="3.0" step="0.1" value="1.5" class="flex-1">
                             <i data-lucide="waves" class="w-5 h-5 text-[var(--text-muted)]"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Bump Slider -->
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-body text-[var(--text-main)]">범프 강도 (Bump)</span>
+                            <div class="bg-[var(--bg-card)] px-3 py-1 rounded text-[var(--text-main)] text-body-strong border border-[var(--border-color)] min-w-[64px] text-center cursor-text transition hover:border-[var(--apple-blue)]" id="val-bump" title="더블클릭하여 직접 입력">0.03</div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <i data-lucide="minus" class="w-5 h-5 text-[var(--text-muted)]"></i>
+                            <input type="range" id="slider-bump" min="0" max="0.1" step="0.01" value="0.03" class="flex-1">
+                            <i data-lucide="mountain" class="w-5 h-5 text-[var(--text-muted)]"></i>
                         </div>
                     </div>
 
@@ -626,6 +639,7 @@
                 scale: 1,
                 angle: 0,
                 refraction: 1.5,
+                bump: 0.03, // Added bump tracking
                 isFavorite: false
             };
             materialsLib.unshift(newMat);
@@ -808,9 +822,14 @@
             document.getElementById('slider-refraction').value = refVal;
             document.getElementById('val-refraction').textContent = `${refVal}`;
 
+            const bumpVal = matData.bump !== undefined ? matData.bump : 0.03;
+            document.getElementById('slider-bump').value = bumpVal;
+            document.getElementById('val-bump').textContent = `${bumpVal}`;
+
             updateSliderBg(document.getElementById('slider-scale'));
             updateSliderBg(document.getElementById('slider-angle'));
             updateSliderBg(document.getElementById('slider-refraction'));
+            updateSliderBg(document.getElementById('slider-bump'));
 
             document.getElementById('img-albedo').src = currentMaps.albedo;
             document.getElementById('img-bump').src = currentMaps.bump;
@@ -828,7 +847,7 @@
                     sphere.material[type] = tex;
                     
                     if(type === 'map') sphere.material.color.setHex(0xffffff);
-                    if(type === 'bumpMap') sphere.material.bumpScale = 0.03;
+                    if(type === 'bumpMap') sphere.material.bumpScale = bumpVal;
                     
                     sphere.material.metalness = matData.name.includes("메탈") ? 1.0 : 0.1;
                     sphere.material.ior = refVal;
@@ -872,6 +891,7 @@
                 sphere.material.roughness = 0.5;
                 sphere.material.metalness = 0.1;
                 sphere.material.ior = 1.5;
+                sphere.material.bumpScale = 0.03;
                 
                 sphere.rotation.set(0,0,0);
                 
@@ -892,19 +912,23 @@
             const scaleSlider = document.getElementById('slider-scale');
             const angleSlider = document.getElementById('slider-angle');
             const refractionSlider = document.getElementById('slider-refraction');
+            const bumpSlider = document.getElementById('slider-bump');
             
             const scale = parseFloat(scaleSlider.value);
             const angleDeg = parseFloat(angleSlider.value);
             const angleRad = angleDeg * (Math.PI / 180);
             const refraction = parseFloat(refractionSlider.value);
+            const bump = parseFloat(bumpSlider.value);
 
             document.getElementById('val-scale').textContent = `${scale}`;
             document.getElementById('val-angle').textContent = `${angleDeg}°`;
             document.getElementById('val-refraction').textContent = `${refraction}`;
+            document.getElementById('val-bump').textContent = `${bump}`;
             
             updateSliderBg(scaleSlider);
             updateSliderBg(angleSlider);
             updateSliderBg(refractionSlider);
+            updateSliderBg(bumpSlider);
 
             const maps = ['map', 'bumpMap', 'roughnessMap', 'normalMap'];
             maps.forEach(m => {
@@ -915,6 +939,7 @@
             });
             if(sphere) {
                 sphere.material.ior = refraction;
+                sphere.material.bumpScale = bump;
                 sphere.rotation.z = -angleRad; // Rotate Mesh instead of Texture
                 sphere.material.needsUpdate = true;
             }
@@ -924,6 +949,7 @@
         document.getElementById('slider-scale').addEventListener('input', updateMaterialTransform);
         document.getElementById('slider-angle').addEventListener('input', updateMaterialTransform);
         document.getElementById('slider-refraction').addEventListener('input', updateMaterialTransform);
+        document.getElementById('slider-bump').addEventListener('input', updateMaterialTransform);
 
         // Clear current material in result panel box (Does NOT delete from library)
         document.getElementById('btn-delete-current').addEventListener('click', (e) => {
@@ -948,7 +974,8 @@
                 let min, max, step;
                 if(type === 'scale') { step = 0.1; min = 0.1; max = 5; }
                 else if(type === 'angle') { step = 1; min = 0; max = 360; }
-                else if(type === 'refraction') { step = 0.1; min = 1.0; max = 3.0; }
+                else if(type === 'refraction') { step = 0.1; min = 0.0; max = 3.0; }
+                else if(type === 'bump') { step = 0.01; min = 0.0; max = 0.1; }
                 
                 input.step = step; input.min = min; input.max = max;
                 
@@ -960,6 +987,7 @@
                     if(type === 'scale') document.getElementById('slider-scale').value = newVal;
                     else if(type === 'angle') document.getElementById('slider-angle').value = newVal;
                     else if(type === 'refraction') document.getElementById('slider-refraction').value = newVal;
+                    else if(type === 'bump') document.getElementById('slider-bump').value = newVal;
                     
                     span.innerHTML = '';
                     updateMaterialTransform();
@@ -980,6 +1008,7 @@
         setupDirectInput('val-scale', 'scale');
         setupDirectInput('val-angle', 'angle');
         setupDirectInput('val-refraction', 'refraction');
+        setupDirectInput('val-bump', 'bump');
 
         // Save Transform
         document.getElementById('btn-save-transform').addEventListener('click', () => {
@@ -989,6 +1018,7 @@
                 mat.scale = parseFloat(document.getElementById('slider-scale').value);
                 mat.angle = parseFloat(document.getElementById('slider-angle').value);
                 mat.refraction = parseFloat(document.getElementById('slider-refraction').value);
+                mat.bump = parseFloat(document.getElementById('slider-bump').value);
                 saveLibrary();
                 
                 const btn = document.getElementById('btn-save-transform');
