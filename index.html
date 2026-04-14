@@ -4,13 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PBR Studio - Texture & Material Library</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Three.js & OrbitControls -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- JSZip for Zip Downloads -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
-        /* 기존 CSS 디자인 시스템 유지 */
+        /* Apple Design System & Theme Variables */
         :root {
             --apple-blue: #0071e3;
             --apple-blue-dark: #2997ff;
@@ -28,6 +32,7 @@
             --focus-color: #0071e3;
         }
 
+        /* Light Mode Theme */
         [data-theme="light"] {
             --apple-blue-dark: #0066cc;
             --bg-main: #f5f5f7;
@@ -43,39 +48,82 @@
             --shadow-color: rgba(0, 0, 0, 0.08);
         }
 
-        @font-face { font-family: 'SF Pro Display'; src: local('-apple-system'), local('BlinkMacSystemFont'), local('sans-serif'); }
-        @font-face { font-family: 'SF Pro Text'; src: local('-apple-system'), local('BlinkMacSystemFont'), local('sans-serif'); }
+        /* Typography Mapping */
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: local('-apple-system'), local('BlinkMacSystemFont'), local('Helvetica Neue'), local('Helvetica'), local('Arial'), local('sans-serif');
+        }
+        @font-face {
+            font-family: 'SF Pro Text';
+            src: local('-apple-system'), local('BlinkMacSystemFont'), local('Helvetica Neue'), local('Helvetica'), local('Arial'), local('sans-serif');
+        }
 
         body {
-            font-family: 'SF Pro Text', -apple-system, sans-serif;
+            font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-main);
             color: var(--text-main);
             overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        .text-title { font-family: 'SF Pro Display', sans-serif; font-size: 24px; font-weight: 600; line-height: 1.14; }
-        .text-card-title { font-family: 'SF Pro Display', sans-serif; font-size: 19px; font-weight: 600; line-height: 1.19; }
-        .text-body { font-size: 15px; font-weight: 400; line-height: 1.47; }
-        .text-body-strong { font-size: 15px; font-weight: 600; line-height: 1.24; }
-        .text-caption { font-size: 13px; font-weight: 400; line-height: 1.29; }
-        .text-nav { font-size: 12px; font-weight: 400; line-height: 1.33; }
+        /* Typography Classes */
+        .text-title { font-family: 'SF Pro Display', sans-serif; font-size: 24px; font-weight: 600; line-height: 1.14; letter-spacing: 0.01em; }
+        .text-card-title { font-family: 'SF Pro Display', sans-serif; font-size: 19px; font-weight: 600; line-height: 1.19; letter-spacing: 0.01em; }
+        .text-body { font-size: 15px; font-weight: 400; line-height: 1.47; letter-spacing: -0.01em; }
+        .text-body-strong { font-size: 15px; font-weight: 600; line-height: 1.24; letter-spacing: -0.01em; }
+        .text-caption { font-size: 13px; font-weight: 400; line-height: 1.29; letter-spacing: -0.01em; }
+        .text-nav { font-size: 12px; font-weight: 400; line-height: 1.33; letter-spacing: -0.01em; }
 
-        .apple-nav-glass { background-color: var(--glass-bg); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); transition: background-color 0.3s ease; }
-        .apple-card { background-color: var(--bg-card); border-radius: 12px; box-shadow: 0 4px 24px var(--shadow-color); border: 1px solid var(--border-color); transition: background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease; }
+        /* Apple Component Utilities */
+        .apple-nav-glass {
+            background-color: var(--glass-bg);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            transition: background-color 0.3s ease;
+        }
+        .apple-card {
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            box-shadow: 0 4px 24px var(--shadow-color);
+            border: 1px solid var(--border-color);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
         .apple-surface { background-color: var(--bg-panel); border: none; transition: background-color 0.3s ease; }
-        .apple-btn-primary { background-color: var(--apple-blue); color: #ffffff; padding: 10px 18px; border-radius: 8px; font-size: 15px; font-weight: 500; transition: all 0.2s ease; border: 1px solid transparent; }
+        .apple-btn-primary {
+            background-color: var(--apple-blue);
+            color: #ffffff; padding: 10px 18px; border-radius: 8px; font-size: 15px; font-weight: 500; transition: all 0.2s ease; border: 1px solid transparent;
+        }
         .apple-btn-primary:hover { filter: brightness(1.1); }
         .apple-btn-primary:focus { outline: 2px solid var(--focus-color); outline-offset: 2px; }
-        .apple-btn-dark { background-color: var(--bg-card); color: var(--text-main); padding: 10px 18px; border-radius: 8px; font-size: 15px; font-weight: 500; transition: all 0.2s ease; border: 1px solid var(--border-color); }
+        .apple-btn-dark {
+            background-color: var(--bg-card);
+            color: var(--text-main); padding: 10px 18px; border-radius: 8px; font-size: 15px; font-weight: 500; transition: all 0.2s ease; border: 1px solid var(--border-color);
+        }
         .apple-btn-dark:hover { background-color: var(--hover-bg); }
         .apple-pill-tab { border-radius: 980px; padding: 6px 16px; font-size: 13px; font-weight: 500; transition: all 0.2s ease; }
         .apple-pill-tab.active { background-color: var(--bg-card); box-shadow: 0 1px 3px var(--shadow-color); color: var(--text-main) !important; border: 1px solid var(--border-color); }
+        .apple-link { color: var(--apple-blue-dark); text-decoration: none; transition: all 0.2s ease; cursor: pointer; }
+        .apple-link:hover { text-decoration: underline; }
 
-        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; height: 24px; outline: none; }
-        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%; background: #ffffff; box-shadow: 0 1px 4px rgba(0,0,0,0.5); cursor: pointer; position: relative; z-index: 10; margin-top: -6px; }
-        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: linear-gradient(to right, var(--apple-blue) var(--slider-percent, 0%), var(--border-color) var(--slider-percent, 0%)); border-radius: 2px; }
-        input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        /* Custom UI Slider */
+        input[type=range] {
+            -webkit-appearance: none; width: 100%; background: transparent; height: 24px; outline: none;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%; background: #ffffff; box-shadow: 0 1px 4px rgba(0,0,0,0.5); cursor: pointer; position: relative; z-index: 10; margin-top: -6px;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%; height: 4px; cursor: pointer; background: linear-gradient(to right, var(--apple-blue) var(--slider-percent, 0%), var(--border-color) var(--slider-percent, 0%)); border-radius: 2px;
+        }
+        input[type=range]:focus { outline: none; }
+
+        /* Input specific for double click */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; margin: 0; 
+        }
 
         #canvas-container { width: 100%; height: 100%; cursor: default; }
         #canvas-container:active { cursor: grabbing; }
@@ -84,103 +132,302 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--hover-bg); }
+
         .heart-icon.active { color: #ff3b30; fill: #ff3b30; }
     </style>
 </head>
 <body class="h-screen flex flex-col">
 
+    <!-- Custom Alert/Confirm Modal -->
+    <div id="custom-dialog" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-[var(--overlay-bg)] backdrop-blur-[10px] transition-opacity duration-300">
+        <div class="apple-card p-8 max-w-sm w-full text-center border border-[var(--border-color)]">
+            <p id="dialog-message" class="text-body text-[var(--text-main)] mb-6 leading-relaxed"></p>
+            <div class="flex gap-3 justify-center">
+                <button id="btn-dialog-cancel" class="apple-btn-dark hidden flex-1">취소</button>
+                <button id="btn-dialog-confirm" class="apple-btn-primary flex-1">확인</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="fixed inset-0 z-[60] hidden flex items-center justify-center bg-[var(--overlay-bg)] backdrop-blur-[20px] transition-opacity duration-300">
+        <div class="apple-card p-10 max-w-sm w-full text-center relative border border-[var(--border-color)]">
+            <button id="btn-close-login" class="absolute top-4 right-4 text-[var(--text-muted)] hover:text-[var(--text-main)] transition">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <i data-lucide="lock" class="w-10 h-10 text-[var(--text-main)] mx-auto mb-4"></i>
+            <h2 class="text-card-title text-[var(--text-main)] mb-2">디자이너 로그인</h2>
+            <p class="text-caption text-[var(--text-muted)] mb-6">자신의 재질 라이브러리에 접근합니다.<br/><span class="text-xs opacity-50">(PW: 3377)</span></p>
+            
+            <div class="space-y-4 mb-6">
+                <input type="text" value="found/Founded" readonly class="w-full bg-[var(--bg-main)] border border-[var(--border-color)] text-[var(--text-main)] px-4 py-3 rounded-lg text-body focus:outline-none opacity-70 cursor-not-allowed">
+                <input type="password" id="input-pw" placeholder="비밀번호" class="w-full bg-[var(--bg-main)] border border-[var(--border-color)] text-[var(--text-main)] px-4 py-3 rounded-lg text-body focus:outline-none focus:border-[var(--apple-blue)] transition">
+                <p id="login-error" class="text-xs text-[#ff3b30] hidden text-left">비밀번호가 일치하지 않습니다.</p>
+            </div>
+            
+            <button id="btn-submit-login" class="w-full apple-btn-primary">로그인</button>
+        </div>
+    </div>
+
+    <!-- Initial Popup Modal -->
+    <div id="initial-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-[var(--overlay-bg)] backdrop-blur-[20px] transition-opacity duration-300">
+        <div class="apple-card p-10 max-w-md w-full text-center border border-[var(--border-color)]">
+            <div class="w-[72px] h-[72px] bg-[#ffffff] rounded-full flex items-center justify-center mx-auto mb-8 shadow-md border border-[#d2d2d7]">
+                <svg width="40" height="40" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="24" cy="24" r="18" stroke="#1d1d1f" stroke-width="4"/>
+                    <line x1="20" y1="32" x2="28" y2="16" stroke="#1d1d1f" stroke-width="5" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <h2 class="text-xl font-bold text-[var(--text-main)] mb-3 tracking-tight">안녕하세요 found/Founded 디자이너님</h2>
+            <p class="text-[15px] text-[var(--text-muted)] mb-10 leading-relaxed font-medium">해당 사이트를 이용하기 위해<br>재질 생성을 위한 이미지를 첨부해주세요.</p>
+            
+            <button id="btn-modal-upload-trigger" class="w-full bg-[#2970ff] hover:bg-[#1e5aeb] text-white py-3.5 rounded-[12px] font-semibold text-[16px] transition mb-4 cursor-pointer shadow-lg shadow-blue-500/20">이미지 첨부하기</button>
+            <input type="file" id="modal-file-upload" accept="image/jpeg, image/png" class="hidden">
+            
+            <button id="btn-open-guide-from-modal" class="text-[13px] text-[var(--text-muted)] hover:text-[var(--text-main)] transition underline-offset-4 hover:underline mt-2">일단 빈 작업실 둘러보기</button>
+        </div>
+    </div>
+
+    <!-- Guide Modal -->
+    <div id="guide-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-[var(--overlay-bg)] backdrop-blur-[20px] transition-opacity duration-300">
+        <div class="apple-card p-12 max-w-3xl w-[90%] relative border border-[var(--border-color)] shadow-2xl">
+            <button id="btn-close-guide" class="absolute top-6 right-6 text-[var(--text-muted)] hover:text-[var(--text-main)] transition bg-[var(--bg-main)] rounded-full p-2 border border-[var(--border-color)]">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            
+            <div class="mb-12 text-center">
+                <h2 class="text-2xl font-bold text-[var(--text-main)] mb-3 tracking-tight">PBR Studio Workflow</h2>
+                <p class="text-[var(--text-muted)] text-[15px]">단 한 장의 이미지로 완벽한 Seamless 3D 재질을 생성하는 프로세스</p>
+            </div>
+
+            <!-- Minimal Infographic -->
+            <div class="flex items-center justify-between relative mb-12 px-6">
+                <!-- Connecting Line -->
+                <div class="absolute top-1/2 left-16 right-16 h-[2px] bg-gradient-to-r from-[var(--border-color)] via-[var(--apple-blue)] to-[var(--border-color)] -translate-y-1/2 z-0 opacity-40"></div>
+                
+                <!-- Step 1 -->
+                <div class="relative z-10 flex flex-col items-center bg-[var(--bg-card)] px-4">
+                    <div class="w-14 h-14 bg-[var(--bg-main)] border-2 border-[var(--border-color)] rounded-full flex items-center justify-center mb-4 text-[var(--text-main)] shadow-sm">
+                        <span class="font-bold text-lg">1</span>
+                    </div>
+                    <h3 class="text-[14px] font-semibold text-[var(--text-main)]">이미지 업로드</h3>
+                    <span class="text-[12px] text-[var(--text-muted)] mt-1 text-center">텍스처 원본 제공</span>
+                </div>
+                
+                <!-- Step 2 -->
+                <div class="relative z-10 flex flex-col items-center bg-[var(--bg-card)] px-4">
+                    <div class="w-14 h-14 bg-[var(--bg-main)] border-2 border-[var(--apple-blue)] rounded-full flex items-center justify-center mb-4 text-[var(--apple-blue)] shadow-[0_0_15px_rgba(0,113,227,0.25)]">
+                        <i data-lucide="sparkles" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-[14px] font-semibold text-[var(--text-main)]">AI 심리스 변환</h3>
+                    <span class="text-[12px] text-[var(--text-muted)] mt-1 text-center">경계선 래핑/마스킹</span>
+                </div>
+                
+                <!-- Step 3 -->
+                <div class="relative z-10 flex flex-col items-center bg-[var(--bg-card)] px-4">
+                    <div class="w-14 h-14 bg-[var(--bg-main)] border-2 border-[var(--border-color)] rounded-full flex items-center justify-center mb-4 text-[var(--text-main)] shadow-sm">
+                        <span class="font-bold text-lg">3</span>
+                    </div>
+                    <h3 class="text-[14px] font-semibold text-[var(--text-main)]">파라미터 조정</h3>
+                    <span class="text-[12px] text-[var(--text-muted)] mt-1 text-center">스케일 및 질감 제어</span>
+                </div>
+                
+                <!-- Step 4 -->
+                <div class="relative z-10 flex flex-col items-center bg-[var(--bg-card)] px-4">
+                    <div class="w-14 h-14 bg-[var(--bg-main)] border-2 border-[var(--border-color)] rounded-full flex items-center justify-center mb-4 text-[var(--text-main)] shadow-sm">
+                        <i data-lucide="download-cloud" class="w-5 h-5"></i>
+                    </div>
+                    <h3 class="text-[14px] font-semibold text-[var(--text-main)]">추출 및 저장</h3>
+                    <span class="text-[12px] text-[var(--text-muted)] mt-1 text-center">5 Maps 패키지</span>
+                </div>
+            </div>
+            
+            <!-- Minimal KeyShot Guide -->
+            <div class="bg-[var(--bg-main)] rounded-xl p-7 border border-[var(--border-color)]">
+                <h3 class="text-[15px] font-semibold text-[var(--text-main)] mb-5 flex items-center gap-2">
+                    <i data-lucide="box" class="w-5 h-5 text-[var(--apple-blue)]"></i> 5 PBR Maps 활용 가이드
+                </h3>
+                <div class="grid grid-cols-3 gap-5 text-[13px] text-[var(--text-sub)]">
+                    <div class="flex flex-col gap-1 pb-2 border-b border-[var(--border-color)]">
+                        <strong class="text-[var(--apple-blue-dark)]">1. Color (Albedo)</strong>
+                        <span class="text-[12px]">표면의 기본 색상. <b>디퓨즈/확산</b> 채널에 연결합니다.</span>
+                    </div>
+                    <div class="flex flex-col gap-1 pb-2 border-b border-[var(--border-color)]">
+                        <strong class="text-[var(--apple-blue-dark)]">2. Normal</strong>
+                        <span class="text-[12px]">빛의 반사를 조작하여 세밀한 입체감을 주는 <b>노말/범프</b> 채널용 맵.</span>
+                    </div>
+                    <div class="flex flex-col gap-1 pb-2 border-b border-[var(--border-color)]">
+                        <strong class="text-[var(--apple-blue-dark)]">3. Roughness</strong>
+                        <span class="text-[12px]">표면의 거친 정도. <b>거칠기/광택</b> 채널에 연결합니다.</span>
+                    </div>
+                    <div class="flex flex-col gap-1 pb-2 border-b border-[var(--border-color)]">
+                        <strong class="text-[var(--apple-blue-dark)]">4. Ambient Occlusion</strong>
+                        <span class="text-[12px]">깊숙한 틈새의 그림자를 강조하는 <b>오클루전</b> 맵.</span>
+                    </div>
+                    <div class="flex flex-col gap-1 pb-2 border-b border-[var(--border-color)]">
+                        <strong class="text-[var(--apple-blue-dark)]">5. Displacement</strong>
+                        <span class="text-[12px]">실제 지오메트리를 변형시키는 <b>변위/범프</b> 채널용 깊이 맵.</span>
+                    </div>
+                </div>
+                <p class="text-[12px] text-[var(--text-muted)] mt-5 text-center">※ 생성된 5가지 맵은 완벽한 Seamless 타일링 처리가 되어 있어 끊김 없이 매끄럽게 연결됩니다.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Preview Lightbox Modal -->
+    <div id="lightbox-modal" class="fixed inset-0 z-[70] hidden flex items-center justify-center bg-black/80 backdrop-blur-[10px] transition-opacity duration-300">
+        <button id="btn-close-lightbox" class="absolute top-6 right-6 text-white/50 hover:text-white transition z-10 p-2 bg-black/20 rounded-full">
+            <i data-lucide="x" class="w-8 h-8"></i>
+        </button>
+        <div class="relative w-[90%] max-w-6xl max-h-[90vh] flex items-center justify-center">
+            <img id="lightbox-img" src="" class="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl">
+        </div>
+    </div>
+
+    <!-- Header -->
     <header class="apple-nav-glass h-[56px] border-b border-[var(--border-color)] flex items-center justify-between px-6 shrink-0 z-10 w-full fixed top-0">
         <div class="flex items-center gap-8">
             <button onclick="window.location.reload()" class="text-body-strong tracking-tight text-[var(--text-main)] flex items-center gap-2 hover:opacity-80 transition cursor-pointer">
                 <i data-lucide="aperture" class="w-5 h-5 text-[var(--text-main)]"></i>
-                PBR Studio AI
+                PBR Studio
             </button>
+            <nav class="flex gap-6 text-caption text-[var(--text-sub)]">
+                <button id="btn-open-guide" class="hover:text-[var(--text-main)] transition">사용 가이드</button>
+            </nav>
         </div>
-        <div class="flex items-center gap-4 text-caption">
-            <div class="relative flex items-center">
-                <i data-lucide="key" class="w-4 h-4 text-[var(--text-muted)] absolute left-3"></i>
-                <input type="password" id="input-api-key" placeholder="Gemini API Key 입력" class="bg-[var(--bg-card)] border border-[var(--border-color)] text-[var(--text-main)] pl-9 pr-3 py-1.5 rounded-full text-[13px] focus:outline-none focus:border-[var(--apple-blue)] transition w-[200px]" title="Google AI Studio에서 발급받은 키를 입력하세요">
+        <div class="flex items-center gap-3 text-caption">
+            <!-- API Key Input Field -->
+            <div class="flex items-center bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg overflow-hidden h-8" title="Gemini API Key를 입력하면 AI 변환이 활성화됩니다.">
+                <input type="password" id="input-api-key" placeholder="Gemini API Key" class="bg-transparent text-[var(--text-main)] px-3 text-xs outline-none w-32 focus:w-48 transition-all duration-300">
+                <button id="btn-save-api-key" class="bg-[var(--hover-bg)] hover:bg-[var(--apple-blue)] hover:text-white px-3 h-full transition text-[var(--text-muted)] border-l border-[var(--border-color)]">
+                    <i data-lucide="key" class="w-3 h-3"></i>
+                </button>
             </div>
+            
+            <div class="w-[1px] h-4 bg-[var(--border-color)] mx-1"></div>
 
+            <!-- Dark / Light Theme Toggle -->
             <button id="btn-theme-toggle" class="hover:text-[var(--text-main)] text-[var(--text-sub)] transition flex items-center justify-center w-8 h-8 rounded-full bg-[var(--bg-card)] border border-[var(--border-color)] shadow-sm">
                 <i data-lucide="sun" class="w-4 h-4"></i>
             </button>
+            
+            <span id="user-display" class="text-[var(--text-muted)] font-medium hidden ml-2">found/Founded</span>
+            <button id="btn-login-toggle" class="apple-btn-dark py-1.5 px-4 text-xs font-semibold ml-2">로그인</button>
         </div>
     </header>
 
+    <!-- Main Workspace -->
     <main class="flex-1 flex overflow-hidden relative mt-[56px]">
         
+        <!-- Center: Viewer Area -->
         <div class="flex-1 flex flex-col relative bg-[var(--bg-main)]">
+            <!-- View Tabs -->
             <div class="absolute top-6 left-1/2 -translate-x-1/2 bg-[var(--bg-card)] rounded-[980px] p-1 z-10 flex shadow-lg border border-[var(--border-color)]">
-                <button id="btn-3d" class="apple-pill-tab active text-[var(--text-main)] flex items-center gap-2"><i data-lucide="box" class="w-4 h-4"></i> 3D 뷰어</button>
-                <button id="btn-2d" class="apple-pill-tab text-[var(--text-muted)] flex items-center gap-2"><i data-lucide="image" class="w-4 h-4"></i> 2D 데이터</button>
-                <button id="btn-library" class="apple-pill-tab text-[var(--text-muted)] flex items-center gap-2"><i data-lucide="library" class="w-4 h-4"></i> 라이브러리</button>
+                <button id="btn-3d" class="apple-pill-tab active text-[var(--text-main)] flex items-center gap-2">
+                    <i data-lucide="box" class="w-4 h-4"></i> 3D 뷰어
+                </button>
+                <button id="btn-2d" class="apple-pill-tab text-[var(--text-muted)] flex items-center gap-2">
+                    <i data-lucide="image" class="w-4 h-4"></i> 2D 데이터
+                </button>
+                <button id="btn-library" class="apple-pill-tab text-[var(--text-muted)] flex items-center gap-2">
+                    <i data-lucide="library" class="w-4 h-4"></i> 라이브러리
+                </button>
             </div>
 
+            <!-- 3D Canvas -->
             <div id="view-3d" class="w-full h-full relative flex flex-col">
                 <div id="canvas-container" class="flex-1 w-full"></div>
+
                 <div class="absolute right-6 bottom-6 flex flex-col gap-3 z-10">
                     <button id="btn-zoom-in" class="w-10 h-10 bg-[var(--bg-card)] border border-[var(--border-color)] hover:bg-[var(--hover-bg)] text-[var(--text-main)] rounded-full flex items-center justify-center transition shadow-md"><i data-lucide="plus" class="w-5 h-5"></i></button>
                     <button id="btn-zoom-out" class="w-10 h-10 bg-[var(--bg-card)] border border-[var(--border-color)] hover:bg-[var(--hover-bg)] text-[var(--text-main)] rounded-full flex items-center justify-center transition shadow-md"><i data-lucide="minus" class="w-5 h-5"></i></button>
                 </div>
 
+                <!-- AI Processing Overlay -->
                 <div id="loading" class="absolute inset-0 bg-[var(--overlay-bg)] backdrop-blur-[10px] flex items-center justify-center z-20 hidden">
                     <div class="flex flex-col items-center gap-6">
-                        <i data-lucide="sparkles" class="w-12 h-12 text-[var(--apple-blue)] animate-pulse"></i>
-                        <span id="loading-text" class="text-body-strong text-[var(--text-main)]">AI 모델이 이미지를 분석하고 있습니다...</span>
+                        <i data-lucide="loader-2" class="w-12 h-12 text-[var(--apple-blue)] animate-spin"></i>
+                        <span id="loading-text" class="text-body-strong text-[var(--text-main)]">AI가 고화질 PBR 5종 맵을 추출 중입니다...</span>
                     </div>
                 </div>
             </div>
 
+            <!-- 2D Maps Grid (5 Maps Display) -->
             <div id="view-2d" class="w-full h-full hidden overflow-y-auto p-12 pt-24 bg-[var(--bg-main)]">
-                <div class="max-w-6xl mx-auto mb-8">
-                    <h2 class="text-title text-[var(--text-main)] mb-1">추출된 PBR 맵 데이터 (5 Maps)</h2>
-                    <p class="text-body text-[var(--text-muted)]">AI가 고화질 심리스 텍스처를 기반으로 생성한 데이터입니다.</p>
+                <div class="max-w-6xl mx-auto mb-8 flex justify-between items-end">
+                    <div>
+                        <h2 class="text-title text-[var(--text-main)] mb-1">추출된 PBR 맵 데이터 (5 Maps)</h2>
+                        <p class="text-body text-[var(--text-muted)]">이미지를 클릭하면 원본 크기로 확인할 수 있습니다.</p>
+                    </div>
                 </div>
                 
                 <div class="grid grid-cols-3 gap-6 max-w-6xl mx-auto mb-10">
+                    <!-- Row 1 -->
                     <div class="apple-card p-4 border border-[var(--border-color)] flex flex-col">
-                        <h3 class="text-[14px] font-semibold text-[var(--text-sub)] mb-3 flex items-center gap-2"><i data-lucide="image" class="w-4 h-4"></i> AI Albedo (Color)</h3>
-                        <div class="aspect-square bg-[var(--bg-main)] border border-[var(--border-color)] rounded-lg overflow-hidden flex-1"><img id="img-color" src="" class="w-full h-full object-cover"></div>
+                        <h3 class="text-[14px] font-semibold text-[var(--text-sub)] mb-3 flex items-center gap-2"><i data-lucide="image" class="w-4 h-4"></i> Color (Albedo)</h3>
+                        <div class="aspect-square bg-[var(--bg-main)] border border-[var(--border-color)] rounded-lg overflow-hidden flex-1">
+                            <img id="img-color" src="" class="w-full h-full object-cover cursor-pointer hover:scale-105 transition duration-500" title="클릭하여 확대">
+                        </div>
                     </div>
                     <div class="apple-card p-4 border border-[var(--border-color)] flex flex-col">
                         <h3 class="text-[14px] font-semibold text-[var(--text-sub)] mb-3 flex items-center gap-2"><i data-lucide="layers" class="w-4 h-4"></i> Normal</h3>
-                        <div class="aspect-square bg-[var(--bg-main)] border border-[var(--border-color)] rounded-lg overflow-hidden flex-1"><img id="img-normal" src="" class="w-full h-full object-cover"></div>
+                        <div class="aspect-square bg-[var(--bg-main)] border border-[var(--border-color)] rounded-lg overflow-hidden flex-1">
+                            <img id="img-normal" src="" class="w-full h-full object-cover cursor-pointer hover:scale-105 transition duration-500" title="클릭하여 확대">
+                        </div>
                     </div>
                     <div class="apple-card p-4 border border-[var(--border-color)] flex flex-col">
                         <h3 class="text-[14px] font-semibold text-[var(--text-sub)] mb-3 flex items-center gap-2"><i data-lucide="droplet" class="w-4 h-4"></i> Roughness</h3>
-                        <div class="aspect-square bg-[var(--bg-main)] border border-[var(--border-color)] rounded-lg overflow-hidden flex-1"><img id="img-roughness" src="" class="w-full h-full object-cover"></div>
+                        <div class="aspect-square bg-[var(--bg-main)] border border-[var(--border-color)] rounded-lg overflow-hidden flex-1">
+                            <img id="img-roughness" src="" class="w-full h-full object-cover cursor-pointer hover:scale-105 transition duration-500" title="클릭하여 확대">
+                        </div>
                     </div>
+                    <!-- Row 2 -->
                     <div class="apple-card p-4 border border-[var(--border-color)] flex flex-col">
                         <h3 class="text-[14px] font-semibold text-[var(--text-sub)] mb-3 flex items-center gap-2"><i data-lucide="moon" class="w-4 h-4"></i> Ambient Occlusion</h3>
-                        <div class="aspect-square bg-[var(--bg-main)] border border-[var(--border-color)] rounded-lg overflow-hidden flex-1"><img id="img-ao" src="" class="w-full h-full object-cover"></div>
+                        <div class="aspect-square bg-[var(--bg-main)] border border-[var(--border-color)] rounded-lg overflow-hidden flex-1">
+                            <img id="img-ao" src="" class="w-full h-full object-cover cursor-pointer hover:scale-105 transition duration-500" title="클릭하여 확대">
+                        </div>
                     </div>
                     <div class="apple-card p-4 border border-[var(--border-color)] flex flex-col">
                         <h3 class="text-[14px] font-semibold text-[var(--text-sub)] mb-3 flex items-center gap-2"><i data-lucide="mountain" class="w-4 h-4"></i> Displacement</h3>
-                        <div class="aspect-square bg-[var(--bg-main)] border border-[var(--border-color)] rounded-lg overflow-hidden flex-1"><img id="img-displacement" src="" class="w-full h-full object-cover"></div>
+                        <div class="aspect-square bg-[var(--bg-main)] border border-[var(--border-color)] rounded-lg overflow-hidden flex-1">
+                            <img id="img-displacement" src="" class="w-full h-full object-cover cursor-pointer hover:scale-105 transition duration-500" title="클릭하여 확대">
+                        </div>
                     </div>
                 </div>
             </div>
 
+            <!-- Library View -->
             <div id="view-library" class="w-full h-full hidden overflow-y-auto p-12 pt-24 bg-[var(--bg-main)]">
                 <div class="max-w-5xl mx-auto mb-8 flex justify-between items-end border-b border-[var(--border-color)] pb-6">
                     <div>
                         <h2 class="text-title text-[var(--text-main)] mb-2">마이 재질 라이브러리</h2>
                         <p class="text-body text-[var(--text-muted)]">저장된 데이터베이스. 클릭하여 3D 뷰어에 적용하세요.</p>
                     </div>
+                    <div class="flex bg-[var(--bg-panel)] rounded-lg p-1 border border-[var(--border-color)]">
+                        <button id="btn-view-grid" class="p-2 rounded-md bg-[var(--hover-bg)] text-[var(--text-main)] transition shadow-sm"><i data-lucide="grid" class="w-5 h-5"></i></button>
+                        <button id="btn-view-list" class="p-2 rounded-md text-[var(--text-muted)] hover:text-[var(--text-main)] transition"><i data-lucide="list" class="w-5 h-5"></i></button>
+                    </div>
                 </div>
-                <div id="library-list" class="max-w-5xl mx-auto grid grid-cols-3 gap-6"></div>
+                
+                <div id="library-list" class="max-w-5xl mx-auto">
+                    <!-- 라이브러리 아이템 렌더링 영역 -->
+                </div>
             </div>
+            
         </div>
 
+        <!-- Right: Control Panel -->
         <div class="w-[380px] apple-surface flex flex-col z-20 shadow-2xl border-l border-[var(--border-color)]">
+            <!-- Upload Section -->
             <div id="panel-upload" class="p-8 flex-1 flex flex-col">
-                <h1 class="text-card-title text-[var(--text-main)] mb-2">AI 재질 생성기</h1>
-                <p class="text-caption text-[var(--text-muted)] mb-8">이미지를 업로드하면 AI가 고화질 심리스 텍스처로 자동 변환합니다.</p>
+                <h1 class="text-card-title text-[var(--text-main)] mb-2">새 재질 생성</h1>
+                <p class="text-caption text-[var(--text-muted)] mb-8">질감 이미지를 업로드하여 Seamless PBR로 변환합니다.</p>
                 
                 <label for="file-upload" id="drop-zone" class="bg-[var(--bg-card)] border border-dashed border-[var(--border-color)] hover:border-[var(--apple-blue)] rounded-[12px] p-8 flex flex-col items-center justify-center text-center cursor-pointer transition flex-1 min-h-[250px]">
-                    <i data-lucide="image-plus" class="w-8 h-8 text-[var(--text-muted)] mb-3 pointer-events-none"></i>
-                    <span class="text-body text-[var(--text-main)] mb-1 pointer-events-none">여기를 클릭하여 이미지 첨부</span>
+                    <i data-lucide="plus" class="w-8 h-8 text-[var(--text-muted)] mb-3 pointer-events-none"></i>
+                    <span class="text-body text-[var(--text-main)] mb-1 pointer-events-none">여기를 클릭하거나 파일을 드래그</span>
+                    <span class="text-nav text-[var(--text-muted)] pointer-events-none">고해상도 이미지 권장</span>
                     <input id="file-upload" type="file" accept="image/jpeg, image/png" class="hidden">
                 </label>
                 
@@ -189,46 +436,125 @@
                         <img id="source-image-preview" class="max-w-full max-h-full object-contain">
                     </div>
                     <div class="w-full mt-auto">
-                        <button id="btn-generate" class="w-full apple-btn-primary mb-3 py-3 flex items-center justify-center gap-2">
-                            <i data-lucide="sparkles" class="w-4 h-4"></i> AI 심리스 PBR 변환 시작
-                        </button>
-                        <button id="btn-cancel" class="w-full text-caption text-[var(--text-muted)] hover:text-[var(--text-main)] transition py-2">취소</button>
+                        <button id="btn-generate" class="w-full apple-btn-primary mb-3 py-3">고화질 5-Maps 추출하기</button>
+                        <button id="btn-cancel" class="w-full text-caption text-[var(--text-muted)] hover:text-[var(--text-main)] transition py-2">다른 이미지 선택</button>
                     </div>
                 </div>
             </div>
 
+            <!-- Result Section -->
             <div id="panel-result" class="hidden flex-col h-full overflow-y-auto">
                 <div class="p-8 pb-6 border-b border-[var(--border-color)]">
-                    <div class="flex items-center justify-between mb-4">
-                        <h1 class="text-title text-[var(--text-main)] truncate" id="result-mat-name">AI 생성 텍스처</h1>
-                        <button id="btn-new-material" class="apple-pill-tab bg-[var(--bg-card)] border border-[var(--border-color)] text-[var(--text-main)] hover:bg-[var(--hover-bg)] transition text-xs whitespace-nowrap">
-                            + 새 재질
-                        </button>
+                    <div class="flex items-center gap-2 mb-2">
+                        <div class="w-2 h-2 rounded-full bg-green-500"></div>
+                        <span class="text-nav font-medium text-green-500">추출 완료</span>
+                    </div>
+                    <h1 class="text-title text-[var(--text-main)] mb-1" id="result-mat-name">커스텀 텍스처</h1>
+                    <p class="text-caption text-[var(--text-muted)] mb-6">라이브러리에 자동 등록되었습니다.</p>
+                    
+                    <div class="bg-[var(--bg-card)] p-4 rounded-xl border border-[var(--border-color)] flex justify-between mb-5">
+                        <div class="text-center w-full border-r border-[var(--border-color)]">
+                            <div class="text-body-strong text-[var(--text-main)]">5 Maps</div>
+                            <div class="text-nav text-[var(--text-muted)]">Full PBR</div>
+                        </div>
+                        <div class="text-center w-full">
+                            <div class="text-body-strong text-[var(--apple-blue)]" id="result-seamless-status">Seamless</div>
+                            <div class="text-nav text-[var(--text-muted)]" id="result-ai-status">Tiling Ready</div>
+                        </div>
                     </div>
                     
-                    <div id="result-image-container" class="relative w-full aspect-square rounded-xl overflow-hidden bg-[var(--bg-main)] border border-[var(--border-color)]">
-                        <img id="result-original-image" src="" class="w-full h-full object-cover">
+                    <!-- Original Image Box & Upload/Delete Interactions -->
+                    <div id="result-image-container" class="relative w-full aspect-square rounded-xl overflow-hidden bg-[var(--bg-main)]">
+                        
+                        <!-- State 1: Has Material -->
+                        <div id="result-image-content" class="w-full h-full relative group border border-[var(--border-color)] rounded-xl overflow-hidden">
+                            <img id="result-original-image" src="" class="w-full h-full object-cover">
+                            
+                            <!-- Hover Overlay: Create New Material -->
+                            <div id="btn-box-upload" class="absolute inset-0 bg-[var(--glass-bg)] backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center cursor-pointer z-10">
+                                <i data-lucide="plus-circle" class="w-8 h-8 text-[var(--apple-blue)] mb-3"></i>
+                                <span class="text-body-strong text-[var(--text-main)]">새로운 이미지 불러오기</span>
+                            </div>
+
+                            <!-- Delete Material Button (Only clears workspace) -->
+                            <button id="btn-delete-current" class="absolute top-3 right-3 p-2.5 bg-[var(--glass-bg)] backdrop-blur-md rounded-full hover:bg-red-500 hover:text-white transition text-[var(--text-muted)] shadow-md z-20" title="현재 작업 화면에서 지우기">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+
+                        <!-- State 2: Empty (Delete was pressed) -->
+                        <div id="result-empty-content" class="hidden w-full h-full border-2 border-dashed border-[var(--border-color)] hover:border-[var(--apple-blue)] rounded-xl bg-[var(--bg-card)] flex flex-col items-center justify-center cursor-pointer transition z-0">
+                            <i data-lucide="image-plus" class="w-8 h-8 text-[var(--text-muted)] mb-3 pointer-events-none"></i>
+                            <span class="text-body-strong text-[var(--text-main)] mb-1 pointer-events-none">이미지를 첨부하세요</span>
+                            <span class="text-nav text-[var(--text-muted)] pointer-events-none">클릭하여 파일 선택</span>
+                        </div>
+
+                        <!-- Hidden File Input for Box Interaction -->
+                        <input type="file" id="box-file-upload" accept="image/jpeg, image/png" class="hidden">
                     </div>
                 </div>
 
+                <!-- Scale, Angle, Refraction & Bump Controls in Panel -->
                 <div class="px-8 py-6 flex-1 flex flex-col gap-8">
+                    
+                    <!-- Scale Slider -->
                     <div>
-                        <div class="flex justify-between items-center mb-4"><span class="text-body text-[var(--text-main)]">Scale</span><div class="bg-[var(--bg-card)] px-3 py-1 rounded text-[var(--text-main)] text-body-strong border border-[var(--border-color)]" id="val-scale">1.0</div></div>
-                        <div class="flex items-center gap-4"><i data-lucide="minimize" class="w-5 h-5 text-[var(--text-muted)]"></i><input type="range" id="slider-scale" min="0.1" max="5" step="0.1" value="1" class="flex-1"><i data-lucide="maximize" class="w-5 h-5 text-[var(--text-muted)]"></i></div>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-body text-[var(--text-main)]">Scale</span>
+                            <div class="bg-[var(--bg-card)] px-3 py-1 rounded text-[var(--text-main)] text-body-strong border border-[var(--border-color)] min-w-[64px] text-center cursor-text transition hover:border-[var(--apple-blue)]" id="val-scale" title="더블클릭하여 직접 입력">1.0</div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <i data-lucide="minimize" class="w-5 h-5 text-[var(--text-muted)]"></i>
+                            <input type="range" id="slider-scale" min="0.1" max="5" step="0.1" value="1" class="flex-1">
+                            <i data-lucide="maximize" class="w-5 h-5 text-[var(--text-muted)]"></i>
+                        </div>
                     </div>
+
+                    <!-- Angle Slider -->
                     <div>
-                        <div class="flex justify-between items-center mb-4"><span class="text-body text-[var(--text-main)]">굴절률 (IOR)</span><div class="bg-[var(--bg-card)] px-3 py-1 rounded text-[var(--text-main)] text-body-strong border border-[var(--border-color)]" id="val-refraction">1.5</div></div>
-                        <div class="flex items-center gap-4"><i data-lucide="droplet" class="w-5 h-5 text-[var(--text-muted)]"></i><input type="range" id="slider-refraction" min="0.0" max="3.0" step="0.1" value="1.5" class="flex-1"><i data-lucide="waves" class="w-5 h-5 text-[var(--text-muted)]"></i></div>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-body text-[var(--text-main)]">Angle</span>
+                            <div class="bg-[var(--bg-card)] px-3 py-1 rounded text-[var(--text-main)] text-body-strong border border-[var(--border-color)] min-w-[64px] text-center cursor-text transition hover:border-[var(--apple-blue)]" id="val-angle" title="더블클릭하여 직접 입력">0°</div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <i data-lucide="rotate-ccw" class="w-5 h-5 text-[var(--text-muted)]"></i>
+                            <input type="range" id="slider-angle" min="0" max="360" step="1" value="0" class="flex-1">
+                            <i data-lucide="rotate-cw" class="w-5 h-5 text-[var(--text-muted)]"></i>
+                        </div>
                     </div>
+
+                    <!-- Refraction Slider -->
                     <div>
-                        <div class="flex justify-between items-center mb-4"><span class="text-body text-[var(--text-main)]">범프 강도 (Bump)</span><div class="bg-[var(--bg-card)] px-3 py-1 rounded text-[var(--text-main)] text-body-strong border border-[var(--border-color)]" id="val-bump">0</div></div>
-                        <div class="flex items-center gap-4"><i data-lucide="minus" class="w-5 h-5 text-[var(--text-muted)]"></i><input type="range" id="slider-bump" min="-0.5" max="0.5" step="0.01" value="0" class="flex-1"><i data-lucide="mountain" class="w-5 h-5 text-[var(--text-muted)]"></i></div>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-body text-[var(--text-main)]">굴절률 (IOR)</span>
+                            <div class="bg-[var(--bg-card)] px-3 py-1 rounded text-[var(--text-main)] text-body-strong border border-[var(--border-color)] min-w-[64px] text-center cursor-text transition hover:border-[var(--apple-blue)]" id="val-refraction" title="더블클릭하여 직접 입력">1.5</div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <i data-lucide="droplet" class="w-5 h-5 text-[var(--text-muted)]"></i>
+                            <input type="range" id="slider-refraction" min="0.0" max="3.0" step="0.1" value="1.5" class="flex-1">
+                            <i data-lucide="waves" class="w-5 h-5 text-[var(--text-muted)]"></i>
+                        </div>
                     </div>
+                    
+                    <!-- Displacement/Bump Slider -->
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-body text-[var(--text-main)]">범프 강도 (Bump)</span>
+                            <div class="bg-[var(--bg-card)] px-3 py-1 rounded text-[var(--text-main)] text-body-strong border border-[var(--border-color)] min-w-[64px] text-center cursor-text transition hover:border-[var(--apple-blue)]" id="val-bump" title="더블클릭하여 직접 입력">0</div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <i data-lucide="minus" class="w-5 h-5 text-[var(--text-muted)]"></i>
+                            <input type="range" id="slider-bump" min="-0.5" max="0.5" step="0.01" value="0" class="flex-1">
+                            <i data-lucide="mountain" class="w-5 h-5 text-[var(--text-muted)]"></i>
+                        </div>
+                    </div>
+
+                    <button id="btn-save-transform" class="w-full apple-btn-dark text-body py-2 mt-4 transition">현재 수치값 저장</button>
                 </div>
 
                 <div class="p-8 pt-0 flex flex-col gap-3 mt-auto">
                     <button id="btn-download-all-2d" class="w-full apple-btn-primary flex items-center justify-center gap-2 py-3">
-                        <i data-lucide="download-cloud" class="w-5 h-5"></i> 5종 맵 다운로드
+                        <i data-lucide="download-cloud" class="w-5 h-5"></i> zip 파일 다운로드
                     </button>
                 </div>
             </div>
@@ -238,10 +564,84 @@
     <script>
         lucide.createIcons();
 
+        // --- Custom Dialog System (Replaces alert & confirm) ---
+        const customDialog = document.getElementById('custom-dialog');
+        const dialogMessage = document.getElementById('dialog-message');
+        const btnDialogCancel = document.getElementById('btn-dialog-cancel');
+        const btnDialogConfirm = document.getElementById('btn-dialog-confirm');
+
+        const showDialog = (message, isConfirm = false) => {
+            return new Promise((resolve) => {
+                dialogMessage.innerHTML = message; 
+                customDialog.classList.remove('hidden');
+
+                if (isConfirm) {
+                    btnDialogCancel.classList.remove('hidden');
+                } else {
+                    btnDialogCancel.classList.add('hidden');
+                }
+
+                const handleConfirm = () => {
+                    cleanup();
+                    resolve(true);
+                };
+
+                const handleCancel = () => {
+                    cleanup();
+                    resolve(false);
+                };
+
+                const cleanup = () => {
+                    customDialog.classList.add('hidden');
+                    btnDialogConfirm.removeEventListener('click', handleConfirm);
+                    btnDialogCancel.removeEventListener('click', handleCancel);
+                };
+
+                btnDialogConfirm.addEventListener('click', handleConfirm);
+                btnDialogCancel.addEventListener('click', handleCancel);
+            });
+        };
+
+        // --- API Key Management (Local Storage) ---
+        const inputApiKey = document.getElementById('input-api-key');
+        const btnSaveApiKey = document.getElementById('btn-save-api-key');
+        const LOCAL_STORAGE_API_KEY = 'pbr_studio_gemini_api_key';
+
+        let savedApiKey = localStorage.getItem(LOCAL_STORAGE_API_KEY) || '';
+        if (savedApiKey) {
+            inputApiKey.value = savedApiKey;
+            btnSaveApiKey.classList.add('text-[var(--apple-blue)]');
+        }
+
+        const handleApiKeySave = async () => {
+            const key = inputApiKey.value.trim();
+            if (key) {
+                localStorage.setItem(LOCAL_STORAGE_API_KEY, key);
+                savedApiKey = key;
+                btnSaveApiKey.classList.add('text-[var(--apple-blue)]');
+                await showDialog("Gemini API 인증이 완료되었습니다.");
+            } else {
+                localStorage.removeItem(LOCAL_STORAGE_API_KEY);
+                savedApiKey = '';
+                btnSaveApiKey.classList.remove('text-[var(--apple-blue)]');
+                await showDialog("Gemini API 키가 삭제되었습니다.<br>로컬 캔버스 모드로 동작합니다.");
+            }
+        };
+
+        btnSaveApiKey.addEventListener('click', handleApiKeySave);
+        inputApiKey.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                inputApiKey.blur();
+                handleApiKeySave();
+            }
+        });
+
+
         // --- Theme Logic ---
         const themeToggleBtn = document.getElementById('btn-theme-toggle');
         const themeIcon = themeToggleBtn.querySelector('i');
         let isLightMode = false;
+        
         themeToggleBtn.addEventListener('click', () => {
             isLightMode = !isLightMode;
             if (isLightMode) {
@@ -252,276 +652,1047 @@
                 themeIcon.setAttribute('data-lucide', 'sun');
             }
             lucide.createIcons();
-            updateSliderBg(document.getElementById('slider-scale'));
+            updateMaterialTransform(); 
         });
 
-        // --- Data Library ---
-        let materialsLib = [];
+        // --- IndexedDB Wrapper for Library Logic ---
+        const DB_NAME = 'PBRStudioDB';
+        const STORE_NAME = 'materials';
+
+        const openDB = () => {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, 1);
+                request.onupgradeneeded = (e) => {
+                    e.target.result.createObjectStore(STORE_NAME);
+                };
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error);
+            });
+        };
+
+        const saveLibraryDB = async (key, data) => {
+            const db = await openDB();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(STORE_NAME, 'readwrite');
+                const store = tx.objectStore(STORE_NAME);
+                const request = store.put(data, key);
+                request.onsuccess = () => resolve();
+                request.onerror = () => reject(request.error);
+            });
+        };
+
+        const loadLibraryDB = async (key) => {
+            const db = await openDB();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(STORE_NAME, 'readonly');
+                const store = tx.objectStore(STORE_NAME);
+                const request = store.get(key);
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error);
+            });
+        };
+
+        let currentUserId = 'guest';
+        let libraryViewMode = 'grid'; 
         let activeMaterialId = null;
+        let materialsLib = [];
+
+        const getLibraryKey = () => `pbr_lib_${currentUserId}`;
+
+        const loadLibrary = async () => {
+            try {
+                const data = await loadLibraryDB(getLibraryKey());
+                materialsLib = data || [];
+            } catch (e) {
+                console.error("DB Load Error", e);
+                materialsLib = [];
+            }
+            renderLibrary();
+        };
+
+        const saveLibrary = async () => {
+            try {
+                await saveLibraryDB(getLibraryKey(), materialsLib);
+            } catch (e) {
+                console.error("DB Save Error", e);
+                if (e.name === 'QuotaExceededError') {
+                    await showDialog('저장 공간이 부족합니다. 불필요한 재질을 삭제해주세요.');
+                }
+            }
+        };
 
         const renderLibrary = () => {
             const listEl = document.getElementById('library-list');
             listEl.innerHTML = '';
+            
+            if (libraryViewMode === 'grid') {
+                listEl.className = 'max-w-5xl mx-auto grid grid-cols-3 gap-6';
+            } else {
+                listEl.className = 'max-w-5xl mx-auto flex flex-col space-y-3';
+            }
+            
+            if(materialsLib.length === 0) {
+                listEl.className = 'max-w-5xl mx-auto';
+                listEl.innerHTML = '<p class="text-body text-[var(--text-muted)] text-center mt-20">생성된 재질이 없습니다.</p>';
+                return;
+            }
+
             materialsLib.forEach(mat => {
                 const item = document.createElement('div');
-                item.className = `apple-card p-4 flex flex-col cursor-pointer transition border ${mat.id === activeMaterialId ? 'border-[var(--apple-blue)] bg-[var(--hover-bg)]' : 'border-transparent'}`;
-                item.innerHTML = `
-                    <div class="relative w-full aspect-square mb-4 rounded-lg overflow-hidden bg-[var(--bg-main)]">
-                        <img src="${mat.maps.albedo}" class="w-full h-full object-cover">
-                    </div>
-                    <h3 class="text-body-strong text-[var(--text-main)] truncate px-1">${mat.name}</h3>
-                `;
-                item.addEventListener('click', () => { loadMaterialToViewer(mat); switchTab('3d'); });
+                const isActive = mat.id === activeMaterialId;
+                
+                if (libraryViewMode === 'grid') {
+                    item.className = `apple-card p-4 flex flex-col cursor-pointer transition border ${isActive ? 'border-[var(--apple-blue)] bg-[var(--hover-bg)]' : 'border-transparent hover:border-[var(--border-color)]'}`;
+                    item.innerHTML = `
+                        <div class="relative w-full aspect-square mb-4 rounded-lg overflow-hidden bg-[var(--bg-main)] border border-[var(--border-color)]">
+                            <img src="${mat.original || mat.maps.albedo}" class="w-full h-full object-cover hover:scale-105 transition duration-500">
+                            <button class="btn-download absolute top-3 left-3 p-2 bg-[var(--glass-bg)] backdrop-blur-md rounded-full hover:brightness-125 transition text-[var(--text-main)]" data-id="${mat.id}" title="zip 파일 다운로드">
+                                <i data-lucide="download-cloud" class="w-4 h-4"></i>
+                            </button>
+                            <button class="btn-fav absolute top-3 right-3 p-2 bg-[var(--glass-bg)] backdrop-blur-md rounded-full hover:brightness-125 transition" data-id="${mat.id}">
+                                <svg class="w-5 h-5 heart-icon ${mat.isFavorite ? 'active' : 'text-[var(--text-muted)]'}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                            </button>
+                            <button class="btn-delete absolute bottom-3 right-3 p-2 bg-[var(--glass-bg)] backdrop-blur-md rounded-full hover:bg-red-500/80 transition text-[var(--text-main)]" data-id="${mat.id}" title="라이브러리에서 완전히 삭제">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                        <div class="flex justify-between items-center px-1">
+                            <h3 class="text-body-strong text-[var(--text-main)] truncate">${mat.name}</h3>
+                            ${mat.usedAI ? '<i data-lucide="sparkles" class="w-4 h-4 text-[var(--apple-blue)] flex-shrink-0" title="AI 생성됨"></i>' : ''}
+                        </div>
+                    `;
+                } else {
+                    item.className = `p-4 rounded-xl flex items-center justify-between cursor-pointer transition border ${isActive ? 'bg-[var(--hover-bg)] border-[var(--apple-blue)]' : 'bg-[var(--bg-card)] hover:bg-[var(--hover-bg)] border-transparent'}`;
+                    item.innerHTML = `
+                        <div class="flex items-center gap-5 flex-1 overflow-hidden">
+                            <img src="${mat.original || mat.maps.albedo}" class="w-16 h-16 rounded-lg shadow-sm border border-[var(--border-color)] object-cover flex-shrink-0">
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <h3 class="text-body-strong text-[var(--text-main)] truncate">${mat.name}</h3>
+                                    ${mat.usedAI ? '<i data-lucide="sparkles" class="w-4 h-4 text-[var(--apple-blue)]"></i>' : ''}
+                                </div>
+                                <p class="text-caption text-[var(--text-muted)] mt-1">Scale: ${mat.scale}x | Angle: ${mat.angle}° | IOR: ${mat.refraction || 1.5}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <button class="btn-download p-2 rounded-full hover:bg-[var(--hover-bg)] transition flex-shrink-0 text-[var(--text-main)]" data-id="${mat.id}" title="zip 파일 다운로드">
+                                <i data-lucide="download-cloud" class="w-5 h-5"></i>
+                            </button>
+                            <button class="btn-fav p-2 rounded-full hover:bg-[var(--hover-bg)] transition flex-shrink-0" data-id="${mat.id}">
+                                <svg class="w-5 h-5 heart-icon ${mat.isFavorite ? 'active' : 'text-[var(--text-muted)]'}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                            </button>
+                            <button class="btn-delete p-2 rounded-full hover:bg-red-500/20 hover:text-red-500 transition flex-shrink-0 text-[var(--text-muted)]" data-id="${mat.id}" title="라이브러리에서 완전히 삭제">
+                                <i data-lucide="trash-2" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    `;
+                }
+
+                item.addEventListener('click', (e) => {
+                    if(e.target.closest('.btn-fav') || e.target.closest('.btn-download') || e.target.closest('.btn-delete')) return; 
+                    loadMaterialToViewer(mat);
+                    document.getElementById('btn-3d').click();
+                });
+                
+                item.querySelector('.btn-download').addEventListener('click', async (e) => {
+                    e.stopPropagation();
+                    if (currentUserId === 'guest') {
+                        document.getElementById('login-modal').classList.remove('hidden');
+                        document.getElementById('input-pw').value = '';
+                        document.getElementById('login-error').classList.add('hidden');
+                        return;
+                    }
+                    downloadMaterialMaps(mat, e.currentTarget);
+                });
+
+                item.querySelector('.btn-fav').addEventListener('click', async (e) => {
+                    e.stopPropagation();
+                    mat.isFavorite = !mat.isFavorite;
+                    await saveLibrary();
+                    renderLibrary();
+                });
+
+                item.querySelector('.btn-delete').addEventListener('click', async (e) => {
+                    e.stopPropagation();
+                    const confirmed = await showDialog(`라이브러리에서 <b>'${mat.name}'</b> 재질을<br/>영구적으로 삭제하시겠습니까?`, true);
+                    if(confirmed) {
+                        materialsLib = materialsLib.filter(m => m.id !== mat.id);
+                        await saveLibrary();
+                        if(activeMaterialId === mat.id) {
+                            activeMaterialId = null;
+                            setViewerToEmptyState();
+                        }
+                        renderLibrary();
+                    }
+                });
+
                 listEl.appendChild(item);
             });
+            lucide.createIcons();
         };
 
-        // --- 3D Viewer Setup ---
-        let scene, camera, renderer, controls, sphere;
-        const init3DViewer = () => {
-            const container = document.getElementById('canvas-container');
-            scene = new THREE.Scene();
-            scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+        const createNewMaterialEntry = async (maps, typeName = "커스텀 재질", originalSrc = "", usedAI = false) => {
+            const num = materialsLib.length + 1;
+            const newMat = {
+                id: Date.now().toString(),
+                name: `${typeName}_${num.toString().padStart(2, '0')}`,
+                maps: maps,
+                original: originalSrc,
+                scale: 1,
+                angle: 0,
+                refraction: 1.5,
+                bump: 0.0,
+                isFavorite: false,
+                usedAI: usedAI
+            };
+            materialsLib.unshift(newMat);
+            await saveLibrary();
+            loadMaterialToViewer(newMat);
+            renderLibrary();
+        };
+
+        // --- Gemini API Processing Logic ---
+        const processImageWithGemini = async (base64Image) => {
+            if (!savedApiKey) return null;
+
+            const base64Data = base64Image.replace(/^data:image\/(png|jpeg|webp);base64,/, "");
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent?key=${savedApiKey}`;
             
+            const payload = {
+                contents: [{
+                    parts: [
+                        { text: "Transform the given image into a perfectly seamless, flat albedo texture for 3D PBR mapping. Upscale and enhance the resolution to 4K high-definition. Remove any uneven lighting, shadows, highlights, or perspective distortions. Ensure the pattern is completely tileable without visible seams and has extremely high quality details." },
+                        { inlineData: { mimeType: "image/jpeg", data: base64Data } }
+                    ]
+                }],
+                generationConfig: {
+                    responseModalities: ['TEXT', 'IMAGE']
+                }
+            };
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    console.error("Gemini API Error:", response.status, response.statusText);
+                    return null;
+                }
+
+                const result = await response.json();
+                const outputBase64 = result.candidates?.[0]?.content?.parts?.find(p => p.inlineData)?.inlineData?.data;
+                
+                if (outputBase64) {
+                    return `data:image/jpeg;base64,${outputBase64}`;
+                }
+                return null;
+            } catch (error) {
+                console.error("Gemini API Fetch Error:", error);
+                return null;
+            }
+        };
+
+
+        // --- 3D Viewer Setup ---
+        let scene, camera, renderer, controls, sphere, sphereGroup, container;
+        let currentMaps = {};
+        
+        let idleTimer;
+        let isIdle = true;
+        const resetIdleTimer = () => {
+            isIdle = false;
+            clearTimeout(idleTimer);
+            idleTimer = setTimeout(() => { isIdle = true; }, 5000);
+        };
+
+        function generatePBRMapsFromCanvas(sourceCanvas) {
+            const width = sourceCanvas.width;
+            const height = sourceCanvas.height;
+            const ctx = sourceCanvas.getContext('2d');
+            const imgData = ctx.getImageData(0, 0, width, height);
+            const data = imgData.data;
+
+            const dispData = new Uint8ClampedArray(data.length);
+            const roughData = new Uint8ClampedArray(data.length);
+            const normalData = new Uint8ClampedArray(data.length);
+            const aoData = new Uint8ClampedArray(data.length);
+
+            const luminance = new Float32Array(width * height);
+            for (let i = 0; i < data.length; i += 4) {
+                const lum = 0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2];
+                luminance[i/4] = lum;
+
+                // Displacement (Height) Map
+                dispData[i] = dispData[i+1] = dispData[i+2] = lum;
+                dispData[i+3] = 255;
+
+                // Roughness Map (Inverted and contrasted)
+                roughData[i] = roughData[i+1] = roughData[i+2] = 255 - (lum * 0.7 + 30);
+                roughData[i+3] = 255;
+
+                // Ambient Occlusion Map (Enhance dark crevices)
+                const aoVal = lum < 140 ? lum * 1.5 : 255;
+                aoData[i] = aoData[i+1] = aoData[i+2] = Math.min(255, aoVal);
+                aoData[i+3] = 255;
+            }
+
+            for (let y = 0; y < height; y++) {
+                for (let x = 0; x < width; x++) {
+                    const i = (y * width + x) * 4;
+
+                    const xLeft   = Math.max(0, x - 1);
+                    const xRight  = Math.min(width - 1, x + 1);
+                    const yUp     = Math.max(0, y - 1);
+                    const yDown   = Math.min(height - 1, y + 1);
+
+                    const lLeft   = luminance[y * width + xLeft];
+                    const lRight  = luminance[y * width + xRight];
+                    const lUp     = luminance[yUp * width + x];
+                    const lDown   = luminance[yDown * width + x];
+
+                    const dX = (lRight - lLeft) * 2.0; 
+                    const dY = (lDown - lUp) * 2.0;
+                    const dZ = 255.0; 
+
+                    const length = Math.sqrt(dX * dX + dY * dY + dZ * dZ);
+                    const nX = dX / length;
+                    const nY = dY / length;
+                    const nZ = dZ / length;
+
+                    normalData[i]     = Math.floor((nX + 1.0) * 127.5); 
+                    normalData[i + 1] = Math.floor((nY + 1.0) * 127.5); 
+                    normalData[i + 2] = Math.floor(nZ * 255.0);         
+                    normalData[i + 3] = 255;                            
+                }
+            }
+
+            const createCanvasObj = (arrayData) => {
+                const c = document.createElement('canvas');
+                c.width = width; c.height = height;
+                const cCtx = c.getContext('2d');
+                cCtx.putImageData(new ImageData(arrayData, width, height), 0, 0);
+                return c.toDataURL('image/jpeg', 0.8); 
+            };
+
+            return {
+                albedo: sourceCanvas.toDataURL('image/jpeg', 0.8),
+                normal: createCanvasObj(normalData),
+                roughness: createCanvasObj(roughData),
+                ao: createCanvasObj(aoData),
+                displacement: createCanvasObj(dispData)
+            };
+        }
+
+        const init3DViewer = async () => {
+            container = document.getElementById('canvas-container');
+            scene = new THREE.Scene();
+
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
             const dirLight = new THREE.DirectionalLight(0xffffff, 1.5);
             dirLight.position.set(5, 5, 5);
             scene.add(dirLight);
+            const backLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            backLight.position.set(-5, -5, -5);
+            scene.add(backLight);
 
             camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
             camera.position.z = 3.5;
 
             renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.toneMappingExposure = 1.0;
             container.appendChild(renderer.domElement);
 
             controls = new THREE.OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.minDistance = 1.5;
+            controls.maxDistance = 6;
+            
+            controls.mouseButtons = {
+                LEFT: THREE.MOUSE.ROTATE,
+                MIDDLE: THREE.MOUSE.PAN,
+                RIGHT: THREE.MOUSE.ROTATE
+            };
+            
+            controls.addEventListener('start', resetIdleTimer);
+            controls.addEventListener('change', resetIdleTimer);
+
+            sphereGroup = new THREE.Group();
+            scene.add(sphereGroup);
 
             const geometry = new THREE.SphereGeometry(1, 256, 256);
+            // Needed for AO Map in Three.js
             geometry.setAttribute('uv2', new THREE.BufferAttribute(geometry.attributes.uv.array, 2));
 
-            sphere = new THREE.Mesh(geometry, new THREE.MeshPhysicalMaterial({ color: 0xd2d2d7, roughness: 0.5 }));
-            scene.add(sphere);
+            sphere = new THREE.Mesh(geometry, new THREE.MeshPhysicalMaterial({ color: 0xd2d2d7, roughness: 0.5, metalness: 0.1, ior: 1.5 }));
+            sphereGroup.add(sphere);
 
-            const animate = () => { requestAnimationFrame(animate); controls.update(); renderer.render(scene, camera); };
-            animate();
-        };
-
-        // --- AI API CALL (Gemini 3 Flash Image Logic) ---
-        // 사용자가 입력한 API 키를 활용해 AI 모델을 호출하는 로직입니다.
-        async function callGeminiImageAPI(apiKey, base64Image) {
-            // 참고: 실제 Gemini Image API의 정확한 엔드포인트와 규격은 Google AI Studio 문서를 따릅니다.
-            // 아래는 디자이너님의 작업 환경에서 작동하도록 구성된 API 호출 래퍼(Wrapper)입니다.
-            const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-            const base64Data = base64Image.split(',')[1];
-            
-            // Note: 현재 웹 브라우저에서 직접 Nano Banana(Image)를 호출하는 Rest API는 보안/CORS 문제로 
-            // 텍스트/멀티모달 모델 엔드포인트로 우회하여 시뮬레이션 하거나 서버리스 함수를 쓰는 것이 일반적입니다.
-            // 이 코드는 디자이너님의 구조에 맞춘 "연동 뼈대"입니다.
-            
-            try {
-                // 이 부분에 구글에서 제공하는 실제 이미지 생성 fetch 코드가 들어갑니다.
-                // 임시로, AI가 "처리를 완료하고 새로운 이미지를 반환했다"고 가정하고
-                // 캔버스 기반 래핑 알고리즘으로 넘겨주기 위해 원본 base64를 반환합니다.
-                
-                // 실제 서비스 시 주석 해제 및 규격 맞춤:
-                /*
-                const response = await fetch('YOUR_IMAGEN_ENDPOINT', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ image: base64Data, prompt: "Make seamless PBR albedo" })
-                });
-                const data = await response.json();
-                return "data:image/jpeg;base64," + data.generatedImage;
-                */
-
-                // 딜레이 시뮬레이션 (AI가 이미지를 생성하고 변환하는 시간)
-                await new Promise(r => setTimeout(r, 2000));
-                
-                // API 연동이 완벽히 구성되기 전까지는 원본 이미지를 AI가 가공했다고 간주하고 다음 스텝으로 넘깁니다.
-                return base64Image; 
-            } catch (error) {
-                console.error("API Call Error:", error);
-                throw error;
-            }
-        }
-
-        // --- Image to PBR Maps Algorithm ---
-        function generatePBRMapsFromCanvas(sourceImageBase64) {
-            return new Promise((resolve) => {
-                const img = new Image();
-                img.src = sourceImageBase64;
-                img.onload = () => {
-                    const c = document.createElement('canvas');
-                    c.width = 1024; c.height = 1024;
-                    const ctx = c.getContext('2d');
-                    
-                    // Seamless 처리를 위한 4분할 래핑 (AI 보정 전 기본 형태 잡기)
-                    const t = document.createElement('canvas'); t.width = 1024; t.height = 1024;
-                    t.getContext('2d').drawImage(img, 0, 0, 1024, 1024);
-                    ctx.drawImage(t, 512, 512, 512, 512, 0, 0, 512, 512); 
-                    ctx.drawImage(t, 0, 512, 512, 512, 512, 0, 512, 512); 
-                    ctx.drawImage(t, 512, 0, 512, 512, 0, 512, 512, 512); 
-                    ctx.drawImage(t, 0, 0, 512, 512, 512, 512, 512, 512); 
-
-                    // 경계선 블렌딩
-                    const m = document.createElement('canvas'); m.width = 1024; m.height = 1024;
-                    const mCtx = m.getContext('2d');
-                    mCtx.drawImage(t, 0, 0);
-                    mCtx.globalCompositeOperation = 'destination-in';
-                    const grad = mCtx.createRadialGradient(512, 512, 100, 512, 512, 512);
-                    grad.addColorStop(0, 'rgba(0,0,0,1)'); grad.addColorStop(1, 'rgba(0,0,0,0)');
-                    mCtx.fillStyle = grad; mCtx.fillRect(0, 0, 1024, 1024);
-                    ctx.drawImage(m, 0, 0);
-
-                    // PBR 맵 데이터 생성 (흑백 음영, 범프 계산 로직 - 간략화)
-                    resolve({
-                        albedo: c.toDataURL('image/jpeg', 0.8),
-                        normal: c.toDataURL('image/jpeg', 0.8),    // 실제 환경에선 위에서 작성하신 Normal 추출 로직 사용
-                        roughness: c.toDataURL('image/jpeg', 0.8), // 실제 환경에선 위에서 작성하신 Roughness 로직 사용
-                        ao: c.toDataURL('image/jpeg', 0.8),
-                        displacement: c.toDataURL('image/jpeg', 0.8)
-                    });
+            const animate = () => {
+                requestAnimationFrame(animate);
+                if(isIdle && !controls.state) {
+                    sphereGroup.rotation.y += 0.0015;
                 }
+                controls.update();
+                renderer.render(scene, camera);
+            };
+            animate();
+            resetIdleTimer();
+
+            window.addEventListener('resize', () => {
+                if(!container) return;
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth, container.clientHeight);
             });
-        }
 
-        // --- Workflow Actions ---
-        document.getElementById('btn-generate').addEventListener('click', async () => {
-            const apiKey = document.getElementById('input-api-key').value;
-            const sourcePreview = document.getElementById('source-image-preview');
-            const loadingOverlay = document.getElementById('loading');
-            const loadingText = document.getElementById('loading-text');
-
-            if(!apiKey) {
-                alert("우측 상단에 발급받으신 Gemini API Key를 입력해주세요!");
-                document.getElementById('input-api-key').focus();
-                return;
+            await loadLibrary();
+            if(materialsLib.length > 0) {
+                loadMaterialToViewer(materialsLib[0]);
+            } else {
+                setViewerToEmptyState();
             }
-
-            loadingOverlay.classList.remove('hidden');
-            
-            try {
-                // 1단계: AI에게 원본 이미지를 전달하고 고화질 심리스 텍스처(Base)를 받아옵니다.
-                loadingText.textContent = "AI가 텍스처를 분석하고 새롭게 그리고 있습니다...";
-                const aiGeneratedBaseImage = await callGeminiImageAPI(apiKey, sourcePreview.src);
-
-                // 2단계: AI가 그려준 베이스 이미지를 바탕으로 5종 물리 맵(PBR) 데이터를 추출합니다.
-                loadingText.textContent = "물리 기반 데이터(Normal, Roughness 등)를 연산 중입니다...";
-                const newMaps = await generatePBRMapsFromCanvas(aiGeneratedBaseImage);
-
-                // 3단계: 라이브러리 객체 생성 및 뷰어 반영
-                const newMat = {
-                    id: Date.now().toString(),
-                    name: `AI_Material_${materialsLib.length + 1}`,
-                    maps: newMaps,
-                    scale: 1, refraction: 1.5, bump: 0.0
-                };
-                
-                materialsLib.unshift(newMat);
-                loadMaterialToViewer(newMat);
-                renderLibrary();
-
-                loadingOverlay.classList.add('hidden');
-                document.getElementById('panel-upload').classList.add('hidden');
-                document.getElementById('panel-result').classList.remove('hidden');
-                document.getElementById('panel-result').classList.add('flex');
-                document.getElementById('btn-3d').click();
-
-            } catch(e) {
-                alert("AI 생성 중 오류가 발생했습니다. API 키가 유효한지 확인해주세요.");
-                loadingOverlay.classList.add('hidden');
-            }
-        });
+        };
 
         const loadMaterialToViewer = (matData) => {
             activeMaterialId = matData.id;
-            document.getElementById('result-mat-name').textContent = matData.name;
-            document.getElementById('result-original-image').src = matData.maps.albedo;
+            currentMaps = matData.maps;
             
-            document.getElementById('img-color').src = matData.maps.albedo;
-            document.getElementById('img-normal').src = matData.maps.normal;
-            document.getElementById('img-roughness').src = matData.maps.roughness;
-            document.getElementById('img-ao').src = matData.maps.ao;
-            document.getElementById('img-displacement').src = matData.maps.displacement;
+            document.getElementById('result-mat-name').textContent = matData.name;
+            
+            if(matData.usedAI) {
+                document.getElementById('result-seamless-status').innerHTML = '<i data-lucide="sparkles" class="w-4 h-4 inline-block mr-1"></i>AI 생성';
+                document.getElementById('result-ai-status').textContent = 'Gemini-Enhanced';
+            } else {
+                document.getElementById('result-seamless-status').textContent = 'Seamless';
+                document.getElementById('result-ai-status').textContent = 'Tiling Ready';
+            }
+
+            document.getElementById('result-empty-content').classList.add('hidden');
+            document.getElementById('result-empty-content').classList.remove('flex');
+            document.getElementById('result-image-content').classList.remove('hidden');
+            document.getElementById('result-original-image').src = matData.original || currentMaps.albedo;
+            
+            document.getElementById('slider-scale').value = matData.scale;
+            document.getElementById('val-scale').textContent = `${matData.scale}`;
+            document.getElementById('slider-angle').value = matData.angle;
+            document.getElementById('val-angle').textContent = `${matData.angle}°`;
+            
+            const refVal = matData.refraction !== undefined ? matData.refraction : 1.5;
+            document.getElementById('slider-refraction').value = refVal;
+            document.getElementById('val-refraction').textContent = `${refVal}`;
+
+            const bumpVal = matData.bump !== undefined ? matData.bump : 0;
+            document.getElementById('slider-bump').value = bumpVal;
+            document.getElementById('val-bump').textContent = `${bumpVal}`;
+
+            updateSliderBg(document.getElementById('slider-scale'));
+            updateSliderBg(document.getElementById('slider-angle'));
+            updateSliderBg(document.getElementById('slider-refraction'));
+            updateSliderBg(document.getElementById('slider-bump'));
+
+            document.getElementById('img-color').src = currentMaps.albedo;
+            document.getElementById('img-normal').src = currentMaps.normal;
+            document.getElementById('img-roughness').src = currentMaps.roughness;
+            document.getElementById('img-ao').src = currentMaps.ao;
+            document.getElementById('img-displacement').src = currentMaps.displacement;
 
             const loader = new THREE.TextureLoader();
-            loader.load(matData.maps.albedo, (tex) => {
-                tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
-                sphere.material.map = tex;
-                sphere.material.color.setHex(0xffffff);
-                sphere.material.needsUpdate = true;
-            });
+            const applyTexture = (url, type) => {
+                loader.load(url, (tex) => {
+                    tex.wrapS = THREE.RepeatWrapping;
+                    tex.wrapT = THREE.RepeatWrapping;
+                    tex.center.set(0.5, 0.5);
+                    tex.repeat.set(matData.scale, matData.scale);
+                    tex.rotation = 0; 
+                    
+                    sphere.material[type] = tex;
+                    
+                    if(type === 'map') sphere.material.color.setHex(0xffffff);
+                    if(type === 'displacementMap') {
+                        sphere.material.displacementScale = bumpVal;
+                        sphere.material.displacementBias = -bumpVal * 0.5;
+                    }
+                    
+                    sphere.material.ior = Math.max(1.0, refVal);
+                    if (refVal === 0) {
+                        sphere.material.metalness = 0.0;
+                    } else {
+                        const isMetal = matData.name.includes("메탈");
+                        sphere.material.metalness = isMetal ? 1.0 : 0.1;
+                    }
+                    
+                    const angleRad = matData.angle * (Math.PI / 180);
+                    sphere.rotation.z = -angleRad;
+
+                    sphere.material.needsUpdate = true;
+                });
+            };
+
+            applyTexture(currentMaps.albedo, 'map');
+            applyTexture(currentMaps.normal, 'normalMap');
+            applyTexture(currentMaps.roughness, 'roughnessMap');
+            applyTexture(currentMaps.ao, 'aoMap');
+            applyTexture(currentMaps.displacement, 'displacementMap');
+
+            renderLibrary();
+            document.getElementById('panel-upload').classList.add('hidden');
+            document.getElementById('panel-result').classList.remove('hidden');
+            document.getElementById('panel-result').classList.add('flex');
         };
 
-        const updateMaterialTransform = () => {
-            const scale = parseFloat(document.getElementById('slider-scale').value);
-            const refraction = parseFloat(document.getElementById('slider-refraction').value);
-            const bump = parseFloat(document.getElementById('slider-bump').value);
+        const setViewerToEmptyState = () => {
+            document.getElementById('result-mat-name').textContent = "재질 없음";
             
-            document.getElementById('val-scale').textContent = scale;
-            document.getElementById('val-refraction').textContent = refraction;
-            document.getElementById('val-bump').textContent = bump;
+            document.getElementById('result-image-content').classList.add('hidden');
+            document.getElementById('result-empty-content').classList.remove('hidden');
+            document.getElementById('result-empty-content').classList.add('flex');
 
-            if(sphere && sphere.material.map) {
-                sphere.material.map.repeat.set(scale, scale);
-                sphere.material.ior = Math.max(1.0, refraction);
-                sphere.material.displacementScale = bump;
+            document.getElementById('img-color').src = '';
+            document.getElementById('img-normal').src = '';
+            document.getElementById('img-roughness').src = '';
+            document.getElementById('img-ao').src = '';
+            document.getElementById('img-displacement').src = '';
+
+            if(sphere) {
+                sphere.material.map = null;
+                sphere.material.normalMap = null;
+                sphere.material.roughnessMap = null;
+                sphere.material.aoMap = null;
+                sphere.material.displacementMap = null;
+                
+                sphere.material.color.setHex(0xd2d2d7);
+                sphere.material.roughness = 0.5;
+                sphere.material.metalness = 0.1;
+                sphere.material.ior = 1.5;
+                sphere.material.displacementScale = 0;
+                
+                sphere.rotation.set(0,0,0);
+                
                 sphere.material.needsUpdate = true;
             }
         };
 
         const updateSliderBg = (slider) => {
-            const min = parseFloat(slider.min) || 0, max = parseFloat(slider.max) || 100, val = parseFloat(slider.value);
-            slider.style.setProperty('--slider-percent', `calc(8px + (100% - 16px) * ${(val - min) / (max - min)})`);
+            const min = parseFloat(slider.min) || 0;
+            const max = parseFloat(slider.max) || 100;
+            const val = parseFloat(slider.value);
+            const percentage = (val - min) / (max - min);
+            
+            slider.style.setProperty('--slider-percent', `calc(8px + (100% - 16px) * ${percentage})`);
         };
 
-        document.querySelectorAll('input[type="range"]').forEach(slider => {
-            slider.addEventListener('input', (e) => {
-                updateSliderBg(e.target);
-                updateMaterialTransform();
+        const updateMaterialTransform = () => {
+            const scaleSlider = document.getElementById('slider-scale');
+            const angleSlider = document.getElementById('slider-angle');
+            const refractionSlider = document.getElementById('slider-refraction');
+            const bumpSlider = document.getElementById('slider-bump');
+            
+            const scale = parseFloat(scaleSlider.value);
+            const angleDeg = parseFloat(angleSlider.value);
+            const angleRad = angleDeg * (Math.PI / 180);
+            const refraction = parseFloat(refractionSlider.value);
+            const bump = parseFloat(bumpSlider.value);
+
+            document.getElementById('val-scale').textContent = `${scale}`;
+            document.getElementById('val-angle').textContent = `${angleDeg}°`;
+            document.getElementById('val-refraction').textContent = `${refraction}`;
+            document.getElementById('val-bump').textContent = `${bump}`;
+            
+            updateSliderBg(scaleSlider);
+            updateSliderBg(angleSlider);
+            updateSliderBg(refractionSlider);
+            updateSliderBg(bumpSlider);
+
+            const maps = ['map', 'normalMap', 'roughnessMap', 'aoMap', 'displacementMap'];
+            maps.forEach(m => {
+                if(sphere && sphere.material[m]) {
+                    sphere.material[m].repeat.set(scale, scale);
+                    sphere.material[m].rotation = 0; 
+                }
             });
+            if(sphere) {
+                sphere.material.ior = Math.max(1.0, refraction);
+                if (refraction === 0) {
+                    sphere.material.metalness = 0.0;
+                } else {
+                    const isMetal = document.getElementById('result-mat-name').textContent.includes("메탈");
+                    sphere.material.metalness = isMetal ? 1.0 : 0.1;
+                }
+                
+                sphere.material.displacementScale = bump;
+                sphere.material.displacementBias = -bump * 0.5;
+                sphere.rotation.z = -angleRad;
+                sphere.material.needsUpdate = true;
+            }
+            resetIdleTimer();
+        };
+
+        document.getElementById('slider-scale').addEventListener('input', updateMaterialTransform);
+        document.getElementById('slider-angle').addEventListener('input', updateMaterialTransform);
+        document.getElementById('slider-refraction').addEventListener('input', updateMaterialTransform);
+        document.getElementById('slider-bump').addEventListener('input', updateMaterialTransform);
+
+        document.getElementById('btn-delete-current').addEventListener('click', (e) => {
+            e.stopPropagation();
+            activeMaterialId = null;
+            setViewerToEmptyState();
+            renderLibrary();
         });
 
-        // UI Interactions
-        document.getElementById('file-upload').addEventListener('change', (e) => {
-            if(e.target.files[0]) {
-                const reader = new FileReader();
-                reader.onload = (ev) => {
-                    document.getElementById('source-image-preview').src = ev.target.result;
-                    document.getElementById('drop-zone').classList.add('hidden');
-                    document.getElementById('image-preview-container').classList.remove('hidden');
-                    document.getElementById('image-preview-container').classList.add('flex');
+        const setupDirectInput = (id, type) => {
+            const span = document.getElementById(id);
+            span.addEventListener('dblclick', function() {
+                const currentText = this.textContent.replace('°', '');
+                const currentVal = parseFloat(currentText);
+                
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.value = currentVal;
+                input.className = 'w-full bg-transparent text-center text-[var(--apple-blue)] font-mono outline-none';
+                
+                let min, max, step;
+                if(type === 'scale') { step = 0.1; min = 0.1; max = 5; }
+                else if(type === 'angle') { step = 1; min = 0; max = 360; }
+                else if(type === 'refraction') { step = 0.1; min = 0.0; max = 3.0; }
+                else if(type === 'bump') { step = 0.01; min = -0.5; max = 0.5; }
+                
+                input.step = step; input.min = min; input.max = max;
+                
+                const finishEdit = () => {
+                    let newVal = parseFloat(input.value);
+                    if (isNaN(newVal)) newVal = currentVal;
+                    newVal = Math.max(min, Math.min(max, newVal));
+                    
+                    if(type === 'scale') document.getElementById('slider-scale').value = newVal;
+                    else if(type === 'angle') document.getElementById('slider-angle').value = newVal;
+                    else if(type === 'refraction') document.getElementById('slider-refraction').value = newVal;
+                    else if(type === 'bump') document.getElementById('slider-bump').value = newVal;
+                    
+                    span.innerHTML = '';
+                    updateMaterialTransform();
                 };
-                reader.readAsDataURL(e.target.files[0]);
+
+                input.addEventListener('blur', finishEdit);
+                input.addEventListener('keydown', (e) => {
+                    if(e.key === 'Enter') input.blur();
+                });
+
+                this.innerHTML = '';
+                this.appendChild(input);
+                input.focus();
+                input.select();
+            });
+        };
+        
+        setupDirectInput('val-scale', 'scale');
+        setupDirectInput('val-angle', 'angle');
+        setupDirectInput('val-refraction', 'refraction');
+        setupDirectInput('val-bump', 'bump');
+
+        document.getElementById('btn-save-transform').addEventListener('click', async () => {
+            if(!activeMaterialId) return;
+            const mat = materialsLib.find(m => m.id === activeMaterialId);
+            if(mat) {
+                mat.scale = parseFloat(document.getElementById('slider-scale').value);
+                mat.angle = parseFloat(document.getElementById('slider-angle').value);
+                mat.refraction = parseFloat(document.getElementById('slider-refraction').value);
+                mat.bump = parseFloat(document.getElementById('slider-bump').value);
+                await saveLibrary();
+                
+                const btn = document.getElementById('btn-save-transform');
+                const origText = btn.textContent;
+                btn.textContent = "저장되었습니다!";
+                btn.classList.add('text-green-500');
+                btn.classList.remove('text-[var(--text-main)]');
+                setTimeout(() => {
+                    btn.textContent = origText;
+                    btn.classList.remove('text-green-500');
+                    btn.classList.add('text-[var(--text-main)]');
+                }, 2000);
             }
         });
 
-        document.getElementById('btn-cancel').addEventListener('click', () => {
-            document.getElementById('image-preview-container').classList.add('hidden');
-            document.getElementById('drop-zone').classList.remove('hidden');
+        const modalLogin = document.getElementById('login-modal');
+        const btnLoginToggle = document.getElementById('btn-login-toggle');
+        const inputPw = document.getElementById('input-pw');
+        const errorMsg = document.getElementById('login-error');
+        const userDisplay = document.getElementById('user-display');
+
+        btnLoginToggle.addEventListener('click', async () => {
+            if(currentUserId === 'guest') {
+                modalLogin.classList.remove('hidden');
+                inputPw.value = '';
+                errorMsg.classList.add('hidden');
+            } else {
+                currentUserId = 'guest';
+                btnLoginToggle.textContent = '로그인';
+                userDisplay.classList.add('hidden');
+                await loadLibrary(); 
+                if(materialsLib.length > 0) loadMaterialToViewer(materialsLib[0]);
+                else setViewerToEmptyState();
+            }
         });
 
-        document.getElementById('btn-new-material').addEventListener('click', () => {
-            document.getElementById('panel-result').classList.add('hidden');
-            document.getElementById('panel-upload').classList.remove('hidden');
-            document.getElementById('btn-cancel').click();
+        document.getElementById('btn-close-login').addEventListener('click', () => modalLogin.classList.add('hidden'));
+
+        document.getElementById('btn-submit-login').addEventListener('click', async () => {
+            if(inputPw.value === '3377') {
+                currentUserId = 'foundfounded';
+                modalLogin.classList.add('hidden');
+                btnLoginToggle.textContent = '로그아웃';
+                userDisplay.classList.remove('hidden');
+                
+                await loadLibrary(); 
+                if(materialsLib.length > 0) {
+                    loadMaterialToViewer(materialsLib[0]);
+                } else {
+                    setViewerToEmptyState();
+                }
+            } else {
+                errorMsg.classList.remove('hidden');
+            }
         });
 
-        const switchTab = (tab) => {
-            ['3d','2d','library'].forEach(t => {
-                document.getElementById(`view-${t}`).classList.add('hidden');
-                document.getElementById(`btn-${t}`).classList.remove('active');
-                document.getElementById(`btn-${t}`).style.color = 'var(--text-muted)';
-            });
-            document.getElementById(`view-${tab}`).classList.remove('hidden');
-            document.getElementById(`btn-${tab}`).classList.add('active');
-            document.getElementById(`btn-${tab}`).style.color = 'var(--text-main)';
+        inputPw.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                document.getElementById('btn-submit-login').click();
+            }
+        });
+
+        const initialModal = document.getElementById('initial-modal');
+        const guideModal = document.getElementById('guide-modal');
+
+        document.getElementById('btn-open-guide-from-modal').addEventListener('click', () => {
+            initialModal.classList.add('hidden');
+            document.getElementById('btn-open-guide').click();
+        });
+
+        document.getElementById('btn-open-guide').addEventListener('click', () => guideModal.classList.remove('hidden'));
+        document.getElementById('btn-close-guide').addEventListener('click', () => guideModal.classList.add('hidden'));
+
+        const boxFileUpload = document.getElementById('box-file-upload');
+        const fileInput = document.getElementById('file-upload');
+        const modalFileInput = document.getElementById('modal-file-upload');
+        const dropZone = document.getElementById('drop-zone');
+        const previewContainer = document.getElementById('image-preview-container');
+        const sourcePreview = document.getElementById('source-image-preview');
+        const loadingOverlay = document.getElementById('loading');
+        const loadingText = document.getElementById('loading-text');
+
+        document.getElementById('btn-box-upload').addEventListener('click', () => boxFileUpload.click());
+        document.getElementById('result-empty-content').addEventListener('click', () => boxFileUpload.click());
+
+        const handleFileSelect = (file) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                sourcePreview.src = e.target.result;
+                
+                dropZone.classList.add('hidden');
+                previewContainer.classList.remove('hidden');
+                previewContainer.classList.add('flex');
+            };
+            reader.readAsDataURL(file);
         };
 
-        document.getElementById('btn-3d').addEventListener('click', () => switchTab('3d'));
-        document.getElementById('btn-2d').addEventListener('click', () => switchTab('2d'));
-        document.getElementById('btn-library').addEventListener('click', () => switchTab('library'));
+        boxFileUpload.addEventListener('change', (e) => {
+            if(e.target.files[0]) {
+                handleFileSelect(e.target.files[0]);
+                document.getElementById('btn-generate').click();
+            }
+            e.target.value = '';
+        });
+
+        document.getElementById('btn-modal-upload-trigger').addEventListener('click', () => modalFileInput.click());
+        modalFileInput.addEventListener('change', (e) => {
+            if(e.target.files[0]) {
+                handleFileSelect(e.target.files[0]);
+                initialModal.classList.add('hidden');
+                setTimeout(() => document.getElementById('btn-generate').click(), 300);
+            }
+            e.target.value = '';
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if(e.target.files[0]) handleFileSelect(e.target.files[0]);
+            e.target.value = '';
+        });
+
+        const resultImageBox = document.getElementById('result-image-container');
+        const dropZones = [dropZone, resultImageBox];
+        
+        dropZones.forEach(zone => {
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                zone.addEventListener(eventName, preventDefaults, false);
+            });
+            ['dragenter', 'dragover'].forEach(eventName => {
+                zone.addEventListener(eventName, () => zone.classList.add('border-[var(--apple-blue)]'), false);
+            });
+            ['dragleave', 'drop'].forEach(eventName => {
+                zone.addEventListener(eventName, () => zone.classList.remove('border-[var(--apple-blue)]'), false);
+            });
+            zone.addEventListener('drop', (e) => {
+                let dt = e.dataTransfer;
+                let files = dt.files;
+                if(files && files[0] && files[0].type.match('image.*')) {
+                    handleFileSelect(files[0]);
+                    if(zone === resultImageBox) {
+                        document.getElementById('btn-generate').click();
+                    }
+                }
+            }, false);
+        });
+
+        function preventDefaults (e) { e.preventDefault(); e.stopPropagation(); }
+
+        document.getElementById('btn-cancel').addEventListener('click', () => {
+            fileInput.value = '';
+            previewContainer.classList.add('hidden');
+            previewContainer.classList.remove('flex');
+            dropZone.classList.remove('hidden');
+        });
+
+        document.getElementById('btn-generate').addEventListener('click', () => {
+            loadingOverlay.classList.remove('hidden');
+            let isApiMode = savedApiKey ? true : false;
+            loadingText.innerHTML = isApiMode ? 'Gemini AI로 고화질 PBR 맵을 생성 중입니다...<br><span class="text-sm font-normal text-[var(--text-muted)]">(최대 10~20초 소요)</span>' : '로컬에서 PBR 5종 맵을 추출 중입니다...';
+
+            setTimeout(async () => {
+                let processedImgSrc = sourcePreview.src;
+                let usedAI = false;
+
+                if (isApiMode) {
+                    try {
+                        const MAX_API_DIM = 1024;
+                        const apiCanvas = document.createElement('canvas');
+                        let rw = sourcePreview.naturalWidth || sourcePreview.width;
+                        let rh = sourcePreview.naturalHeight || sourcePreview.height;
+                        if (rw > MAX_API_DIM || rh > MAX_API_DIM) {
+                            const ratio = Math.min(MAX_API_DIM / rw, MAX_API_DIM / rh);
+                            rw = Math.round(rw * ratio);
+                            rh = Math.round(rh * ratio);
+                        } else if (rw === 0) {
+                            rw = 512; rh = 512;
+                        }
+                        apiCanvas.width = rw; 
+                        apiCanvas.height = rh;
+                        apiCanvas.getContext('2d').drawImage(sourcePreview, 0, 0, rw, rh);
+                        const b64 = apiCanvas.toDataURL('image/jpeg', 0.9);
+
+                        const aiResult = await processImageWithGemini(b64);
+                        if (aiResult) {
+                            processedImgSrc = aiResult;
+                            usedAI = true;
+                        } else {
+                            console.warn("Gemini processing returned null. Falling back to local method.");
+                        }
+                    } catch (e) {
+                        console.error("Gemini processing failed. Falling back to local.", e);
+                    }
+                }
+
+                const img = new Image();
+                img.onload = async () => {
+                    const OUTPUT_SIZE = 2048; // 고해상도 처리
+                    const c = document.createElement('canvas'); c.width=OUTPUT_SIZE; c.height=OUTPUT_SIZE;
+                    const ctx = c.getContext('2d');
+                    
+                    const tCanvas = document.createElement('canvas');
+                    tCanvas.width = OUTPUT_SIZE; tCanvas.height = OUTPUT_SIZE;
+                    tCanvas.getContext('2d').drawImage(img, 0, 0, OUTPUT_SIZE, OUTPUT_SIZE);
+
+                    if (!usedAI) {
+                        const HALF = OUTPUT_SIZE / 2;
+                        ctx.drawImage(tCanvas, HALF, HALF, HALF, HALF, 0, 0, HALF, HALF); 
+                        ctx.drawImage(tCanvas, 0, HALF, HALF, HALF, HALF, 0, HALF, HALF); 
+                        ctx.drawImage(tCanvas, HALF, 0, HALF, HALF, 0, HALF, HALF, HALF); 
+                        ctx.drawImage(tCanvas, 0, 0, HALF, HALF, HALF, HALF, HALF, HALF); 
+
+                        const mCanvas = document.createElement('canvas');
+                        mCanvas.width = OUTPUT_SIZE; mCanvas.height = OUTPUT_SIZE;
+                        const mCtx = mCanvas.getContext('2d');
+                        mCtx.drawImage(tCanvas, 0, 0);
+
+                        mCtx.globalCompositeOperation = 'destination-in';
+                        
+                        const grad = mCtx.createRadialGradient(HALF, HALF, OUTPUT_SIZE * 0.1, HALF, HALF, HALF);
+                        grad.addColorStop(0, 'rgba(0,0,0,1)');
+                        grad.addColorStop(0.5, 'rgba(0,0,0,1)');
+                        grad.addColorStop(1, 'rgba(0,0,0,0)');
+                        mCtx.fillStyle = grad;
+                        mCtx.fillRect(0, 0, OUTPUT_SIZE, OUTPUT_SIZE);
+
+                        ctx.drawImage(mCanvas, 0, 0);
+                    } else {
+                        ctx.drawImage(tCanvas, 0, 0);
+                    }
+
+                    const newMaps = generatePBRMapsFromCanvas(c);
+                    
+                    await createNewMaterialEntry(newMaps, usedAI ? "Gemini AI 재질" : "커스텀 재질", sourcePreview.src, usedAI);
+                    
+                    loadingOverlay.classList.add('hidden');
+                    document.getElementById('panel-upload').classList.add('hidden');
+                    document.getElementById('panel-result').classList.remove('hidden');
+                    document.getElementById('panel-result').classList.add('flex');
+                    document.getElementById('btn-3d').click();
+                };
+                img.src = processedImgSrc;
+            }, 100);
+        });
+
+        const lightboxModal = document.getElementById('lightbox-modal');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const btnCloseLightbox = document.getElementById('btn-close-lightbox');
+
+        const openLightbox = (src) => {
+            if(!src) return;
+            lightboxImg.src = src;
+            lightboxModal.classList.remove('hidden');
+            lightboxModal.classList.add('flex');
+        };
+
+        const closeLightbox = () => {
+            lightboxModal.classList.add('hidden');
+            lightboxModal.classList.remove('flex');
+            lightboxImg.src = '';
+        };
+
+        document.getElementById('img-color').addEventListener('click', function() { openLightbox(this.src); });
+        document.getElementById('img-normal').addEventListener('click', function() { openLightbox(this.src); });
+        document.getElementById('img-roughness').addEventListener('click', function() { openLightbox(this.src); });
+        document.getElementById('img-ao').addEventListener('click', function() { openLightbox(this.src); });
+        document.getElementById('img-displacement').addEventListener('click', function() { openLightbox(this.src); });
+
+        btnCloseLightbox.addEventListener('click', closeLightbox);
+        lightboxModal.addEventListener('click', (e) => {
+            if (e.target === lightboxModal || e.target.parentElement === lightboxModal) {
+                closeLightbox();
+            }
+        });
+
+        const btn3D = document.getElementById('btn-3d');
+        const btn2D = document.getElementById('btn-2d');
+        const btnLibrary = document.getElementById('btn-library');
+        const view3D = document.getElementById('view-3d');
+        const view2D = document.getElementById('view-2d');
+        const viewLibrary = document.getElementById('view-library');
+
+        const switchTab = (tabName) => {
+            view3D.classList.add('hidden');
+            view2D.classList.add('hidden');
+            viewLibrary.classList.add('hidden');
+            
+            btn3D.classList.remove('active'); btn3D.style.color = 'var(--text-muted)';
+            btn2D.classList.remove('active'); btn2D.style.color = 'var(--text-muted)';
+            btnLibrary.classList.remove('active'); btnLibrary.style.color = 'var(--text-muted)';
+
+            if(tabName === '3d') {
+                view3D.classList.remove('hidden');
+                btn3D.classList.add('active'); btn3D.style.color = 'var(--text-main)';
+            } else if(tabName === '2d') {
+                view2D.classList.remove('hidden');
+                btn2D.classList.add('active'); btn2D.style.color = 'var(--text-main)';
+            } else if(tabName === 'library') {
+                viewLibrary.classList.remove('hidden');
+                btnLibrary.classList.add('active'); btnLibrary.style.color = 'var(--text-main)';
+                renderLibrary();
+            }
+        };
+
+        btn3D.addEventListener('click', () => switchTab('3d'));
+        btn2D.addEventListener('click', () => switchTab('2d'));
+        btnLibrary.addEventListener('click', () => switchTab('library'));
+
+        const btnViewGrid = document.getElementById('btn-view-grid');
+        const btnViewList = document.getElementById('btn-view-list');
+
+        btnViewGrid.addEventListener('click', () => {
+            libraryViewMode = 'grid';
+            btnViewGrid.className = 'p-2 rounded-md bg-[var(--hover-bg)] text-[var(--text-main)] transition shadow-sm';
+            btnViewList.className = 'p-2 rounded-md text-[var(--text-muted)] hover:text-[var(--text-main)] transition';
+            renderLibrary();
+        });
+
+        btnViewList.addEventListener('click', () => {
+            libraryViewMode = 'list';
+            btnViewList.className = 'p-2 rounded-md bg-[var(--hover-bg)] text-[var(--text-main)] transition shadow-sm';
+            btnViewGrid.className = 'p-2 rounded-md text-[var(--text-muted)] hover:text-[var(--text-main)] transition';
+            renderLibrary();
+        });
+
+        document.getElementById('btn-zoom-in').addEventListener('click', () => {
+            if(camera && controls) { camera.translateZ(-0.5); controls.update(); resetIdleTimer(); }
+        });
+        document.getElementById('btn-zoom-out').addEventListener('click', () => {
+            if(camera && controls) { camera.translateZ(0.5); controls.update(); resetIdleTimer(); }
+        });
+
+        const downloadMaterialMaps = async (mat, btnElement = null, loadingText = null) => {
+            if(!mat || !mat.maps || !mat.maps.albedo) {
+                await showDialog("다운로드할 맵 데이터가 없습니다.");
+                return;
+            }
+            
+            let originalHTML = "";
+            if (btnElement) {
+                originalHTML = btnElement.innerHTML;
+                btnElement.innerHTML = loadingText ? `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> ${loadingText}` : '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i>';
+                lucide.createIcons();
+            }
+
+            const zip = new JSZip();
+            const matName = mat.name || "PBR_Material";
+
+            const addFile = (fileName, dataUrl) => {
+                if(dataUrl) {
+                    const base64Data = dataUrl.split(',')[1];
+                    zip.file(fileName, base64Data, {base64: true});
+                }
+            };
+
+            addFile(`${matName}_Color.jpg`, mat.maps.albedo);
+            addFile(`${matName}_Normal.jpg`, mat.maps.normal);
+            addFile(`${matName}_Roughness.jpg`, mat.maps.roughness);
+            addFile(`${matName}_AO.jpg`, mat.maps.ao);
+            addFile(`${matName}_Displacement.jpg`, mat.maps.displacement);
+
+            setTimeout(() => {
+                zip.generateAsync({type:"blob"}).then(function(content) {
+                    const a = document.createElement('a');
+                    a.href = URL.createObjectURL(content);
+                    a.download = `${matName}_Maps.zip`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    
+                    if (btnElement) {
+                        btnElement.innerHTML = originalHTML;
+                        lucide.createIcons();
+                    }
+                });
+            }, 50);
+        };
+
+        document.getElementById('btn-download-all-2d').addEventListener('click', (e) => {
+            if (currentUserId === 'guest') {
+                document.getElementById('login-modal').classList.remove('hidden');
+                document.getElementById('input-pw').value = '';
+                document.getElementById('login-error').classList.add('hidden');
+                return;
+            }
+            const mat = materialsLib.find(m => m.id === activeMaterialId);
+            if (mat) {
+                downloadMaterialMaps(mat, e.currentTarget, "압축 중...");
+            }
+        });
 
         window.onload = init3DViewer;
     </script>
