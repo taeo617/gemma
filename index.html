@@ -177,47 +177,88 @@
         </div>
     </div>
 
-    <!-- Guide Modal -->
+    <!-- Guide Modal (McKinsey Style Minimal Infographic) -->
     <div id="guide-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-[var(--overlay-bg)] backdrop-blur-[20px] transition-opacity duration-300">
-        <div class="apple-card p-10 max-w-4xl w-[90%] max-h-[90vh] overflow-y-auto relative border border-[var(--border-color)]">
-            <button id="btn-close-guide" class="absolute top-6 right-6 text-[var(--text-muted)] hover:text-[var(--text-main)] transition">
-                <i data-lucide="x" class="w-6 h-6"></i>
+        <div class="apple-card p-12 max-w-3xl w-[90%] relative border border-[var(--border-color)] shadow-2xl">
+            <button id="btn-close-guide" class="absolute top-6 right-6 text-[var(--text-muted)] hover:text-[var(--text-main)] transition bg-[var(--bg-main)] rounded-full p-2 border border-[var(--border-color)]">
+                <i data-lucide="x" class="w-5 h-5"></i>
             </button>
             
-            <div class="text-center mb-10">
-                <h2 class="text-title text-[var(--text-main)] mb-2">PBR Studio 프로세스 및 KeyShot 적용 가이드</h2>
+            <div class="mb-12 text-center">
+                <h2 class="text-2xl font-bold text-[var(--text-main)] mb-3 tracking-tight">PBR Studio Workflow</h2>
+                <p class="text-[var(--text-muted)] text-[15px]">단 한 장의 이미지로 완벽한 Seamless 3D 재질을 생성하는 프로세스</p>
             </div>
 
-            <!-- 프로세스 인포그래픽 -->
-            <div class="flex items-start justify-between gap-4 relative px-4 mb-12">
-                <div class="absolute top-8 left-16 right-16 h-[1px] bg-[var(--border-color)] z-0"></div>
-                <div class="relative z-10 flex flex-col items-center flex-1">
-                    <div class="w-16 h-16 bg-[var(--bg-main)] rounded-[12px] flex items-center justify-center mb-4 shadow-sm border border-[var(--border-color)]"><i data-lucide="upload" class="w-7 h-7 text-[var(--text-main)]"></i></div>
-                    <h3 class="text-body-strong text-[var(--text-main)] mb-1">1. 이미지 업로드</h3>
+            <!-- Minimal Infographic -->
+            <div class="flex items-center justify-between relative mb-12 px-6">
+                <!-- Connecting Line -->
+                <div class="absolute top-1/2 left-16 right-16 h-[2px] bg-gradient-to-r from-[var(--border-color)] via-[var(--apple-blue)] to-[var(--border-color)] -translate-y-1/2 z-0 opacity-40"></div>
+                
+                <!-- Step 1 -->
+                <div class="relative z-10 flex flex-col items-center bg-[var(--bg-card)] px-4">
+                    <div class="w-14 h-14 bg-[var(--bg-main)] border-2 border-[var(--border-color)] rounded-full flex items-center justify-center mb-4 text-[var(--text-main)] shadow-sm">
+                        <span class="font-bold text-lg">1</span>
+                    </div>
+                    <h3 class="text-[14px] font-semibold text-[var(--text-main)]">이미지 업로드</h3>
+                    <span class="text-[12px] text-[var(--text-muted)] mt-1 text-center">텍스처 원본 제공</span>
                 </div>
-                <div class="relative z-10 flex flex-col items-center flex-1">
-                    <div class="w-16 h-16 bg-[var(--bg-main)] rounded-[12px] flex items-center justify-center mb-4 shadow-sm border border-[var(--border-color)]"><i data-lucide="cpu" class="w-7 h-7 text-[var(--text-main)]"></i></div>
-                    <h3 class="text-body-strong text-[var(--text-main)] mb-1">2. 고화질 AI 분석</h3>
+                
+                <!-- Step 2 -->
+                <div class="relative z-10 flex flex-col items-center bg-[var(--bg-card)] px-4">
+                    <div class="w-14 h-14 bg-[var(--bg-main)] border-2 border-[var(--apple-blue)] rounded-full flex items-center justify-center mb-4 text-[var(--apple-blue)] shadow-[0_0_15px_rgba(0,113,227,0.25)]">
+                        <i data-lucide="sparkles" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-[14px] font-semibold text-[var(--text-main)]">AI 심리스 변환</h3>
+                    <span class="text-[12px] text-[var(--text-muted)] mt-1 text-center">경계선 래핑/마스킹</span>
                 </div>
-                <div class="relative z-10 flex flex-col items-center flex-1">
-                    <div class="w-16 h-16 bg-[var(--bg-main)] rounded-[12px] flex items-center justify-center mb-4 shadow-sm border border-[var(--border-color)]"><i data-lucide="box" class="w-7 h-7 text-[var(--text-main)]"></i></div>
-                    <h3 class="text-body-strong text-[var(--text-main)] mb-1">3. 조정 및 렌더링</h3>
+                
+                <!-- Step 3 -->
+                <div class="relative z-10 flex flex-col items-center bg-[var(--bg-card)] px-4">
+                    <div class="w-14 h-14 bg-[var(--bg-main)] border-2 border-[var(--border-color)] rounded-full flex items-center justify-center mb-4 text-[var(--text-main)] shadow-sm">
+                        <span class="font-bold text-lg">3</span>
+                    </div>
+                    <h3 class="text-[14px] font-semibold text-[var(--text-main)]">파라미터 조정</h3>
+                    <span class="text-[12px] text-[var(--text-muted)] mt-1 text-center">스케일 및 질감 제어</span>
                 </div>
-                <div class="relative z-10 flex flex-col items-center flex-1">
-                    <div class="w-16 h-16 bg-[var(--bg-main)] rounded-[12px] flex items-center justify-center mb-4 shadow-sm border border-[var(--border-color)]"><i data-lucide="download" class="w-7 h-7 text-[var(--text-main)]"></i></div>
-                    <h3 class="text-body-strong text-[var(--text-main)] mb-1">4. 내보내기</h3>
+                
+                <!-- Step 4 -->
+                <div class="relative z-10 flex flex-col items-center bg-[var(--bg-card)] px-4">
+                    <div class="w-14 h-14 bg-[var(--bg-main)] border-2 border-[var(--border-color)] rounded-full flex items-center justify-center mb-4 text-[var(--text-main)] shadow-sm">
+                        <i data-lucide="download-cloud" class="w-5 h-5"></i>
+                    </div>
+                    <h3 class="text-[14px] font-semibold text-[var(--text-main)]">추출 및 저장</h3>
+                    <span class="text-[12px] text-[var(--text-muted)] mt-1 text-center">5 Maps 패키지</span>
                 </div>
             </div>
             
-            <!-- KeyShot 매뉴얼 -->
-            <div class="bg-[var(--bg-main)] rounded-[12px] p-6 border border-[var(--border-color)] text-left">
-                <h3 class="text-card-title text-[var(--text-main)] mb-4 flex items-center gap-2"><i data-lucide="book-open" class="w-5 h-5"></i> KeyShot 재질 노드 연결 방법</h3>
-                <ul class="space-y-4 text-caption text-[var(--text-sub)]">
-                    <li><strong class="text-[var(--text-main)] text-body-strong">1. 확산 (Diffuse/Albedo):</strong> KeyShot 재질 속성의 <span class="text-[var(--apple-blue-dark)]">'색상(Color)'</span> 또는 '디퓨즈' 채널에 연결합니다.</li>
-                    <li><strong class="text-[var(--text-main)] text-body-strong">2. 범프 (Bump/Height):</strong> <span class="text-[var(--apple-blue-dark)]">'범프(Bump)'</span> 채널에 연결하세요. 물리적 요철을 살려줍니다.</li>
-                    <li><strong class="text-[var(--text-main)] text-body-strong">3. 반사 (Specular/Roughness):</strong> <span class="text-[var(--apple-blue-dark)]">'거칠기(Roughness)'</span> 맵으로 연결합니다.</li>
-                    <li><strong class="text-[var(--text-main)] text-body-strong">4. 타일링 (Seamless):</strong> 적용된 모든 맵은 타일링 처리(미러링 래핑)가 적용되어 있어, KeyShot 내에서 스케일을 조절해도 이음새가 어색하지 않고 자연스럽게 이어집니다.</li>
-                </ul>
+            <!-- Minimal KeyShot Guide -->
+            <div class="bg-[var(--bg-main)] rounded-xl p-7 border border-[var(--border-color)]">
+                <h3 class="text-[15px] font-semibold text-[var(--text-main)] mb-5 flex items-center gap-2">
+                    <i data-lucide="box" class="w-5 h-5 text-[var(--apple-blue)]"></i> 5 PBR Maps 활용 가이드
+                </h3>
+                <div class="grid grid-cols-3 gap-5 text-[13px] text-[var(--text-sub)]">
+                    <div class="flex flex-col gap-1 pb-2 border-b border-[var(--border-color)]">
+                        <strong class="text-[var(--apple-blue-dark)]">1. Color (Albedo)</strong>
+                        <span class="text-[12px]">표면의 기본 색상. <b>디퓨즈/확산</b> 채널에 연결합니다.</span>
+                    </div>
+                    <div class="flex flex-col gap-1 pb-2 border-b border-[var(--border-color)]">
+                        <strong class="text-[var(--apple-blue-dark)]">2. Normal</strong>
+                        <span class="text-[12px]">빛의 반사를 조작하여 세밀한 입체감을 주는 <b>노말/범프</b> 채널용 맵.</span>
+                    </div>
+                    <div class="flex flex-col gap-1 pb-2 border-b border-[var(--border-color)]">
+                        <strong class="text-[var(--apple-blue-dark)]">3. Roughness</strong>
+                        <span class="text-[12px]">표면의 거친 정도. <b>거칠기/광택</b> 채널에 연결합니다.</span>
+                    </div>
+                    <div class="flex flex-col gap-1 pb-2 border-b border-[var(--border-color)]">
+                        <strong class="text-[var(--apple-blue-dark)]">4. Ambient Occlusion</strong>
+                        <span class="text-[12px]">깊숙한 틈새의 그림자를 강조하는 <b>오클루전</b> 맵.</span>
+                    </div>
+                    <div class="flex flex-col gap-1 pb-2 border-b border-[var(--border-color)]">
+                        <strong class="text-[var(--apple-blue-dark)]">5. Displacement</strong>
+                        <span class="text-[12px]">실제 지오메트리를 변형시키는 <b>변위/범프</b> 채널용 깊이 맵.</span>
+                    </div>
+                </div>
+                <p class="text-[12px] text-[var(--text-muted)] mt-5 text-center">※ 생성된 5가지 맵은 완벽한 Seamless 타일링 처리가 되어 있어 끊김 없이 매끄럽게 연결됩니다.</p>
             </div>
         </div>
     </div>
@@ -285,37 +326,51 @@
                 <div id="loading" class="absolute inset-0 bg-[var(--overlay-bg)] backdrop-blur-[10px] flex items-center justify-center z-20 hidden">
                     <div class="flex flex-col items-center gap-6">
                         <i data-lucide="loader-2" class="w-12 h-12 text-[var(--apple-blue)] animate-spin"></i>
-                        <span class="text-body-strong text-[var(--text-main)]">AI가 이미지를 고화질 PBR로 처리 중입니다...</span>
+                        <span class="text-body-strong text-[var(--text-main)]">AI가 고화질 PBR 5종 맵을 추출 중입니다...</span>
                     </div>
                 </div>
             </div>
 
-            <!-- 2D Maps Grid -->
+            <!-- 2D Maps Grid (5 Maps Display) -->
             <div id="view-2d" class="w-full h-full hidden overflow-y-auto p-12 pt-24 bg-[var(--bg-main)]">
-                <div class="max-w-5xl mx-auto mb-8 flex justify-between items-end">
+                <div class="max-w-6xl mx-auto mb-8 flex justify-between items-end">
                     <div>
-                        <h2 class="text-title text-[var(--text-main)] mb-1">추출된 맵 데이터 (High-Res)</h2>
+                        <h2 class="text-title text-[var(--text-main)] mb-1">추출된 PBR 맵 데이터 (5 Maps)</h2>
                         <p class="text-body text-[var(--text-muted)]">이미지를 클릭하면 원본 크기로 확인할 수 있습니다.</p>
                     </div>
                 </div>
                 
-                <div class="grid grid-cols-3 gap-6 max-w-5xl mx-auto">
-                    <div class="apple-card p-5 border border-[var(--border-color)]">
-                        <h3 class="text-body-strong text-[var(--text-sub)] mb-4">원본 이미지 (Albedo)</h3>
-                        <div class="aspect-square bg-[var(--bg-main)] border border-[var(--border-color)] rounded-lg overflow-hidden">
-                            <img id="img-albedo" src="" class="w-full h-full object-cover cursor-pointer hover:scale-105 transition duration-500" title="클릭하여 확대">
+                <div class="grid grid-cols-3 gap-6 max-w-6xl mx-auto mb-10">
+                    <!-- Row 1 -->
+                    <div class="apple-card p-4 border border-[var(--border-color)] flex flex-col">
+                        <h3 class="text-[14px] font-semibold text-[var(--text-sub)] mb-3 flex items-center gap-2"><i data-lucide="image" class="w-4 h-4"></i> Color (Albedo)</h3>
+                        <div class="aspect-square bg-[var(--bg-main)] border border-[var(--border-color)] rounded-lg overflow-hidden flex-1">
+                            <img id="img-color" src="" class="w-full h-full object-cover cursor-pointer hover:scale-105 transition duration-500" title="클릭하여 확대">
                         </div>
                     </div>
-                    <div class="apple-card p-5 border border-[var(--border-color)]">
-                        <h3 class="text-body-strong text-[var(--text-sub)] mb-4">범프맵 (Bump)</h3>
-                        <div class="aspect-square bg-[var(--bg-main)] border border-[var(--border-color)] rounded-lg overflow-hidden">
-                            <img id="img-bump" src="" class="w-full h-full object-cover cursor-pointer hover:scale-105 transition duration-500" title="클릭하여 확대">
-                        </div>
-                    </div>
-                    <div class="apple-card p-5 border border-[var(--border-color)]">
-                        <h3 class="text-body-strong text-[var(--text-sub)] mb-4">노말맵 (Normal)</h3>
-                        <div class="aspect-square bg-[var(--bg-main)] border border-[var(--border-color)] rounded-lg overflow-hidden">
+                    <div class="apple-card p-4 border border-[var(--border-color)] flex flex-col">
+                        <h3 class="text-[14px] font-semibold text-[var(--text-sub)] mb-3 flex items-center gap-2"><i data-lucide="layers" class="w-4 h-4"></i> Normal</h3>
+                        <div class="aspect-square bg-[var(--bg-main)] border border-[var(--border-color)] rounded-lg overflow-hidden flex-1">
                             <img id="img-normal" src="" class="w-full h-full object-cover cursor-pointer hover:scale-105 transition duration-500" title="클릭하여 확대">
+                        </div>
+                    </div>
+                    <div class="apple-card p-4 border border-[var(--border-color)] flex flex-col">
+                        <h3 class="text-[14px] font-semibold text-[var(--text-sub)] mb-3 flex items-center gap-2"><i data-lucide="droplet" class="w-4 h-4"></i> Roughness</h3>
+                        <div class="aspect-square bg-[var(--bg-main)] border border-[var(--border-color)] rounded-lg overflow-hidden flex-1">
+                            <img id="img-roughness" src="" class="w-full h-full object-cover cursor-pointer hover:scale-105 transition duration-500" title="클릭하여 확대">
+                        </div>
+                    </div>
+                    <!-- Row 2 -->
+                    <div class="apple-card p-4 border border-[var(--border-color)] flex flex-col">
+                        <h3 class="text-[14px] font-semibold text-[var(--text-sub)] mb-3 flex items-center gap-2"><i data-lucide="moon" class="w-4 h-4"></i> Ambient Occlusion</h3>
+                        <div class="aspect-square bg-[var(--bg-main)] border border-[var(--border-color)] rounded-lg overflow-hidden flex-1">
+                            <img id="img-ao" src="" class="w-full h-full object-cover cursor-pointer hover:scale-105 transition duration-500" title="클릭하여 확대">
+                        </div>
+                    </div>
+                    <div class="apple-card p-4 border border-[var(--border-color)] flex flex-col">
+                        <h3 class="text-[14px] font-semibold text-[var(--text-sub)] mb-3 flex items-center gap-2"><i data-lucide="mountain" class="w-4 h-4"></i> Displacement</h3>
+                        <div class="aspect-square bg-[var(--bg-main)] border border-[var(--border-color)] rounded-lg overflow-hidden flex-1">
+                            <img id="img-displacement" src="" class="w-full h-full object-cover cursor-pointer hover:scale-105 transition duration-500" title="클릭하여 확대">
                         </div>
                     </div>
                 </div>
@@ -360,7 +415,7 @@
                         <img id="source-image-preview" class="max-w-full max-h-full object-contain">
                     </div>
                     <div class="w-full mt-auto">
-                        <button id="btn-generate" class="w-full apple-btn-primary mb-3 py-3">고화질 재질 생성</button>
+                        <button id="btn-generate" class="w-full apple-btn-primary mb-3 py-3">고화질 5-Maps 추출하기</button>
                         <button id="btn-cancel" class="w-full text-caption text-[var(--text-muted)] hover:text-[var(--text-main)] transition py-2">다른 이미지 선택</button>
                     </div>
                 </div>
@@ -371,15 +426,15 @@
                 <div class="p-8 pb-6 border-b border-[var(--border-color)]">
                     <div class="flex items-center gap-2 mb-2">
                         <div class="w-2 h-2 rounded-full bg-green-500"></div>
-                        <span class="text-nav font-medium text-green-500">생성 완료</span>
+                        <span class="text-nav font-medium text-green-500">추출 완료</span>
                     </div>
                     <h1 class="text-title text-[var(--text-main)] mb-1" id="result-mat-name">커스텀 텍스처</h1>
                     <p class="text-caption text-[var(--text-muted)] mb-6">라이브러리에 자동 등록되었습니다.</p>
                     
                     <div class="bg-[var(--bg-card)] p-4 rounded-xl border border-[var(--border-color)] flex justify-between mb-5">
                         <div class="text-center w-full border-r border-[var(--border-color)]">
-                            <div class="text-body-strong text-[var(--text-main)]">4 Maps</div>
-                            <div class="text-nav text-[var(--text-muted)]">High-Res</div>
+                            <div class="text-body-strong text-[var(--text-main)]">5 Maps</div>
+                            <div class="text-nav text-[var(--text-muted)]">Full PBR</div>
                         </div>
                         <div class="text-center w-full">
                             <div class="text-body-strong text-[var(--apple-blue)]">Seamless</div>
@@ -460,7 +515,7 @@
                         </div>
                     </div>
                     
-                    <!-- Bump Slider -->
+                    <!-- Displacement/Bump Slider -->
                     <div>
                         <div class="flex justify-between items-center mb-4">
                             <span class="text-body text-[var(--text-main)]">범프 강도 (Bump)</span>
@@ -468,7 +523,7 @@
                         </div>
                         <div class="flex items-center gap-4">
                             <i data-lucide="minus" class="w-5 h-5 text-[var(--text-muted)]"></i>
-                            <input type="range" id="slider-bump" min="0" max="0.2" step="0.01" value="0" class="flex-1">
+                            <input type="range" id="slider-bump" min="-0.5" max="0.5" step="0.01" value="0" class="flex-1">
                             <i data-lucide="mountain" class="w-5 h-5 text-[var(--text-muted)]"></i>
                         </div>
                     </div>
@@ -478,7 +533,7 @@
 
                 <div class="p-8 pt-0 flex flex-col gap-3 mt-auto">
                     <button id="btn-download-all-2d" class="w-full apple-btn-primary flex items-center justify-center gap-2 py-3">
-                        <i data-lucide="download-cloud" class="w-5 h-5"></i> 이미지 다운로드
+                        <i data-lucide="download-cloud" class="w-5 h-5"></i> 5종 맵 다운로드
                     </button>
                 </div>
             </div>
@@ -506,7 +561,43 @@
             updateMaterialTransform(); 
         });
 
-        // --- Auth & Library Logic ---
+        // --- IndexedDB Wrapper for Library Logic ---
+        const DB_NAME = 'PBRStudioDB';
+        const STORE_NAME = 'materials';
+
+        const openDB = () => {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, 1);
+                request.onupgradeneeded = (e) => {
+                    e.target.result.createObjectStore(STORE_NAME);
+                };
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error);
+            });
+        };
+
+        const saveLibraryDB = async (key, data) => {
+            const db = await openDB();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(STORE_NAME, 'readwrite');
+                const store = tx.objectStore(STORE_NAME);
+                const request = store.put(data, key);
+                request.onsuccess = () => resolve();
+                request.onerror = () => reject(request.error);
+            });
+        };
+
+        const loadLibraryDB = async (key) => {
+            const db = await openDB();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(STORE_NAME, 'readonly');
+                const store = tx.objectStore(STORE_NAME);
+                const request = store.get(key);
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error);
+            });
+        };
+
         let currentUserId = 'guest';
         let libraryViewMode = 'grid'; 
         let activeMaterialId = null;
@@ -514,14 +605,26 @@
 
         const getLibraryKey = () => `pbr_lib_${currentUserId}`;
 
-        const loadLibrary = () => {
-            const data = localStorage.getItem(getLibraryKey());
-            materialsLib = data ? JSON.parse(data) : [];
+        const loadLibrary = async () => {
+            try {
+                const data = await loadLibraryDB(getLibraryKey());
+                materialsLib = data || [];
+            } catch (e) {
+                console.error("DB Load Error", e);
+                materialsLib = [];
+            }
             renderLibrary();
         };
 
-        const saveLibrary = () => {
-            localStorage.setItem(getLibraryKey(), JSON.stringify(materialsLib));
+        const saveLibrary = async () => {
+            try {
+                await saveLibraryDB(getLibraryKey(), materialsLib);
+            } catch (e) {
+                console.error("DB Save Error", e);
+                if (e.name === 'QuotaExceededError') {
+                    alert('저장 공간이 부족합니다. 불필요한 재질을 삭제해주세요.');
+                }
+            }
         };
 
         const renderLibrary = () => {
@@ -549,7 +652,7 @@
                     item.innerHTML = `
                         <div class="relative w-full aspect-square mb-4 rounded-lg overflow-hidden bg-[var(--bg-main)] border border-[var(--border-color)]">
                             <img src="${mat.original || mat.maps.albedo}" class="w-full h-full object-cover hover:scale-105 transition duration-500">
-                            <button class="btn-download absolute top-3 left-3 p-2 bg-[var(--glass-bg)] backdrop-blur-md rounded-full hover:brightness-125 transition text-[var(--text-main)]" data-id="${mat.id}" title="이미지 다운로드">
+                            <button class="btn-download absolute top-3 left-3 p-2 bg-[var(--glass-bg)] backdrop-blur-md rounded-full hover:brightness-125 transition text-[var(--text-main)]" data-id="${mat.id}" title="5종 맵 다운로드">
                                 <i data-lucide="download-cloud" class="w-4 h-4"></i>
                             </button>
                             <button class="btn-fav absolute top-3 right-3 p-2 bg-[var(--glass-bg)] backdrop-blur-md rounded-full hover:brightness-125 transition" data-id="${mat.id}">
@@ -572,7 +675,7 @@
                             </div>
                         </div>
                         <div class="flex items-center gap-1">
-                            <button class="btn-download p-2 rounded-full hover:bg-[var(--hover-bg)] transition flex-shrink-0 text-[var(--text-main)]" data-id="${mat.id}" title="이미지 다운로드">
+                            <button class="btn-download p-2 rounded-full hover:bg-[var(--hover-bg)] transition flex-shrink-0 text-[var(--text-main)]" data-id="${mat.id}" title="5종 맵 다운로드">
                                 <i data-lucide="download-cloud" class="w-5 h-5"></i>
                             </button>
                             <button class="btn-fav p-2 rounded-full hover:bg-[var(--hover-bg)] transition flex-shrink-0" data-id="${mat.id}">
@@ -602,20 +705,18 @@
                     downloadMaterialMaps(mat, e.currentTarget);
                 });
 
-                item.querySelector('.btn-fav').addEventListener('click', (e) => {
+                item.querySelector('.btn-fav').addEventListener('click', async (e) => {
                     e.stopPropagation();
                     mat.isFavorite = !mat.isFavorite;
-                    saveLibrary();
+                    await saveLibrary();
                     renderLibrary();
                 });
 
-                // 라이브러리의 영구 삭제 버튼
-                item.querySelector('.btn-delete').addEventListener('click', (e) => {
+                item.querySelector('.btn-delete').addEventListener('click', async (e) => {
                     e.stopPropagation();
                     if(confirm(`라이브러리에서 '${mat.name}' 재질을 영구적으로 삭제하시겠습니까?`)) {
                         materialsLib = materialsLib.filter(m => m.id !== mat.id);
-                        saveLibrary();
-                        // 삭제한 재질이 현재 작업 중인 재질이었다면 화면도 비워줌
+                        await saveLibrary();
                         if(activeMaterialId === mat.id) {
                             activeMaterialId = null;
                             setViewerToEmptyState();
@@ -629,21 +730,21 @@
             lucide.createIcons();
         };
 
-        const createNewMaterialEntry = (maps, typeName = "커스텀 재질", originalSrc = "") => {
+        const createNewMaterialEntry = async (maps, typeName = "커스텀 재질", originalSrc = "") => {
             const num = materialsLib.length + 1;
             const newMat = {
                 id: Date.now().toString(),
                 name: `${typeName}_${num.toString().padStart(2, '0')}`,
                 maps: maps,
-                original: originalSrc, // Store the untouched original image
+                original: originalSrc,
                 scale: 1,
                 angle: 0,
                 refraction: 1.5,
-                bump: 0.0, // Default Bump is 0
+                bump: 0.0,
                 isFavorite: false
             };
             materialsLib.unshift(newMat);
-            saveLibrary();
+            await saveLibrary();
             loadMaterialToViewer(newMat);
             renderLibrary();
         };
@@ -667,20 +768,28 @@
             const imgData = ctx.getImageData(0, 0, width, height);
             const data = imgData.data;
 
-            const bumpData = new Uint8ClampedArray(data.length);
+            const dispData = new Uint8ClampedArray(data.length);
             const roughData = new Uint8ClampedArray(data.length);
             const normalData = new Uint8ClampedArray(data.length);
+            const aoData = new Uint8ClampedArray(data.length);
 
             const luminance = new Float32Array(width * height);
             for (let i = 0; i < data.length; i += 4) {
                 const lum = 0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2];
                 luminance[i/4] = lum;
 
-                bumpData[i] = bumpData[i+1] = bumpData[i+2] = lum;
-                bumpData[i+3] = 255;
+                // Displacement (Height) Map
+                dispData[i] = dispData[i+1] = dispData[i+2] = lum;
+                dispData[i+3] = 255;
 
-                roughData[i] = roughData[i+1] = roughData[i+2] = 255 - lum;
+                // Roughness Map (Inverted and contrasted)
+                roughData[i] = roughData[i+1] = roughData[i+2] = 255 - (lum * 0.7 + 30);
                 roughData[i+3] = 255;
+
+                // Ambient Occlusion Map (Enhance dark crevices)
+                const aoVal = lum < 140 ? lum * 1.5 : 255;
+                aoData[i] = aoData[i+1] = aoData[i+2] = Math.min(255, aoVal);
+                aoData[i+3] = 255;
             }
 
             for (let y = 0; y < height; y++) {
@@ -723,13 +832,14 @@
 
             return {
                 albedo: sourceCanvas.toDataURL('image/jpeg', 0.8),
-                bump: createCanvasObj(bumpData),
+                normal: createCanvasObj(normalData),
                 roughness: createCanvasObj(roughData),
-                normal: createCanvasObj(normalData)
+                ao: createCanvasObj(aoData),
+                displacement: createCanvasObj(dispData)
             };
         }
 
-        const init3DViewer = () => {
+        const init3DViewer = async () => {
             container = document.getElementById('canvas-container');
             scene = new THREE.Scene();
 
@@ -770,8 +880,10 @@
             sphereGroup = new THREE.Group();
             scene.add(sphereGroup);
 
-            const geometry = new THREE.SphereGeometry(1, 128, 128);
-            // Default base material (Light Gray)
+            const geometry = new THREE.SphereGeometry(1, 256, 256);
+            // Needed for AO Map in Three.js
+            geometry.setAttribute('uv2', new THREE.BufferAttribute(geometry.attributes.uv.array, 2));
+
             sphere = new THREE.Mesh(geometry, new THREE.MeshPhysicalMaterial({ color: 0xd2d2d7, roughness: 0.5, metalness: 0.1, ior: 1.5 }));
             sphereGroup.add(sphere);
 
@@ -793,7 +905,7 @@
                 renderer.setSize(container.clientWidth, container.clientHeight);
             });
 
-            loadLibrary();
+            await loadLibrary();
             if(materialsLib.length > 0) {
                 loadMaterialToViewer(materialsLib[0]);
             } else {
@@ -810,7 +922,6 @@
             document.getElementById('result-empty-content').classList.add('hidden');
             document.getElementById('result-empty-content').classList.remove('flex');
             document.getElementById('result-image-content').classList.remove('hidden');
-            // Show the raw original image in the 1:1 UI box
             document.getElementById('result-original-image').src = matData.original || currentMaps.albedo;
             
             document.getElementById('slider-scale').value = matData.scale;
@@ -831,9 +942,11 @@
             updateSliderBg(document.getElementById('slider-refraction'));
             updateSliderBg(document.getElementById('slider-bump'));
 
-            document.getElementById('img-albedo').src = currentMaps.albedo;
-            document.getElementById('img-bump').src = currentMaps.bump;
+            document.getElementById('img-color').src = currentMaps.albedo;
             document.getElementById('img-normal').src = currentMaps.normal;
+            document.getElementById('img-roughness').src = currentMaps.roughness;
+            document.getElementById('img-ao').src = currentMaps.ao;
+            document.getElementById('img-displacement').src = currentMaps.displacement;
 
             const loader = new THREE.TextureLoader();
             const applyTexture = (url, type) => {
@@ -842,14 +955,16 @@
                     tex.wrapT = THREE.RepeatWrapping;
                     tex.center.set(0.5, 0.5);
                     tex.repeat.set(matData.scale, matData.scale);
-                    tex.rotation = 0; // Fix to prevent UV tearing, instead we rotate the mesh
+                    tex.rotation = 0; 
                     
                     sphere.material[type] = tex;
                     
                     if(type === 'map') sphere.material.color.setHex(0xffffff);
-                    if(type === 'bumpMap') sphere.material.bumpScale = bumpVal;
+                    if(type === 'displacementMap') {
+                        sphere.material.displacementScale = bumpVal;
+                        sphere.material.displacementBias = -bumpVal * 0.5;
+                    }
                     
-                    // Modify rendering property based on Refraction (IOR) logic mapping
                     sphere.material.ior = Math.max(1.0, refVal);
                     if (refVal === 0) {
                         sphere.material.metalness = 0.0;
@@ -858,7 +973,6 @@
                         sphere.material.metalness = isMetal ? 1.0 : 0.1;
                     }
                     
-                    // Rotate the mesh directly based on angle
                     const angleRad = matData.angle * (Math.PI / 180);
                     sphere.rotation.z = -angleRad;
 
@@ -867,9 +981,10 @@
             };
 
             applyTexture(currentMaps.albedo, 'map');
-            applyTexture(currentMaps.bump, 'bumpMap');
-            applyTexture(currentMaps.roughness, 'roughnessMap');
             applyTexture(currentMaps.normal, 'normalMap');
+            applyTexture(currentMaps.roughness, 'roughnessMap');
+            applyTexture(currentMaps.ao, 'aoMap');
+            applyTexture(currentMaps.displacement, 'displacementMap');
 
             renderLibrary();
             document.getElementById('panel-upload').classList.add('hidden');
@@ -884,20 +999,24 @@
             document.getElementById('result-empty-content').classList.remove('hidden');
             document.getElementById('result-empty-content').classList.add('flex');
 
-            document.getElementById('img-albedo').src = '';
-            document.getElementById('img-bump').src = '';
+            document.getElementById('img-color').src = '';
             document.getElementById('img-normal').src = '';
+            document.getElementById('img-roughness').src = '';
+            document.getElementById('img-ao').src = '';
+            document.getElementById('img-displacement').src = '';
 
             if(sphere) {
                 sphere.material.map = null;
-                sphere.material.bumpMap = null;
-                sphere.material.roughnessMap = null;
                 sphere.material.normalMap = null;
+                sphere.material.roughnessMap = null;
+                sphere.material.aoMap = null;
+                sphere.material.displacementMap = null;
+                
                 sphere.material.color.setHex(0xd2d2d7);
                 sphere.material.roughness = 0.5;
                 sphere.material.metalness = 0.1;
                 sphere.material.ior = 1.5;
-                sphere.material.bumpScale = 0;
+                sphere.material.displacementScale = 0;
                 
                 sphere.rotation.set(0,0,0);
                 
@@ -936,11 +1055,11 @@
             updateSliderBg(refractionSlider);
             updateSliderBg(bumpSlider);
 
-            const maps = ['map', 'bumpMap', 'roughnessMap', 'normalMap'];
+            const maps = ['map', 'normalMap', 'roughnessMap', 'aoMap', 'displacementMap'];
             maps.forEach(m => {
                 if(sphere && sphere.material[m]) {
                     sphere.material[m].repeat.set(scale, scale);
-                    sphere.material[m].rotation = 0; // Fixes UV tearing
+                    sphere.material[m].rotation = 0; 
                 }
             });
             if(sphere) {
@@ -952,8 +1071,9 @@
                     sphere.material.metalness = isMetal ? 1.0 : 0.1;
                 }
                 
-                sphere.material.bumpScale = bump;
-                sphere.rotation.z = -angleRad; // Rotate Mesh instead of Texture
+                sphere.material.displacementScale = bump;
+                sphere.material.displacementBias = -bump * 0.5;
+                sphere.rotation.z = -angleRad;
                 sphere.material.needsUpdate = true;
             }
             resetIdleTimer();
@@ -964,7 +1084,6 @@
         document.getElementById('slider-refraction').addEventListener('input', updateMaterialTransform);
         document.getElementById('slider-bump').addEventListener('input', updateMaterialTransform);
 
-        // Clear current material in result panel box (Does NOT delete from library)
         document.getElementById('btn-delete-current').addEventListener('click', (e) => {
             e.stopPropagation();
             activeMaterialId = null;
@@ -972,7 +1091,6 @@
             renderLibrary();
         });
 
-        // Direct Text Input for Sliders
         const setupDirectInput = (id, type) => {
             const span = document.getElementById(id);
             span.addEventListener('dblclick', function() {
@@ -988,7 +1106,7 @@
                 if(type === 'scale') { step = 0.1; min = 0.1; max = 5; }
                 else if(type === 'angle') { step = 1; min = 0; max = 360; }
                 else if(type === 'refraction') { step = 0.1; min = 0.0; max = 3.0; }
-                else if(type === 'bump') { step = 0.01; min = 0.0; max = 0.2; }
+                else if(type === 'bump') { step = 0.01; min = -0.5; max = 0.5; }
                 
                 input.step = step; input.min = min; input.max = max;
                 
@@ -1023,8 +1141,7 @@
         setupDirectInput('val-refraction', 'refraction');
         setupDirectInput('val-bump', 'bump');
 
-        // Save Transform
-        document.getElementById('btn-save-transform').addEventListener('click', () => {
+        document.getElementById('btn-save-transform').addEventListener('click', async () => {
             if(!activeMaterialId) return;
             const mat = materialsLib.find(m => m.id === activeMaterialId);
             if(mat) {
@@ -1032,7 +1149,7 @@
                 mat.angle = parseFloat(document.getElementById('slider-angle').value);
                 mat.refraction = parseFloat(document.getElementById('slider-refraction').value);
                 mat.bump = parseFloat(document.getElementById('slider-bump').value);
-                saveLibrary();
+                await saveLibrary();
                 
                 const btn = document.getElementById('btn-save-transform');
                 const origText = btn.textContent;
@@ -1047,14 +1164,13 @@
             }
         });
 
-        // --- Auth Modals ---
         const modalLogin = document.getElementById('login-modal');
         const btnLoginToggle = document.getElementById('btn-login-toggle');
         const inputPw = document.getElementById('input-pw');
         const errorMsg = document.getElementById('login-error');
         const userDisplay = document.getElementById('user-display');
 
-        btnLoginToggle.addEventListener('click', () => {
+        btnLoginToggle.addEventListener('click', async () => {
             if(currentUserId === 'guest') {
                 modalLogin.classList.remove('hidden');
                 inputPw.value = '';
@@ -1063,7 +1179,7 @@
                 currentUserId = 'guest';
                 btnLoginToggle.textContent = '로그인';
                 userDisplay.classList.add('hidden');
-                loadLibrary(); 
+                await loadLibrary(); 
                 if(materialsLib.length > 0) loadMaterialToViewer(materialsLib[0]);
                 else setViewerToEmptyState();
             }
@@ -1071,14 +1187,14 @@
 
         document.getElementById('btn-close-login').addEventListener('click', () => modalLogin.classList.add('hidden'));
 
-        document.getElementById('btn-submit-login').addEventListener('click', () => {
+        document.getElementById('btn-submit-login').addEventListener('click', async () => {
             if(inputPw.value === '3377') {
                 currentUserId = 'foundfounded';
                 modalLogin.classList.add('hidden');
                 btnLoginToggle.textContent = '로그아웃';
                 userDisplay.classList.remove('hidden');
                 
-                loadLibrary(); 
+                await loadLibrary(); 
                 if(materialsLib.length > 0) {
                     loadMaterialToViewer(materialsLib[0]);
                 } else {
@@ -1089,7 +1205,6 @@
             }
         });
 
-        // 엔터키 입력 시 로그인 버튼 클릭 이벤트 트리거
         inputPw.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
@@ -1108,7 +1223,6 @@
         document.getElementById('btn-open-guide').addEventListener('click', () => guideModal.classList.remove('hidden'));
         document.getElementById('btn-close-guide').addEventListener('click', () => guideModal.classList.add('hidden'));
 
-        // --- Box/Drag and Drop Upload ---
         const boxFileUpload = document.getElementById('box-file-upload');
         const fileInput = document.getElementById('file-upload');
         const modalFileInput = document.getElementById('modal-file-upload');
@@ -1125,7 +1239,6 @@
             reader.onload = (e) => {
                 sourcePreview.src = e.target.result;
                 
-                // If in upload panel, handle its specific UI
                 dropZone.classList.add('hidden');
                 previewContainer.classList.remove('hidden');
                 previewContainer.classList.add('flex');
@@ -1192,23 +1305,19 @@
 
         document.getElementById('btn-generate').addEventListener('click', () => {
             loadingOverlay.classList.remove('hidden');
-            setTimeout(() => {
+            setTimeout(async () => {
                 const c = document.createElement('canvas'); c.width=1024; c.height=1024;
                 const ctx = c.getContext('2d');
                 
-                // Professional Seamless Tiling (Offset + Crossfade Masking)
-                // 1. Draw original to temp canvas
                 const tCanvas = document.createElement('canvas');
                 tCanvas.width = 1024; tCanvas.height = 1024;
                 tCanvas.getContext('2d').drawImage(sourcePreview, 0, 0, 1024, 1024);
 
-                // 2. Draw offset to wrap edges to center (No mirroring!)
-                ctx.drawImage(tCanvas, 512, 512, 512, 512, 0, 0, 512, 512); // Bottom-Right to Top-Left
-                ctx.drawImage(tCanvas, 0, 512, 512, 512, 512, 0, 512, 512); // Bottom-Left to Top-Right
-                ctx.drawImage(tCanvas, 512, 0, 512, 512, 0, 512, 512, 512); // Top-Right to Bottom-Left
-                ctx.drawImage(tCanvas, 0, 0, 512, 512, 512, 512, 512, 512); // Top-Left to Bottom-Right
+                ctx.drawImage(tCanvas, 512, 512, 512, 512, 0, 0, 512, 512); 
+                ctx.drawImage(tCanvas, 0, 512, 512, 512, 512, 0, 512, 512); 
+                ctx.drawImage(tCanvas, 512, 0, 512, 512, 0, 512, 512, 512); 
+                ctx.drawImage(tCanvas, 0, 0, 512, 512, 512, 512, 512, 512); 
 
-                // 3. Create Rectangular Soft Mask to cover the inner seams
                 const mCanvas = document.createElement('canvas');
                 mCanvas.width = 1024; mCanvas.height = 1024;
                 const mCtx = mCanvas.getContext('2d');
@@ -1216,29 +1325,18 @@
 
                 mCtx.globalCompositeOperation = 'destination-in';
                 
-                // Soft fade edges (approx 20% fade on all sides)
-                const gradX = mCtx.createLinearGradient(0, 0, 1024, 0);
-                gradX.addColorStop(0, 'rgba(0,0,0,0)');
-                gradX.addColorStop(0.25, 'rgba(0,0,0,1)');
-                gradX.addColorStop(0.75, 'rgba(0,0,0,1)');
-                gradX.addColorStop(1, 'rgba(0,0,0,0)');
-                mCtx.fillStyle = gradX;
-                mCtx.fillRect(0, 0, 1024, 1024);
-                
-                const gradY = mCtx.createLinearGradient(0, 0, 0, 1024);
-                gradY.addColorStop(0, 'rgba(0,0,0,0)');
-                gradY.addColorStop(0.25, 'rgba(0,0,0,1)');
-                gradY.addColorStop(0.75, 'rgba(0,0,0,1)');
-                gradY.addColorStop(1, 'rgba(0,0,0,0)');
-                mCtx.fillStyle = gradY;
+                const grad = mCtx.createRadialGradient(512, 512, 100, 512, 512, 512);
+                grad.addColorStop(0, 'rgba(0,0,0,1)');
+                grad.addColorStop(0.5, 'rgba(0,0,0,1)');
+                grad.addColorStop(1, 'rgba(0,0,0,0)');
+                mCtx.fillStyle = grad;
                 mCtx.fillRect(0, 0, 1024, 1024);
 
-                // 4. Blend it over the offset background
                 ctx.drawImage(mCanvas, 0, 0);
 
                 const newMaps = generatePBRMapsFromCanvas(c);
                 
-                createNewMaterialEntry(newMaps, "AI 커스텀 재질", sourcePreview.src);
+                await createNewMaterialEntry(newMaps, "AI 커스텀 재질", sourcePreview.src);
                 
                 loadingOverlay.classList.add('hidden');
                 document.getElementById('panel-upload').classList.add('hidden');
@@ -1248,7 +1346,6 @@
             }, 1800);
         });
 
-        // --- Lightbox Logic ---
         const lightboxModal = document.getElementById('lightbox-modal');
         const lightboxImg = document.getElementById('lightbox-img');
         const btnCloseLightbox = document.getElementById('btn-close-lightbox');
@@ -1266,9 +1363,11 @@
             lightboxImg.src = '';
         };
 
-        document.getElementById('img-albedo').addEventListener('click', function() { openLightbox(this.src); });
-        document.getElementById('img-bump').addEventListener('click', function() { openLightbox(this.src); });
+        document.getElementById('img-color').addEventListener('click', function() { openLightbox(this.src); });
         document.getElementById('img-normal').addEventListener('click', function() { openLightbox(this.src); });
+        document.getElementById('img-roughness').addEventListener('click', function() { openLightbox(this.src); });
+        document.getElementById('img-ao').addEventListener('click', function() { openLightbox(this.src); });
+        document.getElementById('img-displacement').addEventListener('click', function() { openLightbox(this.src); });
 
         btnCloseLightbox.addEventListener('click', closeLightbox);
         lightboxModal.addEventListener('click', (e) => {
@@ -1357,10 +1456,11 @@
                 }
             };
 
-            addFile(`${matName}_Albedo.jpg`, mat.maps.albedo);
-            addFile(`${matName}_Bump.jpg`, mat.maps.bump);
-            addFile(`${matName}_Roughness.jpg`, mat.maps.roughness);
+            addFile(`${matName}_Color.jpg`, mat.maps.albedo);
             addFile(`${matName}_Normal.jpg`, mat.maps.normal);
+            addFile(`${matName}_Roughness.jpg`, mat.maps.roughness);
+            addFile(`${matName}_AO.jpg`, mat.maps.ao);
+            addFile(`${matName}_Displacement.jpg`, mat.maps.displacement);
 
             setTimeout(() => {
                 zip.generateAsync({type:"blob"}).then(function(content) {
