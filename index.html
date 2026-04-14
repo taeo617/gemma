@@ -397,11 +397,11 @@
                             <!-- Hover Overlay: Create New Material -->
                             <div id="btn-box-upload" class="absolute inset-0 bg-[var(--glass-bg)] backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center cursor-pointer z-10">
                                 <i data-lucide="plus-circle" class="w-8 h-8 text-[var(--apple-blue)] mb-3"></i>
-                                <span class="text-body-strong text-[var(--text-main)]">새로운 재질 생성하기</span>
+                                <span class="text-body-strong text-[var(--text-main)]">새로운 이미지 불러오기</span>
                             </div>
 
-                            <!-- Delete Material Button -->
-                            <button id="btn-delete-current" class="absolute top-3 right-3 p-2.5 bg-[var(--glass-bg)] backdrop-blur-md rounded-full hover:bg-red-500 hover:text-white transition text-[var(--text-muted)] shadow-md z-20" title="현재 재질 삭제">
+                            <!-- Delete Material Button (Only clears workspace) -->
+                            <button id="btn-delete-current" class="absolute top-3 right-3 p-2.5 bg-[var(--glass-bg)] backdrop-blur-md rounded-full hover:bg-red-500 hover:text-white transition text-[var(--text-muted)] shadow-md z-20" title="현재 재질 지우기">
                                 <i data-lucide="trash-2" class="w-4 h-4"></i>
                             </button>
                         </div>
@@ -418,7 +418,7 @@
                     </div>
                 </div>
 
-                <!-- Scale & Angle Controls in Panel -->
+                <!-- Scale, Angle & Refraction Controls in Panel -->
                 <div class="px-8 py-6 flex-1 flex flex-col gap-8">
                     
                     <!-- Scale Slider -->
@@ -444,6 +444,19 @@
                             <i data-lucide="rotate-ccw" class="w-5 h-5 text-[var(--text-muted)]"></i>
                             <input type="range" id="slider-angle" min="0" max="360" step="1" value="0" class="flex-1">
                             <i data-lucide="rotate-cw" class="w-5 h-5 text-[var(--text-muted)]"></i>
+                        </div>
+                    </div>
+
+                    <!-- Refraction Slider -->
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-body text-[var(--text-main)]">굴절률 (IOR)</span>
+                            <div class="bg-[var(--bg-card)] px-3 py-1 rounded text-[var(--text-main)] text-body-strong border border-[var(--border-color)] min-w-[64px] text-center cursor-text transition hover:border-[var(--apple-blue)]" id="val-refraction" title="더블클릭하여 직접 입력">1.5</div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <i data-lucide="droplet" class="w-5 h-5 text-[var(--text-muted)]"></i>
+                            <input type="range" id="slider-refraction" min="1.0" max="3.0" step="0.1" value="1.5" class="flex-1">
+                            <i data-lucide="waves" class="w-5 h-5 text-[var(--text-muted)]"></i>
                         </div>
                     </div>
 
@@ -522,14 +535,14 @@
                     item.className = `apple-card p-4 flex flex-col cursor-pointer transition border ${isActive ? 'border-[var(--apple-blue)] bg-[var(--hover-bg)]' : 'border-transparent hover:border-[var(--border-color)]'}`;
                     item.innerHTML = `
                         <div class="relative w-full aspect-square mb-4 rounded-lg overflow-hidden bg-[var(--bg-main)] border border-[var(--border-color)]">
-                            <img src="${mat.maps.albedo}" class="w-full h-full object-cover hover:scale-105 transition duration-500">
+                            <img src="${mat.original || mat.maps.albedo}" class="w-full h-full object-cover hover:scale-105 transition duration-500">
                             <button class="btn-download absolute top-3 left-3 p-2 bg-[var(--glass-bg)] backdrop-blur-md rounded-full hover:brightness-125 transition text-[var(--text-main)]" data-id="${mat.id}" title="이미지 다운로드">
                                 <i data-lucide="download-cloud" class="w-4 h-4"></i>
                             </button>
                             <button class="btn-fav absolute top-3 right-3 p-2 bg-[var(--glass-bg)] backdrop-blur-md rounded-full hover:brightness-125 transition" data-id="${mat.id}">
                                 <svg class="w-5 h-5 heart-icon ${mat.isFavorite ? 'active' : 'text-[var(--text-muted)]'}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
                             </button>
-                            <button class="btn-delete absolute bottom-3 right-3 p-2 bg-[var(--glass-bg)] backdrop-blur-md rounded-full hover:bg-red-500/80 transition text-[var(--text-main)]" data-id="${mat.id}" title="삭제">
+                            <button class="btn-delete absolute bottom-3 right-3 p-2 bg-[var(--glass-bg)] backdrop-blur-md rounded-full hover:bg-red-500/80 transition text-[var(--text-main)]" data-id="${mat.id}" title="라이브러리에서 완전히 삭제">
                                 <i data-lucide="trash-2" class="w-4 h-4"></i>
                             </button>
                         </div>
@@ -539,10 +552,10 @@
                     item.className = `p-4 rounded-xl flex items-center justify-between cursor-pointer transition border ${isActive ? 'bg-[var(--hover-bg)] border-[var(--apple-blue)]' : 'bg-[var(--bg-card)] hover:bg-[var(--hover-bg)] border-transparent'}`;
                     item.innerHTML = `
                         <div class="flex items-center gap-5 flex-1 overflow-hidden">
-                            <img src="${mat.maps.albedo}" class="w-16 h-16 rounded-lg shadow-sm border border-[var(--border-color)] object-cover flex-shrink-0">
+                            <img src="${mat.original || mat.maps.albedo}" class="w-16 h-16 rounded-lg shadow-sm border border-[var(--border-color)] object-cover flex-shrink-0">
                             <div>
                                 <h3 class="text-body-strong text-[var(--text-main)] truncate">${mat.name}</h3>
-                                <p class="text-caption text-[var(--text-muted)] mt-1">Scale: ${mat.scale}x | Angle: ${mat.angle}°</p>
+                                <p class="text-caption text-[var(--text-muted)] mt-1">Scale: ${mat.scale}x | Angle: ${mat.angle}° | IOR: ${mat.refraction || 1.5}</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-1">
@@ -552,7 +565,7 @@
                             <button class="btn-fav p-2 rounded-full hover:bg-[var(--hover-bg)] transition flex-shrink-0" data-id="${mat.id}">
                                 <svg class="w-5 h-5 heart-icon ${mat.isFavorite ? 'active' : 'text-[var(--text-muted)]'}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
                             </button>
-                            <button class="btn-delete p-2 rounded-full hover:bg-red-500/20 hover:text-red-500 transition flex-shrink-0 text-[var(--text-muted)]" data-id="${mat.id}" title="삭제">
+                            <button class="btn-delete p-2 rounded-full hover:bg-red-500/20 hover:text-red-500 transition flex-shrink-0 text-[var(--text-muted)]" data-id="${mat.id}" title="라이브러리에서 완전히 삭제">
                                 <i data-lucide="trash-2" class="w-5 h-5"></i>
                             </button>
                         </div>
@@ -583,18 +596,16 @@
                     renderLibrary();
                 });
 
+                // 라이브러리의 영구 삭제 버튼
                 item.querySelector('.btn-delete').addEventListener('click', (e) => {
                     e.stopPropagation();
-                    if(confirm(`'${mat.name}' 재질을 삭제하시겠습니까?`)) {
+                    if(confirm(`라이브러리에서 '${mat.name}' 재질을 영구적으로 삭제하시겠습니까?`)) {
                         materialsLib = materialsLib.filter(m => m.id !== mat.id);
                         saveLibrary();
+                        // 삭제한 재질이 현재 작업 중인 재질이었다면 화면도 비워줌
                         if(activeMaterialId === mat.id) {
                             activeMaterialId = null;
-                            if(materialsLib.length > 0) {
-                                loadMaterialToViewer(materialsLib[0]);
-                            } else {
-                                setViewerToEmptyState();
-                            }
+                            setViewerToEmptyState();
                         }
                         renderLibrary();
                     }
@@ -605,14 +616,16 @@
             lucide.createIcons();
         };
 
-        const createNewMaterialEntry = (maps, typeName = "커스텀 재질") => {
+        const createNewMaterialEntry = (maps, typeName = "커스텀 재질", originalSrc = "") => {
             const num = materialsLib.length + 1;
             const newMat = {
                 id: Date.now().toString(),
                 name: `${typeName}_${num.toString().padStart(2, '0')}`,
                 maps: maps,
+                original: originalSrc, // Store the untouched original image
                 scale: 1,
                 angle: 0,
+                refraction: 1.5,
                 isFavorite: false
             };
             materialsLib.unshift(newMat);
@@ -622,7 +635,7 @@
         };
 
         // --- 3D Viewer Setup ---
-        let scene, camera, renderer, controls, sphere, container;
+        let scene, camera, renderer, controls, sphere, sphereGroup, container;
         let currentMaps = {};
         
         let idleTimer;
@@ -633,11 +646,6 @@
             idleTimer = setTimeout(() => { isIdle = true; }, 5000);
         };
 
-        // PBR Generation parameters simulated for AI backend as per user constraints.
-        // Task: Transform the provided reference image into a high-quality, perfectly seamless PBR texture material.
-        // Core Constraints: 100% Seamless, no edge seams, eliminate distinct tiling artifacts.
-        // Lighting & PBR: Flat, uniform, neutral albedo, no baked shadows/highlights, even micro-contrast.
-        // Negative Prompt: Seams, borders, edges, tiling artifacts, obvious repeating patterns, baked lighting.
         function generatePBRMapsFromCanvas(sourceCanvas) {
             const width = sourceCanvas.width;
             const height = sourceCanvas.height;
@@ -745,15 +753,18 @@
             controls.addEventListener('start', resetIdleTimer);
             controls.addEventListener('change', resetIdleTimer);
 
+            sphereGroup = new THREE.Group();
+            scene.add(sphereGroup);
+
             const geometry = new THREE.SphereGeometry(1, 128, 128);
             // Default base material (Light Gray)
-            sphere = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({ color: 0xd2d2d7, roughness: 0.5, metalness: 0.1 }));
-            scene.add(sphere);
+            sphere = new THREE.Mesh(geometry, new THREE.MeshPhysicalMaterial({ color: 0xd2d2d7, roughness: 0.5, metalness: 0.1, ior: 1.5 }));
+            sphereGroup.add(sphere);
 
             const animate = () => {
                 requestAnimationFrame(animate);
                 if(isIdle && !controls.state) {
-                    sphere.rotation.y += 0.0015;
+                    sphereGroup.rotation.y += 0.0015;
                 }
                 controls.update();
                 renderer.render(scene, camera);
@@ -782,18 +793,24 @@
             
             document.getElementById('result-mat-name').textContent = matData.name;
             
-            // Result Panel Image States Update
             document.getElementById('result-empty-content').classList.add('hidden');
             document.getElementById('result-empty-content').classList.remove('flex');
             document.getElementById('result-image-content').classList.remove('hidden');
-            document.getElementById('result-original-image').src = currentMaps.albedo;
+            // Show the raw original image in the 1:1 UI box
+            document.getElementById('result-original-image').src = matData.original || currentMaps.albedo;
             
             document.getElementById('slider-scale').value = matData.scale;
             document.getElementById('val-scale').textContent = `${matData.scale}`;
             document.getElementById('slider-angle').value = matData.angle;
             document.getElementById('val-angle').textContent = `${matData.angle}°`;
+            
+            const refVal = matData.refraction !== undefined ? matData.refraction : 1.5;
+            document.getElementById('slider-refraction').value = refVal;
+            document.getElementById('val-refraction').textContent = `${refVal}`;
+
             updateSliderBg(document.getElementById('slider-scale'));
             updateSliderBg(document.getElementById('slider-angle'));
+            updateSliderBg(document.getElementById('slider-refraction'));
 
             document.getElementById('img-albedo').src = currentMaps.albedo;
             document.getElementById('img-bump').src = currentMaps.bump;
@@ -806,7 +823,7 @@
                     tex.wrapT = THREE.RepeatWrapping;
                     tex.center.set(0.5, 0.5);
                     tex.repeat.set(matData.scale, matData.scale);
-                    tex.rotation = matData.angle * (Math.PI / 180);
+                    tex.rotation = 0; // Fix to prevent UV tearing, instead we rotate the mesh
                     
                     sphere.material[type] = tex;
                     
@@ -814,6 +831,12 @@
                     if(type === 'bumpMap') sphere.material.bumpScale = 0.03;
                     
                     sphere.material.metalness = matData.name.includes("메탈") ? 1.0 : 0.1;
+                    sphere.material.ior = refVal;
+                    
+                    // Rotate the mesh directly based on angle
+                    const angleRad = matData.angle * (Math.PI / 180);
+                    sphere.rotation.z = -angleRad;
+
                     sphere.material.needsUpdate = true;
                 });
             };
@@ -832,7 +855,6 @@
         const setViewerToEmptyState = () => {
             document.getElementById('result-mat-name').textContent = "재질 없음";
             
-            // Show empty state inside the 1:1 box
             document.getElementById('result-image-content').classList.add('hidden');
             document.getElementById('result-empty-content').classList.remove('hidden');
             document.getElementById('result-empty-content').classList.add('flex');
@@ -841,7 +863,6 @@
             document.getElementById('img-bump').src = '';
             document.getElementById('img-normal').src = '';
 
-            // Return to Default Light Gray Sphere
             if(sphere) {
                 sphere.material.map = null;
                 sphere.material.bumpMap = null;
@@ -850,6 +871,10 @@
                 sphere.material.color.setHex(0xd2d2d7);
                 sphere.material.roughness = 0.5;
                 sphere.material.metalness = 0.1;
+                sphere.material.ior = 1.5;
+                
+                sphere.rotation.set(0,0,0);
+                
                 sphere.material.needsUpdate = true;
             }
         };
@@ -866,52 +891,50 @@
         const updateMaterialTransform = () => {
             const scaleSlider = document.getElementById('slider-scale');
             const angleSlider = document.getElementById('slider-angle');
+            const refractionSlider = document.getElementById('slider-refraction');
             
             const scale = parseFloat(scaleSlider.value);
             const angleDeg = parseFloat(angleSlider.value);
             const angleRad = angleDeg * (Math.PI / 180);
+            const refraction = parseFloat(refractionSlider.value);
 
             document.getElementById('val-scale').textContent = `${scale}`;
             document.getElementById('val-angle').textContent = `${angleDeg}°`;
+            document.getElementById('val-refraction').textContent = `${refraction}`;
             
             updateSliderBg(scaleSlider);
             updateSliderBg(angleSlider);
+            updateSliderBg(refractionSlider);
 
             const maps = ['map', 'bumpMap', 'roughnessMap', 'normalMap'];
             maps.forEach(m => {
                 if(sphere && sphere.material[m]) {
                     sphere.material[m].repeat.set(scale, scale);
-                    sphere.material[m].rotation = angleRad;
+                    sphere.material[m].rotation = 0; // Fixes UV tearing
                 }
             });
-            if(sphere) sphere.material.needsUpdate = true;
+            if(sphere) {
+                sphere.material.ior = refraction;
+                sphere.rotation.z = -angleRad; // Rotate Mesh instead of Texture
+                sphere.material.needsUpdate = true;
+            }
             resetIdleTimer();
         };
 
         document.getElementById('slider-scale').addEventListener('input', updateMaterialTransform);
         document.getElementById('slider-angle').addEventListener('input', updateMaterialTransform);
+        document.getElementById('slider-refraction').addEventListener('input', updateMaterialTransform);
 
-        // Delete current material in result panel box
+        // Clear current material in result panel box (Does NOT delete from library)
         document.getElementById('btn-delete-current').addEventListener('click', (e) => {
-            e.stopPropagation(); // prevent opening file upload
-            if(!activeMaterialId) return;
-            const mat = materialsLib.find(m => m.id === activeMaterialId);
-            if(confirm(`'${mat.name}' 재질을 삭제하시겠습니까?`)) {
-                materialsLib = materialsLib.filter(m => m.id !== activeMaterialId);
-                saveLibrary();
-                activeMaterialId = null;
-                
-                if(materialsLib.length > 0) {
-                    loadMaterialToViewer(materialsLib[0]);
-                } else {
-                    setViewerToEmptyState();
-                }
-                renderLibrary();
-            }
+            e.stopPropagation();
+            activeMaterialId = null;
+            setViewerToEmptyState();
+            renderLibrary();
         });
 
-        // Direct Text Input for Scale & Angle
-        const setupDirectInput = (id, isScale) => {
+        // Direct Text Input for Sliders
+        const setupDirectInput = (id, type) => {
             const span = document.getElementById(id);
             span.addEventListener('dblclick', function() {
                 const currentText = this.textContent.replace('°', '');
@@ -921,15 +944,23 @@
                 input.type = 'number';
                 input.value = currentVal;
                 input.className = 'w-full bg-transparent text-center text-[var(--apple-blue)] font-mono outline-none';
-                if(isScale) { input.step = "0.1"; input.min = "0.1"; input.max = "5"; }
-                else { input.step = "1"; input.min = "0"; input.max = "360"; }
+                
+                let min, max, step;
+                if(type === 'scale') { step = 0.1; min = 0.1; max = 5; }
+                else if(type === 'angle') { step = 1; min = 0; max = 360; }
+                else if(type === 'refraction') { step = 0.1; min = 1.0; max = 3.0; }
+                
+                input.step = step; input.min = min; input.max = max;
                 
                 const finishEdit = () => {
                     let newVal = parseFloat(input.value);
                     if (isNaN(newVal)) newVal = currentVal;
-                    newVal = isScale ? Math.max(0.1, Math.min(5, newVal)) : Math.max(0, Math.min(360, newVal));
+                    newVal = Math.max(min, Math.min(max, newVal));
                     
-                    document.getElementById(isScale ? 'slider-scale' : 'slider-angle').value = newVal;
+                    if(type === 'scale') document.getElementById('slider-scale').value = newVal;
+                    else if(type === 'angle') document.getElementById('slider-angle').value = newVal;
+                    else if(type === 'refraction') document.getElementById('slider-refraction').value = newVal;
+                    
                     span.innerHTML = '';
                     updateMaterialTransform();
                 };
@@ -945,15 +976,19 @@
                 input.select();
             });
         };
-        setupDirectInput('val-scale', true);
-        setupDirectInput('val-angle', false);
+        
+        setupDirectInput('val-scale', 'scale');
+        setupDirectInput('val-angle', 'angle');
+        setupDirectInput('val-refraction', 'refraction');
 
+        // Save Transform
         document.getElementById('btn-save-transform').addEventListener('click', () => {
             if(!activeMaterialId) return;
             const mat = materialsLib.find(m => m.id === activeMaterialId);
             if(mat) {
                 mat.scale = parseFloat(document.getElementById('slider-scale').value);
                 mat.angle = parseFloat(document.getElementById('slider-angle').value);
+                mat.refraction = parseFloat(document.getElementById('slider-refraction').value);
                 saveLibrary();
                 
                 const btn = document.getElementById('btn-save-transform');
@@ -1031,7 +1066,6 @@
         const sourcePreview = document.getElementById('source-image-preview');
         const loadingOverlay = document.getElementById('loading');
 
-        // Allow click to upload from the new 1:1 box
         document.getElementById('btn-box-upload').addEventListener('click', () => boxFileUpload.click());
         document.getElementById('result-empty-content').addEventListener('click', () => boxFileUpload.click());
 
@@ -1048,7 +1082,6 @@
             reader.readAsDataURL(file);
         };
 
-        // File Change Events
         boxFileUpload.addEventListener('change', (e) => {
             if(e.target.files[0]) {
                 handleFileSelect(e.target.files[0]);
@@ -1072,7 +1105,6 @@
             e.target.value = '';
         });
 
-        // Drag and drop event listeners
         const resultImageBox = document.getElementById('result-image-container');
         const dropZones = [dropZone, resultImageBox];
         
@@ -1113,31 +1145,46 @@
                 const c = document.createElement('canvas'); c.width=1024; c.height=1024;
                 const ctx = c.getContext('2d');
                 
-                // Advanced Seamless Tiling Mock incorporating user constraints:
-                // 100% Seamless on both X and Y axes, NO visible edge seams.
-                // Eliminate distinct localized features (tiling artifacts) via cross-fading edges.
-                ctx.save();
-                ctx.drawImage(sourcePreview, 0, 0, 512, 512); 
-                ctx.translate(1024, 0); ctx.scale(-1, 1);
-                ctx.drawImage(sourcePreview, 0, 0, 512, 512); 
-                ctx.restore(); ctx.save();
-                ctx.translate(0, 1024); ctx.scale(1, -1);
-                ctx.drawImage(sourcePreview, 0, 0, 512, 512); 
-                ctx.restore(); ctx.save();
-                ctx.translate(1024, 1024); ctx.scale(-1, -1);
-                ctx.drawImage(sourcePreview, 0, 0, 512, 512); 
-                ctx.restore();
+                // Advanced Seamless Tiling Algorithm (Offset + Blending)
+                // 1. Draw original to temp canvas
+                const tCanvas = document.createElement('canvas');
+                tCanvas.width = 1024; tCanvas.height = 1024;
+                tCanvas.getContext('2d').drawImage(sourcePreview, 0, 0, 1024, 1024);
+
+                // 2. Draw offset to wrap edges to center (No mirroring!)
+                // This forces the perfect edges of the original image to meet on the outside border
+                ctx.drawImage(tCanvas, 512, 512, 512, 512, 0, 0, 512, 512); // Bottom-Right to Top-Left
+                ctx.drawImage(tCanvas, 0, 512, 512, 512, 512, 0, 512, 512); // Bottom-Left to Top-Right
+                ctx.drawImage(tCanvas, 512, 0, 512, 512, 0, 512, 512, 512); // Top-Right to Bottom-Left
+                ctx.drawImage(tCanvas, 0, 0, 512, 512, 512, 512, 512, 512); // Top-Left to Bottom-Right
+
+                // 3. Create Mask to hide the inner cross seams using the clean center of the original image
+                const mCanvas = document.createElement('canvas');
+                mCanvas.width = 1024; mCanvas.height = 1024;
+                const mCtx = mCanvas.getContext('2d');
+                mCtx.drawImage(tCanvas, 0, 0);
+
+                mCtx.globalCompositeOperation = 'destination-in';
+                const grad = mCtx.createRadialGradient(512, 512, 150, 512, 512, 500);
+                grad.addColorStop(0, 'rgba(0,0,0,1)');
+                grad.addColorStop(0.5, 'rgba(0,0,0,1)');
+                grad.addColorStop(1, 'rgba(0,0,0,0)');
+                mCtx.fillStyle = grad;
+                mCtx.fillRect(0, 0, 1024, 1024);
+
+                // 4. Blend it over the offset background
+                ctx.drawImage(mCanvas, 0, 0);
 
                 const newMaps = generatePBRMapsFromCanvas(c);
                 
-                createNewMaterialEntry(newMaps, "AI 커스텀 재질");
+                createNewMaterialEntry(newMaps, "AI 커스텀 재질", sourcePreview.src);
                 
                 loadingOverlay.classList.add('hidden');
                 document.getElementById('panel-upload').classList.add('hidden');
                 document.getElementById('panel-result').classList.remove('hidden');
                 document.getElementById('panel-result').classList.add('flex');
                 document.getElementById('btn-3d').click();
-            }, 3000);
+            }, 1800);
         });
 
         // --- Lightbox Logic ---
@@ -1226,7 +1273,6 @@
             if(camera && controls) { camera.translateZ(0.5); controls.update(); resetIdleTimer(); }
         });
 
-        // --- 다운로드 (일괄 저장) 로직 ---
         const downloadMaterialMaps = (mat, btnElement = null, loadingText = null) => {
             if(!mat || !mat.maps || !mat.maps.albedo) {
                 alert("다운로드할 맵 데이터가 없습니다.");
@@ -1272,7 +1318,6 @@
             }, 50);
         };
 
-        // 오른쪽 결과 패널의 메인 다운로드 버튼 클릭
         document.getElementById('btn-download-all-2d').addEventListener('click', (e) => {
             if (currentUserId === 'guest') {
                 document.getElementById('login-modal').classList.remove('hidden');
