@@ -559,6 +559,45 @@
                         </div>
                     </div>
 
+                    <!-- Brightness Slider -->
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-body text-[var(--text-main)]">명도 (Brightness)</span>
+                            <div class="bg-[var(--bg-card)] px-3 py-1 rounded text-[var(--text-main)] text-body-strong border border-[var(--border-color)] min-w-[64px] text-center cursor-text transition hover:border-[var(--apple-blue)]" id="val-brightness" title="더블클릭하여 직접 입력">0</div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <i data-lucide="sun" class="w-5 h-5 text-[var(--text-muted)]"></i>
+                            <input type="range" id="slider-brightness" min="-100" max="100" step="1" value="0" class="flex-1">
+                            <i data-lucide="sun" class="w-5 h-5 text-[var(--text-muted)]"></i>
+                        </div>
+                    </div>
+
+                    <!-- Contrast Slider -->
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-body text-[var(--text-main)]">대비 (Contrast)</span>
+                            <div class="bg-[var(--bg-card)] px-3 py-1 rounded text-[var(--text-main)] text-body-strong border border-[var(--border-color)] min-w-[64px] text-center cursor-text transition hover:border-[var(--apple-blue)]" id="val-contrast" title="더블클릭하여 직접 입력">0</div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <i data-lucide="contrast" class="w-5 h-5 text-[var(--text-muted)]"></i>
+                            <input type="range" id="slider-contrast" min="-100" max="100" step="1" value="0" class="flex-1">
+                            <i data-lucide="contrast" class="w-5 h-5 text-[var(--text-muted)]"></i>
+                        </div>
+                    </div>
+
+                    <!-- Saturation Slider -->
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-body text-[var(--text-main)]">채도 (Saturation)</span>
+                            <div class="bg-[var(--bg-card)] px-3 py-1 rounded text-[var(--text-main)] text-body-strong border border-[var(--border-color)] min-w-[64px] text-center cursor-text transition hover:border-[var(--apple-blue)]" id="val-saturation" title="더블클릭하여 직접 입력">0</div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <i data-lucide="palette" class="w-5 h-5 text-[var(--text-muted)]"></i>
+                            <input type="range" id="slider-saturation" min="-100" max="100" step="1" value="0" class="flex-1">
+                            <i data-lucide="palette" class="w-5 h-5 text-[var(--text-muted)]"></i>
+                        </div>
+                    </div>
+
                     <button id="btn-save-transform" class="w-full apple-btn-dark text-body py-2 mt-4 transition">현재 수치값 저장</button>
                 </div>
 
@@ -885,17 +924,21 @@
             lucide.createIcons();
         };
 
-        const createNewMaterialEntry = async (maps, typeName = "커스텀 재질", originalSrc = "", usedAI = false) => {
+        const createNewMaterialEntry = async (maps, typeName = "커스텀 재질", originalSrc = "", usedAI = false, baseAlbedo = "") => {
             const num = materialsLib.length + 1;
             const newMat = {
                 id: Date.now().toString(),
                 name: `${typeName}_${num.toString().padStart(2, '0')}`,
                 maps: maps,
+                baseAlbedo: baseAlbedo || maps.albedo,
                 original: originalSrc,
                 scale: 1,
                 angle: 0,
                 refraction: 1.5,
                 bump: 0.0,
+                brightness: 0,
+                contrast: 0,
+                saturation: 0,
                 isFavorite: false,
                 usedAI: usedAI
             };
@@ -1007,8 +1050,9 @@
                     const lUp     = luminance[yUp * width + x];
                     const lDown   = luminance[yDown * width + x];
 
-                    const dX = (lRight - lLeft) * 2.0; 
-                    const dY = (lDown - lUp) * 2.0;
+                    // 노말맵 강도를 낮추어 자연스럽고 은은한 입체감을 생성합니다.
+                    const dX = (lRight - lLeft) * 0.25; 
+                    const dY = (lDown - lUp) * 0.25;
                     const dZ = 255.0; 
 
                     const length = Math.sqrt(dX * dX + dY * dY + dZ * dZ);
@@ -1039,6 +1083,24 @@
                 displacement: createCanvasObj(dispData)
             };
         }
+
+        // 실시간 색상 적용을 위한 필터 합성 함수
+        const applyFilters = (imgSrc, b, c, s) => {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.crossOrigin = "Anonymous";
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.filter = `brightness(${b + 100}%) contrast(${c + 100}%) saturate(${s + 100}%)`;
+                    ctx.drawImage(img, 0, 0);
+                    resolve(canvas);
+                };
+                img.src = imgSrc;
+            });
+        };
 
         const init3DViewer = async () => {
             container = document.getElementById('canvas-container');
@@ -1146,10 +1208,26 @@
             document.getElementById('slider-bump').value = bumpVal;
             document.getElementById('val-bump').textContent = `${bumpVal}`;
 
+            const b = matData.brightness || 0;
+            const c = matData.contrast || 0;
+            const s = matData.saturation || 0;
+            
+            document.getElementById('slider-brightness').value = b;
+            document.getElementById('val-brightness').textContent = `${b}`;
+            document.getElementById('slider-contrast').value = c;
+            document.getElementById('val-contrast').textContent = `${c}`;
+            document.getElementById('slider-saturation').value = s;
+            document.getElementById('val-saturation').textContent = `${s}`;
+
             updateSliderBg(document.getElementById('slider-scale'));
             updateSliderBg(document.getElementById('slider-angle'));
             updateSliderBg(document.getElementById('slider-refraction'));
             updateSliderBg(document.getElementById('slider-bump'));
+            updateSliderBg(document.getElementById('slider-brightness'));
+            updateSliderBg(document.getElementById('slider-contrast'));
+            updateSliderBg(document.getElementById('slider-saturation'));
+
+            document.getElementById('result-original-image').style.filter = `brightness(${b + 100}%) contrast(${c + 100}%) saturate(${s + 100}%)`;
 
             document.getElementById('img-color').src = currentMaps.albedo;
             document.getElementById('img-normal').src = currentMaps.normal;
@@ -1280,18 +1358,70 @@
                     sphere.material.metalness = isMetal ? 1.0 : 0.1;
                 }
                 
-                sphere.material.displacementScale = bump;
-                sphere.material.displacementBias = -bump * 0.5;
+                const absBump = Math.abs(bump);
+                sphere.material.displacementScale = bump * 0.1;
+                sphere.material.displacementBias = -bump * 0.05;
+                
+                // 범프가 음수면 노말 벡터를 뒤집어서 완벽한 음각을 만들어냅니다.
+                sphere.material.normalScale.set(
+                    bump >= 0 ? 1 + bump * 2 : -(1 + absBump * 2),
+                    bump >= 0 ? 1 + bump * 2 : -(1 + absBump * 2)
+                );
+                
                 sphere.rotation.z = -angleRad;
                 sphere.material.needsUpdate = true;
             }
             resetIdleTimer();
         };
 
+        let colorUpdateTimeout;
+        const onColorSliderChange = () => {
+            const b = parseFloat(document.getElementById('slider-brightness').value);
+            const c = parseFloat(document.getElementById('slider-contrast').value);
+            const s = parseFloat(document.getElementById('slider-saturation').value);
+            
+            document.getElementById('val-brightness').textContent = `${b}`;
+            document.getElementById('val-contrast').textContent = `${c}`;
+            document.getElementById('val-saturation').textContent = `${s}`;
+            
+            updateSliderBg(document.getElementById('slider-brightness'));
+            updateSliderBg(document.getElementById('slider-contrast'));
+            updateSliderBg(document.getElementById('slider-saturation'));
+
+            // 2D 썸네일 실시간 변경
+            const filterStr = `brightness(${b + 100}%) contrast(${c + 100}%) saturate(${s + 100}%)`;
+            document.getElementById('result-original-image').style.filter = filterStr;
+
+            // 3D 뷰어 텍스처 실시간 변경 (디바운싱 적용)
+            clearTimeout(colorUpdateTimeout);
+            colorUpdateTimeout = setTimeout(async () => {
+                if(!activeMaterialId) return;
+                const mat = materialsLib.find(m => m.id === activeMaterialId);
+                if(mat) {
+                    const filteredCanvas = await applyFilters(mat.baseAlbedo || mat.maps.albedo, b, c, s);
+                    const newAlbedoUrl = filteredCanvas.toDataURL('image/jpeg', 0.8);
+                    new THREE.TextureLoader().load(newAlbedoUrl, (tex) => {
+                        tex.wrapS = THREE.RepeatWrapping;
+                        tex.wrapT = THREE.RepeatWrapping;
+                        const scale = parseFloat(document.getElementById('slider-scale').value);
+                        tex.repeat.set(scale, scale);
+                        if(sphere) {
+                            sphere.material.map = tex;
+                            sphere.material.needsUpdate = true;
+                        }
+                    });
+                }
+            }, 300);
+        };
+
         document.getElementById('slider-scale').addEventListener('input', updateMaterialTransform);
         document.getElementById('slider-angle').addEventListener('input', updateMaterialTransform);
         document.getElementById('slider-refraction').addEventListener('input', updateMaterialTransform);
         document.getElementById('slider-bump').addEventListener('input', updateMaterialTransform);
+        
+        document.getElementById('slider-brightness').addEventListener('input', onColorSliderChange);
+        document.getElementById('slider-contrast').addEventListener('input', onColorSliderChange);
+        document.getElementById('slider-saturation').addEventListener('input', onColorSliderChange);
 
         document.getElementById('btn-delete-current').addEventListener('click', (e) => {
             e.stopPropagation();
@@ -1316,6 +1446,7 @@
                 else if(type === 'angle') { step = 1; min = 0; max = 360; }
                 else if(type === 'refraction') { step = 0.1; min = 0.0; max = 3.0; }
                 else if(type === 'bump') { step = 0.01; min = -0.5; max = 0.5; }
+                else if(type === 'brightness' || type === 'contrast' || type === 'saturation') { step = 1; min = -100; max = 100; }
                 
                 input.step = step; input.min = min; input.max = max;
                 
@@ -1328,9 +1459,16 @@
                     else if(type === 'angle') document.getElementById('slider-angle').value = newVal;
                     else if(type === 'refraction') document.getElementById('slider-refraction').value = newVal;
                     else if(type === 'bump') document.getElementById('slider-bump').value = newVal;
+                    else if(type === 'brightness') document.getElementById('slider-brightness').value = newVal;
+                    else if(type === 'contrast') document.getElementById('slider-contrast').value = newVal;
+                    else if(type === 'saturation') document.getElementById('slider-saturation').value = newVal;
                     
                     span.innerHTML = '';
-                    updateMaterialTransform();
+                    if(type === 'brightness' || type === 'contrast' || type === 'saturation') {
+                        onColorSliderChange();
+                    } else {
+                        updateMaterialTransform();
+                    }
                 };
 
                 input.addEventListener('blur', finishEdit);
@@ -1349,27 +1487,52 @@
         setupDirectInput('val-angle', 'angle');
         setupDirectInput('val-refraction', 'refraction');
         setupDirectInput('val-bump', 'bump');
+        setupDirectInput('val-brightness', 'brightness');
+        setupDirectInput('val-contrast', 'contrast');
+        setupDirectInput('val-saturation', 'saturation');
 
         document.getElementById('btn-save-transform').addEventListener('click', async () => {
             if(!activeMaterialId) return;
             const mat = materialsLib.find(m => m.id === activeMaterialId);
             if(mat) {
-                mat.scale = parseFloat(document.getElementById('slider-scale').value);
-                mat.angle = parseFloat(document.getElementById('slider-angle').value);
-                mat.refraction = parseFloat(document.getElementById('slider-refraction').value);
-                mat.bump = parseFloat(document.getElementById('slider-bump').value);
-                await saveLibrary();
-                
-                const btn = document.getElementById('btn-save-transform');
-                const origText = btn.textContent;
-                btn.textContent = "저장되었습니다!";
-                btn.classList.add('text-green-500');
-                btn.classList.remove('text-[var(--text-main)]');
-                setTimeout(() => {
-                    btn.textContent = origText;
-                    btn.classList.remove('text-green-500');
-                    btn.classList.add('text-[var(--text-main)]');
-                }, 2000);
+                document.getElementById('loading-text').textContent = '데이터를 저장하고 맵을 재생성 중입니다...';
+                document.getElementById('loading').classList.remove('hidden');
+
+                setTimeout(async () => {
+                    mat.scale = parseFloat(document.getElementById('slider-scale').value);
+                    mat.angle = parseFloat(document.getElementById('slider-angle').value);
+                    mat.refraction = parseFloat(document.getElementById('slider-refraction').value);
+                    mat.bump = parseFloat(document.getElementById('slider-bump').value);
+                    mat.brightness = parseFloat(document.getElementById('slider-brightness').value);
+                    mat.contrast = parseFloat(document.getElementById('slider-contrast').value);
+                    mat.saturation = parseFloat(document.getElementById('slider-saturation').value);
+                    
+                    if (!mat.baseAlbedo) mat.baseAlbedo = mat.maps.albedo;
+
+                    // 변경된 색상/대비값 등을 적용하여 완전 새로운 2D PBR 맵으로 파생 생성합니다.
+                    const filteredCanvas = await applyFilters(mat.baseAlbedo, mat.brightness, mat.contrast, mat.saturation);
+                    const newMaps = generatePBRMapsFromCanvas(filteredCanvas);
+                    
+                    mat.maps = newMaps;
+                    await saveLibrary();
+                    
+                    document.getElementById('loading').classList.add('hidden');
+
+                    const btn = document.getElementById('btn-save-transform');
+                    const origText = btn.textContent;
+                    btn.textContent = "저장되었습니다!";
+                    btn.classList.add('text-green-500');
+                    btn.classList.remove('text-[var(--text-main)]');
+                    
+                    // 재생성된 이미지를 화면 전체(2D, 라이브러리)에 로드
+                    loadMaterialToViewer(mat);
+
+                    setTimeout(() => {
+                        btn.textContent = origText;
+                        btn.classList.remove('text-green-500');
+                        btn.classList.add('text-[var(--text-main)]');
+                    }, 2000);
+                }, 50);
             }
         });
 
@@ -1589,8 +1752,9 @@
                     }
 
                     const newMaps = generatePBRMapsFromCanvas(c);
+                    const baseAlbedoData = c.toDataURL('image/jpeg', 0.8);
                     
-                    await createNewMaterialEntry(newMaps, usedAI ? "Gemini AI 재질" : "커스텀 재질", sourcePreview.src, usedAI);
+                    await createNewMaterialEntry(newMaps, usedAI ? "Gemini AI 재질" : "커스텀 재질", sourcePreview.src, usedAI, baseAlbedoData);
                     
                     loadingOverlay.classList.add('hidden');
                     document.getElementById('panel-upload').classList.add('hidden');
