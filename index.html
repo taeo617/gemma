@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vibe PBR - Texture & Material Library</title>
+    <title>PBR Studio - Texture & Material Library</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Three.js & OrbitControls -->
@@ -149,7 +149,7 @@
             <p class="text-caption text-[var(--text-muted)] mb-6">자신의 재질 라이브러리에 접근합니다.</p>
             
             <div class="space-y-4 mb-6">
-                <input type="text" value="foundfounded" readonly class="w-full bg-[var(--bg-main)] border border-[var(--border-color)] text-[var(--text-main)] px-4 py-3 rounded-lg text-body focus:outline-none opacity-70 cursor-not-allowed">
+                <input type="text" value="found/Founded" readonly class="w-full bg-[var(--bg-main)] border border-[var(--border-color)] text-[var(--text-main)] px-4 py-3 rounded-lg text-body focus:outline-none opacity-70 cursor-not-allowed">
                 <input type="password" id="input-pw" placeholder="비밀번호" class="w-full bg-[var(--bg-main)] border border-[var(--border-color)] text-[var(--text-main)] px-4 py-3 rounded-lg text-body focus:outline-none focus:border-[var(--apple-blue)] transition">
                 <p id="login-error" class="text-xs text-[#ff3b30] hidden text-left">비밀번호가 일치하지 않습니다.</p>
             </div>
@@ -185,7 +185,7 @@
             </button>
             
             <div class="text-center mb-10">
-                <h2 class="text-title text-[var(--text-main)] mb-2">AI PBR Studio 프로세스 및 KeyShot 적용 가이드</h2>
+                <h2 class="text-title text-[var(--text-main)] mb-2">PBR Studio 프로세스 및 KeyShot 적용 가이드</h2>
             </div>
 
             <!-- 프로세스 인포그래픽 -->
@@ -235,10 +235,10 @@
     <!-- Header -->
     <header class="apple-nav-glass h-[56px] border-b border-[var(--border-color)] flex items-center justify-between px-6 shrink-0 z-10 w-full fixed top-0">
         <div class="flex items-center gap-8">
-            <span class="text-body-strong tracking-tight text-[var(--text-main)] flex items-center gap-2">
+            <button onclick="window.location.reload()" class="text-body-strong tracking-tight text-[var(--text-main)] flex items-center gap-2 hover:opacity-80 transition cursor-pointer">
                 <i data-lucide="aperture" class="w-5 h-5 text-[var(--text-main)]"></i>
-                AI PBR Studio
-            </span>
+                PBR Studio
+            </button>
             <nav class="flex gap-6 text-caption text-[var(--text-sub)]">
                 <button id="btn-open-guide" class="hover:text-[var(--text-main)] transition">사용 가이드</button>
             </nav>
@@ -249,7 +249,7 @@
                 <i data-lucide="sun" class="w-4 h-4"></i>
             </button>
             
-            <span id="user-display" class="text-[var(--text-muted)] font-medium hidden">foundfounded</span>
+            <span id="user-display" class="text-[var(--text-muted)] font-medium hidden">found/Founded</span>
             <button id="btn-login-toggle" class="apple-btn-dark py-1.5 px-4 text-xs font-semibold">로그인</button>
         </div>
     </header>
@@ -455,7 +455,7 @@
                         </div>
                         <div class="flex items-center gap-4">
                             <i data-lucide="droplet" class="w-5 h-5 text-[var(--text-muted)]"></i>
-                            <input type="range" id="slider-refraction" min="0" max="3.0" step="0.1" value="1.5" class="flex-1">
+                            <input type="range" id="slider-refraction" min="0.0" max="3.0" step="0.1" value="1.5" class="flex-1">
                             <i data-lucide="waves" class="w-5 h-5 text-[var(--text-muted)]"></i>
                         </div>
                     </div>
@@ -464,11 +464,11 @@
                     <div>
                         <div class="flex justify-between items-center mb-4">
                             <span class="text-body text-[var(--text-main)]">범프 강도 (Bump)</span>
-                            <div class="bg-[var(--bg-card)] px-3 py-1 rounded text-[var(--text-main)] text-body-strong border border-[var(--border-color)] min-w-[64px] text-center cursor-text transition hover:border-[var(--apple-blue)]" id="val-bump" title="더블클릭하여 직접 입력">0.03</div>
+                            <div class="bg-[var(--bg-card)] px-3 py-1 rounded text-[var(--text-main)] text-body-strong border border-[var(--border-color)] min-w-[64px] text-center cursor-text transition hover:border-[var(--apple-blue)]" id="val-bump" title="더블클릭하여 직접 입력">0</div>
                         </div>
                         <div class="flex items-center gap-4">
                             <i data-lucide="minus" class="w-5 h-5 text-[var(--text-muted)]"></i>
-                            <input type="range" id="slider-bump" min="0" max="0.1" step="0.01" value="0.03" class="flex-1">
+                            <input type="range" id="slider-bump" min="0" max="0.2" step="0.01" value="0" class="flex-1">
                             <i data-lucide="mountain" class="w-5 h-5 text-[var(--text-muted)]"></i>
                         </div>
                     </div>
@@ -639,7 +639,7 @@
                 scale: 1,
                 angle: 0,
                 refraction: 1.5,
-                bump: 0.03, // Added bump tracking
+                bump: 0.0, // Default Bump is 0
                 isFavorite: false
             };
             materialsLib.unshift(newMat);
@@ -822,7 +822,7 @@
             document.getElementById('slider-refraction').value = refVal;
             document.getElementById('val-refraction').textContent = `${refVal}`;
 
-            const bumpVal = matData.bump !== undefined ? matData.bump : 0.03;
+            const bumpVal = matData.bump !== undefined ? matData.bump : 0;
             document.getElementById('slider-bump').value = bumpVal;
             document.getElementById('val-bump').textContent = `${bumpVal}`;
 
@@ -849,8 +849,14 @@
                     if(type === 'map') sphere.material.color.setHex(0xffffff);
                     if(type === 'bumpMap') sphere.material.bumpScale = bumpVal;
                     
-                    sphere.material.metalness = matData.name.includes("메탈") ? 1.0 : 0.1;
-                    sphere.material.ior = refVal;
+                    // Modify rendering property based on Refraction (IOR) logic mapping
+                    sphere.material.ior = Math.max(1.0, refVal);
+                    if (refVal === 0) {
+                        sphere.material.metalness = 0.0;
+                    } else {
+                        const isMetal = matData.name.includes("메탈");
+                        sphere.material.metalness = isMetal ? 1.0 : 0.1;
+                    }
                     
                     // Rotate the mesh directly based on angle
                     const angleRad = matData.angle * (Math.PI / 180);
@@ -891,7 +897,7 @@
                 sphere.material.roughness = 0.5;
                 sphere.material.metalness = 0.1;
                 sphere.material.ior = 1.5;
-                sphere.material.bumpScale = 0.03;
+                sphere.material.bumpScale = 0;
                 
                 sphere.rotation.set(0,0,0);
                 
@@ -938,7 +944,14 @@
                 }
             });
             if(sphere) {
-                sphere.material.ior = refraction;
+                sphere.material.ior = Math.max(1.0, refraction);
+                if (refraction === 0) {
+                    sphere.material.metalness = 0.0;
+                } else {
+                    const isMetal = document.getElementById('result-mat-name').textContent.includes("메탈");
+                    sphere.material.metalness = isMetal ? 1.0 : 0.1;
+                }
+                
                 sphere.material.bumpScale = bump;
                 sphere.rotation.z = -angleRad; // Rotate Mesh instead of Texture
                 sphere.material.needsUpdate = true;
@@ -975,7 +988,7 @@
                 if(type === 'scale') { step = 0.1; min = 0.1; max = 5; }
                 else if(type === 'angle') { step = 1; min = 0; max = 360; }
                 else if(type === 'refraction') { step = 0.1; min = 0.0; max = 3.0; }
-                else if(type === 'bump') { step = 0.01; min = 0.0; max = 0.1; }
+                else if(type === 'bump') { step = 0.01; min = 0.0; max = 0.2; }
                 
                 input.step = step; input.min = min; input.max = max;
                 
@@ -1073,6 +1086,14 @@
                 }
             } else {
                 errorMsg.classList.remove('hidden');
+            }
+        });
+
+        // 엔터키 입력 시 로그인 버튼 클릭 이벤트 트리거
+        inputPw.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                document.getElementById('btn-submit-login').click();
             }
         });
 
