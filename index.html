@@ -8,6 +8,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/environments/RoomEnvironment.js"></script>
+    <!-- 직육면체 라운드 처리를 위한 RoundedBoxGeometry 라이브러리 로드 -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/geometries/RoundedBoxGeometry.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
@@ -147,6 +149,7 @@
 </head>
 <body class="h-screen flex flex-col">
 
+    <!-- Dialogs -->
     <div id="custom-dialog" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-[var(--overlay-bg)] backdrop-blur-[10px] transition-opacity duration-300">
         <div class="apple-card p-8 max-w-sm w-full text-center border border-[var(--border-color)]">
             <p id="dialog-message" class="text-body text-[var(--text-main)] mb-6 leading-relaxed"></p>
@@ -157,6 +160,7 @@
         </div>
     </div>
 
+    <!-- Login Modal -->
     <div id="login-modal" class="fixed inset-0 z-[60] hidden flex items-center justify-center bg-[var(--overlay-bg)] backdrop-blur-[20px] transition-opacity duration-300">
         <div class="apple-card p-10 max-w-sm w-full text-center relative border border-[var(--border-color)]">
             <button id="btn-close-login" class="absolute top-4 right-4 text-[var(--text-muted)] hover:text-[var(--text-main)] transition">
@@ -176,6 +180,7 @@
         </div>
     </div>
 
+    <!-- Initial Required Modal -->
     <div id="initial-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-[var(--overlay-bg)] backdrop-blur-[20px] transition-opacity duration-300">
         <div class="apple-card p-10 max-w-sm w-full text-center border border-[var(--border-color)]">
             <i data-lucide="lock" class="w-10 h-10 text-[var(--text-main)] mx-auto mb-4"></i>
@@ -194,6 +199,7 @@
         </div>
     </div>
 
+    <!-- Guide Modal -->
     <div id="guide-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-[var(--overlay-bg)] backdrop-blur-[20px] transition-opacity duration-300">
         <div class="apple-card p-12 max-w-3xl w-[90%] relative border border-[var(--border-color)] shadow-2xl">
             <button id="btn-close-guide" class="absolute top-6 right-6 text-[var(--text-muted)] hover:text-[var(--text-main)] transition bg-[var(--bg-main)] rounded-full p-2 border border-[var(--border-color)]">
@@ -272,6 +278,7 @@
         </div>
     </div>
 
+    <!-- Lightbox Modal -->
     <div id="lightbox-modal" class="fixed inset-0 z-[70] hidden flex items-center justify-center bg-black/80 backdrop-blur-[10px] transition-opacity duration-300">
         <button id="btn-close-lightbox" class="absolute top-6 right-6 text-white/50 hover:text-white transition z-10 p-2 bg-black/20 rounded-full">
             <i data-lucide="x" class="w-8 h-8"></i>
@@ -281,6 +288,7 @@
         </div>
     </div>
 
+    <!-- Header Navigation -->
     <header class="apple-nav-glass h-[56px] border-b border-[var(--border-color)] flex items-center justify-between px-6 shrink-0 z-10 w-full fixed top-0">
         <div class="flex items-center gap-8">
             <button onclick="window.location.reload()" class="text-body-strong tracking-tight text-[var(--text-main)] flex items-center gap-2 hover:opacity-80 transition cursor-pointer">
@@ -318,9 +326,12 @@
         </div>
     </header>
 
+    <!-- Main Workspace -->
     <main class="flex-1 flex overflow-hidden relative mt-[56px]">
         
+        <!-- Viewer Content Area -->
         <div class="flex-1 flex flex-col relative bg-[var(--bg-main)]">
+            <!-- Center Top Toggle Navigation -->
             <div class="absolute top-6 left-1/2 -translate-x-1/2 bg-[var(--bg-card)] rounded-[980px] p-1 z-10 flex shadow-lg border border-[var(--border-color)]">
                 <button id="btn-3d" class="apple-pill-tab active text-[var(--text-main)] flex items-center gap-2">
                     <i data-lucide="box" class="w-4 h-4"></i> 3D 뷰어
@@ -333,14 +344,35 @@
                 </button>
             </div>
 
+            <!-- 3D View Container -->
             <div id="view-3d" class="w-full h-full relative flex flex-col">
                 <div id="canvas-container" class="flex-1 w-full"></div>
 
-                <div class="absolute right-6 bottom-6 flex flex-col gap-3 z-10">
-                    <button id="btn-zoom-in" class="w-10 h-10 bg-[var(--bg-card)] border border-[var(--border-color)] hover:bg-[var(--hover-bg)] text-[var(--text-main)] rounded-full flex items-center justify-center transition shadow-md"><i data-lucide="plus" class="w-5 h-5"></i></button>
-                    <button id="btn-zoom-out" class="w-10 h-10 bg-[var(--bg-card)] border border-[var(--border-color)] hover:bg-[var(--hover-bg)] text-[var(--text-main)] rounded-full flex items-center justify-center transition shadow-md"><i data-lucide="minus" class="w-5 h-5"></i></button>
+                <!-- Left Bottom Controls (Shape Toggle) -->
+                <div class="absolute left-6 bottom-6 flex bg-[var(--bg-card)] p-1.5 rounded-xl border border-[var(--border-color)] shadow-md z-10 gap-1">
+                    <button id="btn-shape-sphere" class="w-9 h-9 rounded-lg bg-[var(--hover-bg)] text-[var(--apple-blue)] flex items-center justify-center transition shadow-sm" title="구 (Sphere)">
+                        <i data-lucide="circle" class="w-5 h-5"></i>
+                    </button>
+                    <button id="btn-shape-box" class="w-9 h-9 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--hover-bg)] flex items-center justify-center transition" title="직육면체 (Cube)">
+                        <i data-lucide="box" class="w-5 h-5"></i>
+                    </button>
+                </div>
+                
+                <!-- Bottom Center R-Value Control (Only for Cube) -->
+                <div id="radius-control-container" class="absolute bottom-6 left-1/2 -translate-x-1/2 bg-[var(--bg-card)] p-2 px-4 rounded-xl border border-[var(--border-color)] shadow-lg z-10 flex items-center gap-3 hidden transition-opacity duration-300">
+                    <span class="text-[11px] text-[var(--text-main)] font-semibold flex items-center gap-1.5"><i data-lucide="layout-template" class="w-3.5 h-3.5 text-[var(--apple-blue)]"></i> 모서리 둥글기(R)</span>
+                    <input type="range" id="slider-radius" min="0" max="10" step="0.1" value="0" class="w-28">
+                    <div id="val-radius" class="bg-[var(--bg-panel)] px-2 py-0.5 rounded text-[10px] text-[var(--text-main)] border border-[var(--border-color)] cursor-text text-center w-[48px] hover:border-[var(--apple-blue)] transition" title="더블클릭하여 직접 입력">0mm</div>
                 </div>
 
+                <!-- Right Bottom Controls (Zoom) -->
+                <div class="absolute right-6 bottom-6 flex flex-col gap-3 z-10">
+                    <button id="btn-zoom-reset" class="w-10 h-10 bg-[var(--bg-card)] border border-[var(--border-color)] hover:bg-[var(--hover-bg)] text-[var(--text-main)] rounded-full flex items-center justify-center transition shadow-md" title="기본 줌 화면으로 초기화"><i data-lucide="home" class="w-5 h-5"></i></button>
+                    <button id="btn-zoom-in" class="w-10 h-10 bg-[var(--bg-card)] border border-[var(--border-color)] hover:bg-[var(--hover-bg)] text-[var(--text-main)] rounded-full flex items-center justify-center transition shadow-md" title="확대"><i data-lucide="plus" class="w-5 h-5"></i></button>
+                    <button id="btn-zoom-out" class="w-10 h-10 bg-[var(--bg-card)] border border-[var(--border-color)] hover:bg-[var(--hover-bg)] text-[var(--text-main)] rounded-full flex items-center justify-center transition shadow-md" title="축소"><i data-lucide="minus" class="w-5 h-5"></i></button>
+                </div>
+
+                <!-- Loading Overlay -->
                 <div id="loading" class="absolute inset-0 bg-[var(--overlay-bg)] backdrop-blur-[10px] flex items-center justify-center z-20 hidden">
                     <div class="flex flex-col items-center gap-6">
                         <i data-lucide="loader-2" class="w-12 h-12 text-[var(--apple-blue)] animate-spin"></i>
@@ -349,6 +381,7 @@
                 </div>
             </div>
 
+            <!-- 2D View Container -->
             <div id="view-2d" class="w-full h-full hidden overflow-y-auto p-12 pt-24 bg-[var(--bg-main)]">
                 <div class="max-w-6xl mx-auto mb-8 flex justify-between items-end">
                     <div>
@@ -391,6 +424,7 @@
                 </div>
             </div>
 
+            <!-- Library View Container -->
             <div id="view-library" class="w-full h-full hidden overflow-y-auto p-12 pt-24 bg-[var(--bg-main)]">
                 <div class="max-w-5xl mx-auto mb-8 flex justify-between items-end border-b border-[var(--border-color)] pb-6">
                     <div>
@@ -404,15 +438,18 @@
                 </div>
                 
                 <div id="library-list" class="max-w-5xl mx-auto">
-                    </div>
+                    <!-- Library Items Rendered Here -->
+                </div>
             </div>
             
         </div>
 
+        <!-- Right Properties Panel -->
         <div class="w-[380px] apple-surface flex flex-col z-20 shadow-2xl border-l border-[var(--border-color)] relative h-full">
             
             <button id="btn-generate" class="hidden">PBR 자동 생성 (Invisible Trigger)</button>
 
+            <!-- Upload Panel (Shown when no material) -->
             <div id="panel-upload" class="p-6 flex-1 flex flex-col">
                 <h1 class="text-card-title text-[var(--text-main)] mb-2">새 재질 생성</h1>
                 <p class="text-caption text-[var(--text-muted)] mb-4">질감 이미지를 첨부하는 즉시 분석이 시작됩니다.</p>
@@ -427,16 +464,18 @@
                 <img id="source-image-preview" class="hidden">
             </div>
 
+            <!-- Result Control Panel (Shown when material is active) -->
             <div id="panel-result" class="hidden flex-col h-full overflow-hidden">
                 
+                <!-- Result Header & Miniature -->
                 <div class="p-4 pb-3 border-b border-[var(--border-color)] shrink-0">
                     <div class="flex items-center gap-2 mb-1.5">
                         <div class="w-2 h-2 rounded-full bg-green-500"></div>
                         <span class="text-[11px] font-medium text-green-500">추출 완료</span>
                     </div>
                     <div class="flex items-center justify-between mb-3">
-                        <h1 class="text-card-title text-[var(--text-main)] truncate" id="result-mat-name">커스텀 텍스처</h1>
-                        <div class="bg-[var(--bg-card)] px-2 py-1 rounded-lg border border-[var(--border-color)] flex items-center gap-2 text-center text-[10px]">
+                        <h1 class="text-card-title text-[var(--text-main)] truncate pr-2" id="result-mat-name">커스텀 텍스처</h1>
+                        <div class="bg-[var(--bg-card)] px-2 py-1 rounded-lg border border-[var(--border-color)] flex items-center gap-2 text-center text-[10px] whitespace-nowrap">
                             <div>
                                 <div class="font-semibold text-[var(--text-main)]">5 Maps</div>
                             </div>
@@ -472,13 +511,16 @@
                     </div>
                 </div>
 
+                <!-- Tabs -->
                 <div class="px-5 pt-3 border-b border-[var(--border-color)] shrink-0 flex gap-6">
                     <button id="tab-properties" class="text-[12px] font-semibold text-[var(--text-main)] pb-2 border-b-2 border-[var(--apple-blue)] transition">속성 메뉴</button>
                     <button id="tab-colors" class="text-[12px] font-medium text-[var(--text-muted)] pb-2 border-b-2 border-transparent transition hover:text-[var(--text-main)]">색상 메뉴</button>
                 </div>
 
+                <!-- Scrollable Settings -->
                 <div class="px-5 py-4 flex-1 overflow-y-auto min-h-0 custom-scrollbar">
                     
+                    <!-- Properties Panel -->
                     <div id="container-properties" class="flex flex-col gap-y-5">
                         
                         <div class="flex flex-col">
@@ -496,11 +538,11 @@
                         <div class="flex flex-col">
                             <div class="flex justify-between items-center mb-1">
                                 <span class="text-[11px] text-[var(--text-main)] flex items-center gap-1">거칠기 <i id="icon-ai-roughness" data-lucide="sparkles" class="w-2.5 h-2.5 text-[var(--apple-blue)] hidden" title="AI 적용됨"></i></span>
-                                <div class="bg-[var(--bg-card)] px-1.5 py-0.5 rounded text-[var(--text-main)] text-[10px] border border-[var(--border-color)] min-w-[36px] text-center cursor-text transition hover:border-[var(--apple-blue)]" id="val-roughness" title="더블클릭하여 직접 입력">1.0</div>
+                                <div class="bg-[var(--bg-card)] px-1.5 py-0.5 rounded text-[var(--text-main)] text-[10px] border border-[var(--border-color)] min-w-[36px] text-center cursor-text transition hover:border-[var(--apple-blue)]" id="val-roughness" title="더블클릭하여 직접 입력">0.0</div>
                             </div>
                             <div class="flex items-center gap-2">
                                 <i data-lucide="sun-dim" class="w-3.5 h-3.5 text-[var(--text-muted)]"></i>
-                                <input type="range" id="slider-roughness" min="0.0" max="2.0" step="0.01" value="1.0" class="flex-1">
+                                <input type="range" id="slider-roughness" min="0.0" max="0.5" step="0.1" value="0.0" class="flex-1">
                                 <i data-lucide="sun" class="w-3.5 h-3.5 text-[var(--text-muted)]"></i>
                             </div>
                         </div>
@@ -532,11 +574,11 @@
                         <div class="flex flex-col">
                             <div class="flex justify-between items-center mb-1">
                                 <span class="text-[11px] text-[var(--text-main)] flex items-center gap-1">금속성 <i id="icon-ai-metalness" data-lucide="sparkles" class="w-2.5 h-2.5 text-[var(--apple-blue)] hidden" title="AI 적용됨"></i></span>
-                                <div class="bg-[var(--bg-card)] px-1.5 py-0.5 rounded text-[var(--text-main)] text-[10px] border border-[var(--border-color)] min-w-[36px] text-center cursor-text transition hover:border-[var(--apple-blue)]" id="val-metalness" title="더블클릭하여 직접 입력">0.1</div>
+                                <div class="bg-[var(--bg-card)] px-1.5 py-0.5 rounded text-[var(--text-main)] text-[10px] border border-[var(--border-color)] min-w-[36px] text-center cursor-text transition hover:border-[var(--apple-blue)]" id="val-metalness" title="더블클릭하여 직접 입력">0.0</div>
                             </div>
                             <div class="flex items-center gap-2">
                                 <i data-lucide="box" class="w-3.5 h-3.5 text-[var(--text-muted)]"></i>
-                                <input type="range" id="slider-metalness" min="0.0" max="1.0" step="0.01" value="0.1" class="flex-1">
+                                <input type="range" id="slider-metalness" min="0.0" max="1.0" step="0.01" value="0.0" class="flex-1">
                                 <i data-lucide="boxes" class="w-3.5 h-3.5 text-[var(--text-muted)]"></i>
                             </div>
                         </div>
@@ -544,16 +586,17 @@
                         <div class="flex flex-col">
                             <div class="flex justify-between items-center mb-1">
                                 <span class="text-[11px] text-[var(--text-main)] flex items-center gap-1">굴절률 <i id="icon-ai-ior" data-lucide="sparkles" class="w-2.5 h-2.5 text-[var(--apple-blue)] hidden" title="AI 적용됨"></i></span>
-                                <div class="bg-[var(--bg-card)] px-1.5 py-0.5 rounded text-[var(--text-main)] text-[10px] border border-[var(--border-color)] min-w-[36px] text-center cursor-text transition hover:border-[var(--apple-blue)]" id="val-refraction" title="더블클릭하여 직접 입력">1.5</div>
+                                <div class="bg-[var(--bg-card)] px-1.5 py-0.5 rounded text-[var(--text-main)] text-[10px] border border-[var(--border-color)] min-w-[36px] text-center cursor-text transition hover:border-[var(--apple-blue)]" id="val-refraction" title="더블클릭하여 직접 입력">1.0</div>
                             </div>
                             <div class="flex items-center gap-2">
                                 <i data-lucide="droplet" class="w-3.5 h-3.5 text-[var(--text-muted)]"></i>
-                                <input type="range" id="slider-refraction" min="1.0" max="3.0" step="0.01" value="1.5" class="flex-1">
+                                <input type="range" id="slider-refraction" min="0.0" max="3.0" step="0.01" value="1.0" class="flex-1">
                                 <i data-lucide="waves" class="w-3.5 h-3.5 text-[var(--text-muted)]"></i>
                             </div>
                         </div>
                     </div>
 
+                    <!-- Colors Panel -->
                     <div id="container-colors" class="hidden flex-col gap-y-5">
                         
                         <div class="flex flex-col">
@@ -921,7 +964,7 @@
                                     <h3 class="text-body-strong text-[var(--text-main)] truncate">${mat.name}</h3>
                                     ${mat.usedAI ? '<i data-lucide="sparkles" class="w-4 h-4 text-[var(--apple-blue)]" title="AI가 재질 특성을 분석/반영함"></i>' : ''}
                                 </div>
-                                <p class="text-caption text-[var(--text-muted)] mt-1">Scale: ${mat.scale}x | IOR: ${mat.refraction || 1.5} | Roughness: ${mat.roughness || 1.0}</p>
+                                <p class="text-caption text-[var(--text-muted)] mt-1">Scale: ${mat.scale}x | IOR: ${mat.refraction !== undefined ? mat.refraction : 1.0} | Roughness: ${mat.roughness !== undefined ? Number(mat.roughness).toFixed(1) : '0.0'}</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-1">
@@ -986,9 +1029,9 @@
                 original: originalSrc,
                 scale: 1,
                 angle: 0,
-                roughness: aiParams.roughness !== undefined ? aiParams.roughness : 1.0,
-                metalness: aiParams.metalness !== undefined ? aiParams.metalness : 0.1,
-                refraction: aiParams.ior !== undefined ? aiParams.ior : 1.5,
+                roughness: aiParams.roughness !== undefined ? Math.min(0.5, Math.max(0.0, Math.round(aiParams.roughness * 10) / 10)) : 0.0,
+                metalness: aiParams.metalness !== undefined ? aiParams.metalness : 0.0,
+                refraction: aiParams.ior !== undefined ? aiParams.ior : 1.0,
                 bump: aiParams.bump !== undefined ? aiParams.bump : 0.0,
                 brightness: 0,
                 contrast: 0,
@@ -1015,7 +1058,7 @@
             const payload = {
                 contents: [{
                     parts: [
-                        { text: "Transform the given image into a perfectly seamless, flat albedo texture for 3D PBR mapping. Upscale and enhance the resolution to 4K high-definition. Remove any uneven lighting, shadows, highlights, or perspective distortions. Ensure the pattern is completely tileable. ALSO analyze the material type (e.g. fabric, wood, metal, plastic, stone) and provide a JSON response representing its physical properties. The JSON MUST contain these keys exactly: 'roughness' (float 0.0-2.0, lower is shinier), 'metalness' (float 0.0-1.0), 'bump' (float -0.5 to 0.5, use negative for indented textures like fabric weave or wood pores, positive for protruding bumps), 'ior' (float 1.0-3.0). DO NOT use markdown blocks, return ONLY raw valid JSON text." },
+                        { text: "Transform the given image into a perfectly seamless, flat albedo texture for 3D PBR mapping. Upscale and enhance the resolution to 4K high-definition. Remove any uneven lighting, shadows, highlights, or perspective distortions. Ensure the pattern is completely tileable. ALSO analyze the material type (e.g. fabric, wood, metal, plastic, stone) and provide a JSON response representing its physical properties. The JSON MUST contain these keys exactly: 'roughness' (float 0.0-0.5, step 0.1, lower is shinier), 'metalness' (float 0.0-1.0), 'bump' (float -0.5 to 0.5, use negative for indented textures like fabric weave or wood pores, positive for protruding bumps), 'ior' (float 0.0-3.0). DO NOT use markdown blocks, return ONLY raw valid JSON text." },
                         { inlineData: { mimeType: "image/jpeg", data: base64Data } }
                     ]
                 }],
@@ -1069,7 +1112,10 @@
 
 
         // --- 3D Viewer Setup ---
-        let scene, camera, renderer, controls, sphere, sphereGroup, container;
+        let scene, camera, renderer, controls, container;
+        let mainGroup, pbrMesh, eyeSphere, eyePlane;
+        let sphereGeom, boxGeom;
+        let currentGeometryType = 'sphere';
         let currentMaps = {};
         
         let idleTimer;
@@ -1079,6 +1125,66 @@
             clearTimeout(idleTimer);
             idleTimer = setTimeout(() => { isIdle = true; }, 5000);
         };
+
+        // Feature 1: Create Character Eye Texture using Canvas
+        // Added scale parameter to control size on different geometries
+        function createEyeTexture(scaleRatio) {
+            const c = document.createElement('canvas');
+            c.width = 1024; c.height = 1024;
+            const ctx = c.getContext('2d');
+            
+            // Background fully transparent so material underneath shows
+            ctx.clearRect(0, 0, 1024, 1024);
+            
+            ctx.translate(512, 512); // Move origin to center
+            ctx.scale(scaleRatio, scaleRatio); // Apply dynamic scale
+
+            // Style configuration matching the reference image perfectly
+            ctx.fillStyle = '#ffffff';
+            ctx.strokeStyle = '#050505'; // Heavy black stroke
+            ctx.lineWidth = 32;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+
+            // Right Eye White
+            ctx.beginPath();
+            ctx.ellipse(80, 0, 65, 110, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            // Left Eye White
+            ctx.beginPath();
+            ctx.ellipse(-70, 0, 65, 110, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            // Left Eye Hook (The drooping contour on the left edge)
+            ctx.beginPath();
+            ctx.moveTo(-135, 0); 
+            ctx.quadraticCurveTo(-160, 60, -180, 80);
+            ctx.stroke();
+
+            // Pupils (Looking down/left, located at the bottom left of each eye)
+            ctx.fillStyle = '#050505';
+            ctx.beginPath();
+            ctx.arc(-100, 50, 35, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(50, 50, 35, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Eyelid line (The curved line intersecting both eyes)
+            ctx.beginPath();
+            ctx.moveTo(-150, 20); // Starts inside the hook area
+            ctx.quadraticCurveTo(100, -10, 380, -20); // Smooth organic curve passing to the right
+            ctx.stroke();
+
+            const tex = new THREE.CanvasTexture(c);
+            tex.wrapS = THREE.ClampToEdgeWrapping;
+            tex.wrapT = THREE.ClampToEdgeWrapping;
+            tex.flipY = true;
+            return tex;
+        }
 
         function generatePBRMapsFromCanvas(sourceCanvas) {
             const width = sourceCanvas.width;
@@ -1195,6 +1301,172 @@
             renderer.setSize(container.clientWidth, container.clientHeight);
         };
 
+        // --- Advanced Anti-Tiling Shader Injection ---
+        const applyAntiTiling = (material) => {
+            material.onBeforeCompile = (shader) => {
+                // Common noise hash function
+                shader.fragmentShader = shader.fragmentShader.replace(
+                    '#include <common>',
+                    `
+                    #include <common>
+                    vec4 hash4( vec2 p ) { return fract(sin(vec4( 1.0+dot(p,vec2(37.0,17.0)), 2.0+dot(p,vec2(11.0,47.0)), 3.0+dot(p,vec2(41.0,29.0)), 4.0+dot(p,vec2(23.0,31.0))))*103.0); }
+                    `
+                );
+
+                // Color Map Tiling Prevention
+                shader.fragmentShader = shader.fragmentShader.replace(
+                    '#include <map_fragment>',
+                    `
+                    #ifdef USE_MAP
+                        vec2 uvMap = vUv;
+                        ivec2 iuv = ivec2(floor(uvMap));
+                        vec2 fuv = fract(uvMap);
+                        vec4 ofa = hash4(vec2(iuv + ivec2(0,0)));
+                        vec4 ofb = hash4(vec2(iuv + ivec2(1,0)));
+                        vec4 ofc = hash4(vec2(iuv + ivec2(0,1)));
+                        vec4 ofd = hash4(vec2(iuv + ivec2(1,1)));
+                        vec2 uva = uvMap * sign(ofa.zw - 0.5) + ofa.xy;
+                        vec2 uvb = uvMap * sign(ofb.zw - 0.5) + ofb.xy;
+                        vec2 uvc = uvMap * sign(ofc.zw - 0.5) + ofc.xy;
+                        vec2 uvd = uvMap * sign(ofd.zw - 0.5) + ofd.xy;
+                        vec2 b = smoothstep(0.1, 0.9, fuv);
+                        vec4 colA = texture2D(map, uva);
+                        vec4 colB = texture2D(map, uvb);
+                        vec4 colC = texture2D(map, uvc);
+                        vec4 colD = texture2D(map, uvd);
+                        vec4 sampledDiffuseColor = mix(mix(colA, colB, b.x), mix(colC, colD, b.x), b.y);
+                        sampledDiffuseColor = mapTexelToLinear(sampledDiffuseColor);
+                        diffuseColor *= sampledDiffuseColor;
+                    #endif
+                    `
+                );
+
+                // Normal Map Tiling Prevention
+                shader.fragmentShader = shader.fragmentShader.replace(
+                    '#include <normal_fragment_maps>',
+                    `
+                    #ifdef USE_NORMALMAP
+                        vec2 uvN = vUv;
+                        ivec2 iuvN = ivec2(floor(uvN));
+                        vec2 fuvN = fract(uvN);
+                        vec4 ofaN = hash4(vec2(iuvN + ivec2(0,0)));
+                        vec4 ofbN = hash4(vec2(iuvN + ivec2(1,0)));
+                        vec4 ofcN = hash4(vec2(iuvN + ivec2(0,1)));
+                        vec4 ofdN = hash4(vec2(iuvN + ivec2(1,1)));
+                        vec2 uvaN = uvN * sign(ofaN.zw - 0.5) + ofaN.xy;
+                        vec2 uvbN = uvN * sign(ofbN.zw - 0.5) + ofbN.xy;
+                        vec2 uvcN = uvN * sign(ofcN.zw - 0.5) + ofcN.xy;
+                        vec2 uvdN = uvN * sign(ofdN.zw - 0.5) + ofdN.xy;
+                        vec2 bN = smoothstep(0.1, 0.9, fuvN);
+                        vec3 nA = texture2D(normalMap, uvaN).xyz;
+                        vec3 nB = texture2D(normalMap, uvbN).xyz;
+                        vec3 nC = texture2D(normalMap, uvcN).xyz;
+                        vec3 nD = texture2D(normalMap, uvdN).xyz;
+                        vec3 normalMapValue = mix(mix(nA, nB, bN.x), mix(nC, nD, bN.x), bN.y);
+                        normalMapValue = normalMapValue * 2.0 - 1.0;
+                        normalMapValue.xy *= normalScale;
+                        #ifdef USE_TANGENT
+                            normal = normalize(vTBN * normalMapValue);
+                        #else
+                            normal = perturbNormal2Arb(-vViewPosition, normal, normalMapValue, faceDirection);
+                        #endif
+                    #elif defined( USE_BUMPMAP )
+                        normal = perturbNormalArb( - vViewPosition, normal, dHdxy_fwd() );
+                    #endif
+                    `
+                );
+                
+                // Roughness Map Tiling Prevention & Custom Matte Blending
+                shader.fragmentShader = shader.fragmentShader.replace(
+                    '#include <roughnessmap_fragment>',
+                    `
+                    float roughnessFactor = roughness;
+                    #ifdef USE_ROUGHNESSMAP
+                        vec2 uvR = vUv;
+                        ivec2 iuvR = ivec2(floor(uvR));
+                        vec2 fuvR = fract(uvR);
+                        vec4 ofaR = hash4(vec2(iuvR + ivec2(0,0)));
+                        vec4 ofbR = hash4(vec2(iuvR + ivec2(1,0)));
+                        vec4 ofcR = hash4(vec2(iuvR + ivec2(0,1)));
+                        vec4 ofdR = hash4(vec2(iuvR + ivec2(1,1)));
+                        vec2 uvaR = uvR * sign(ofaR.zw - 0.5) + ofaR.xy;
+                        vec2 uvbR = uvR * sign(ofbR.zw - 0.5) + ofbR.xy;
+                        vec2 uvcR = uvR * sign(ofcR.zw - 0.5) + ofcR.xy;
+                        vec2 uvdR = uvR * sign(ofdR.zw - 0.5) + ofdR.xy;
+                        vec2 bR = smoothstep(0.1, 0.9, fuvR);
+                        vec4 rA = texture2D(roughnessMap, uvaR);
+                        vec4 rB = texture2D(roughnessMap, uvbR);
+                        vec4 rC = texture2D(roughnessMap, uvcR);
+                        vec4 rD = texture2D(roughnessMap, uvdR);
+                        vec4 texelRoughness = mix(mix(rA, rB, bR.x), mix(rC, rD, bR.x), bR.y);
+                        
+                        // Custom Mix: User's slider (0.0 to 0.5) is mapped to (0.0 to 1.0) internally.
+                        float userRoughness = clamp(roughness * 2.0, 0.0, 1.0);
+                        float mapRough = texelRoughness.g;
+                        
+                        if (userRoughness <= 0.5) {
+                            // Scale down original map towards fully shiny (glossy)
+                            roughnessFactor = mapRough * (userRoughness * 2.0);
+                        } else {
+                            // Scale up towards fully matte (ignoring original map's shiny parts)
+                            roughnessFactor = mix(mapRough, 1.0, (userRoughness - 0.5) * 2.0);
+                        }
+                    #else
+                        roughnessFactor = clamp(roughness * 2.0, 0.0, 1.0);
+                    #endif
+                    `
+                );
+
+                // AO Map Tiling Prevention
+                shader.fragmentShader = shader.fragmentShader.replace(
+                    '#include <aomap_fragment>',
+                    `
+                    #ifndef USE_AOMAP
+                        float ambientOcclusion = 1.0;
+                    #else
+                        vec2 uvAO = vUv2;
+                        ivec2 iuvAO = ivec2(floor(uvAO));
+                        vec2 fuvAO = fract(uvAO);
+                        vec4 ofaAO = hash4(vec2(iuvAO + ivec2(0,0)));
+                        vec4 ofbAO = hash4(vec2(iuvAO + ivec2(1,0)));
+                        vec4 ofcAO = hash4(vec2(iuvAO + ivec2(0,1)));
+                        vec4 ofdAO = hash4(vec2(iuvAO + ivec2(1,1)));
+                        vec2 uvaAO = uvAO * sign(ofaAO.zw - 0.5) + ofaAO.xy;
+                        vec2 uvbAO = uvAO * sign(ofbAO.zw - 0.5) + ofbAO.xy;
+                        vec2 uvcAO = uvAO * sign(ofcAO.zw - 0.5) + ofcAO.xy;
+                        vec2 uvdAO = uvAO * sign(ofdAO.zw - 0.5) + ofdAO.xy;
+                        vec2 bAO = smoothstep(0.1, 0.9, fuvAO);
+                        float aoA = texture2D(aoMap, uvaAO).r;
+                        float aoB = texture2D(aoMap, uvbAO).r;
+                        float aoC = texture2D(aoMap, uvcAO).r;
+                        float aoD = texture2D(aoMap, uvdAO).r;
+                        float texelAO = mix(mix(aoA, aoB, bAO.x), mix(aoC, aoD, bAO.x), bAO.y);
+                        float ambientOcclusion = ( texelAO - 1.0 ) * aoMapIntensity + 1.0;
+                    #endif
+                    `
+                );
+            };
+        };
+
+        // --- Feature 2: Update Box Geometry with Radius Slider ---
+        const updateBoxGeometry = () => {
+            if (currentGeometryType !== 'box') return;
+            const rValue = parseFloat(document.getElementById('slider-radius').value); // 0 to 10
+            
+            if(boxGeom) boxGeom.dispose();
+
+            if (rValue === 0) {
+                boxGeom = new THREE.BoxGeometry(1.5, 1.5, 1.5, 128, 128, 128);
+            } else {
+                // Map 0~10mm to 0.0 ~ 0.3 radius in ThreeJS space visually
+                const radiusInThree = rValue * 0.03; 
+                boxGeom = new THREE.RoundedBoxGeometry(1.5, 1.5, 1.5, 16, radiusInThree);
+            }
+            
+            boxGeom.setAttribute('uv2', new THREE.BufferAttribute(boxGeom.attributes.uv.array, 2));
+            pbrMesh.geometry = boxGeom;
+        };
+
         const init3DViewer = async () => {
             container = document.getElementById('canvas-container');
             if(!container) return;
@@ -1211,7 +1483,6 @@
 
             renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             renderer.setSize(container.clientWidth, container.clientHeight || 1);
-            // 최적화 1: 레티나 디스플레이 등에서 과도한 해상도로 인한 프레임 드랍을 막기 위해 픽셀 비율을 최대 1.5로 제한합니다.
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
             renderer.toneMapping = THREE.ACESFilmicToneMapping;
             renderer.toneMappingExposure = 1.0;
@@ -1222,10 +1493,7 @@
             scene.environment = pmremGenerator.fromScene(new THREE.RoomEnvironment(), 0.04).texture;
 
             controls = new THREE.OrbitControls(camera, renderer.domElement);
-            controls.enableDamping = true;
-            controls.dampingFactor = 0.05;
-            controls.minDistance = 1.5;
-            controls.maxDistance = 6;
+            controls.enableDamping = false;
             
             controls.mouseButtons = {
                 LEFT: THREE.MOUSE.ROTATE,
@@ -1236,25 +1504,104 @@
             controls.addEventListener('start', resetIdleTimer);
             controls.addEventListener('change', resetIdleTimer);
 
-            sphereGroup = new THREE.Group();
-            scene.add(sphereGroup);
+            mainGroup = new THREE.Group();
+            scene.add(mainGroup);
 
-            // 최적화 2: 구체의 폴리곤(면) 개수를 256x256에서 128x128로 줄여 GPU 연산 부하를 크게 줄입니다.
-            const geometry = new THREE.SphereGeometry(1, 128, 128);
-            geometry.setAttribute('uv2', new THREE.BufferAttribute(geometry.attributes.uv.array, 2));
+            // Geometries setup
+            sphereGeom = new THREE.SphereGeometry(1, 128, 128);
+            sphereGeom.setAttribute('uv2', new THREE.BufferAttribute(sphereGeom.attributes.uv.array, 2));
 
-            sphere = new THREE.Mesh(geometry, new THREE.MeshPhysicalMaterial({ color: 0xd2d2d7, roughness: 0.5, metalness: 0.1, ior: 1.5 }));
-            sphereGroup.add(sphere);
+            boxGeom = new THREE.BoxGeometry(1.5, 1.5, 1.5, 128, 128, 128);
+            boxGeom.setAttribute('uv2', new THREE.BufferAttribute(boxGeom.attributes.uv.array, 2));
+
+            // Default Metalness set to 0.0, Default Roughness 0.0
+            pbrMesh = new THREE.Mesh(sphereGeom, new THREE.MeshPhysicalMaterial({ color: 0xd2d2d7, roughness: 0.0, metalness: 0.0, ior: 1.0 }));
+            applyAntiTiling(pbrMesh.material);
+            mainGroup.add(pbrMesh);
+
+            // --- Feature 1: Independent Eye Overlay System (Separated Scales) ---
+            
+            // Sphere version of eyes (1/3 of the box's size -> 0.1 scale)
+            const eyeTexSphere = createEyeTexture(0.1);
+            const eyeMatSphere = new THREE.MeshBasicMaterial({ 
+                map: eyeTexSphere, 
+                transparent: true, 
+                depthWrite: false
+            });
+            eyeSphere = new THREE.Mesh(new THREE.SphereGeometry(1.003, 128, 128), eyeMatSphere);
+            mainGroup.add(eyeSphere);
+
+            // Box version of eyes (Original size -> 0.3 scale)
+            const eyeTexBox = createEyeTexture(0.3);
+            const eyeMatBox = new THREE.MeshBasicMaterial({ 
+                map: eyeTexBox, 
+                transparent: true, 
+                depthWrite: false
+            });
+            eyePlane = new THREE.Mesh(new THREE.PlaneGeometry(1.5, 1.5), eyeMatBox);
+            eyePlane.position.z = 0.751; // Just in front of the box
+            eyePlane.visible = false; // Hidden initially
+            mainGroup.add(eyePlane);
+
+
+            // Shape Toggle Handlers
+            const btnShapeSphere = document.getElementById('btn-shape-sphere');
+            const btnShapeBox = document.getElementById('btn-shape-box');
+            const radiusContainer = document.getElementById('radius-control-container');
+
+            btnShapeSphere?.addEventListener('click', () => {
+                pbrMesh.geometry = sphereGeom;
+                currentGeometryType = 'sphere';
+                
+                eyeSphere.visible = true;
+                eyePlane.visible = false;
+                radiusContainer.classList.add('hidden');
+
+                btnShapeSphere.className = 'w-9 h-9 rounded-lg bg-[var(--hover-bg)] text-[var(--apple-blue)] flex items-center justify-center transition shadow-sm';
+                if(btnShapeBox) btnShapeBox.className = 'w-9 h-9 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--hover-bg)] flex items-center justify-center transition';
+                updateMaterialTransform(); // Re-apply current material settings
+            });
+
+            btnShapeBox?.addEventListener('click', () => {
+                currentGeometryType = 'box';
+                updateBoxGeometry();
+                
+                eyeSphere.visible = false;
+                eyePlane.visible = true;
+                radiusContainer.classList.remove('hidden');
+
+                btnShapeBox.className = 'w-9 h-9 rounded-lg bg-[var(--hover-bg)] text-[var(--apple-blue)] flex items-center justify-center transition shadow-sm';
+                if(btnShapeSphere) btnShapeSphere.className = 'w-9 h-9 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--hover-bg)] flex items-center justify-center transition';
+                updateMaterialTransform();
+            });
+
+            // Zoom Reset Handler
+            document.getElementById('btn-zoom-reset')?.addEventListener('click', () => {
+                if(camera && controls) {
+                    camera.position.set(0, 0, 3.5);
+                    controls.target.set(0, 0, 0);
+                    controls.update();
+                    resetIdleTimer();
+                }
+            });
+
+            // Radius Slider Handler
+            const sliderRadius = document.getElementById('slider-radius');
+            const valRadius = document.getElementById('val-radius');
+            sliderRadius?.addEventListener('input', (e) => {
+                valRadius.textContent = e.target.value + 'mm';
+                updateBoxGeometry();
+            });
 
             const view3dContainer = document.getElementById('view-3d');
             const animate = () => {
                 requestAnimationFrame(animate);
                 
-                // 최적화 3: 3D 뷰어 탭이 화면에 보이지 않을 때는 렌더링을 완전히 일시 중단하여 시스템 리소스(CPU/GPU)를 확보합니다.
                 if(view3dContainer && view3dContainer.classList.contains('hidden')) return;
 
                 if(isIdle && !controls.state) {
-                    sphereGroup.rotation.y += 0.0015;
+                    mainGroup.rotation.y += 0.0015;
+                    mainGroup.rotation.x += 0.0005;
                 }
                 controls.update();
                 renderer.render(scene, camera);
@@ -1304,6 +1651,7 @@
             const origImgEl = document.getElementById('result-original-image');
             if(origImgEl) origImgEl.src = matData.original || currentMaps.albedo;
             
+            // Set UI values
             const scaleSlider = document.getElementById('slider-scale');
             if(scaleSlider) scaleSlider.value = matData.scale;
             const valScale = document.getElementById('val-scale');
@@ -1314,19 +1662,19 @@
             const valAngle = document.getElementById('val-angle');
             if(valAngle) valAngle.textContent = `${matData.angle}°`;
             
-            const roughVal = matData.roughness !== undefined ? matData.roughness : 1.0;
+            const roughVal = matData.roughness !== undefined ? matData.roughness : 0.0;
             const sliderRoughness = document.getElementById('slider-roughness');
             if(sliderRoughness) sliderRoughness.value = roughVal;
             const valRoughness = document.getElementById('val-roughness');
-            if(valRoughness) valRoughness.textContent = `${roughVal}`;
+            if(valRoughness) valRoughness.textContent = roughVal.toFixed(1);
 
-            const metalVal = matData.metalness !== undefined ? matData.metalness : 0.1;
+            const metalVal = matData.metalness !== undefined ? matData.metalness : 0.0;
             const sliderMetalness = document.getElementById('slider-metalness');
             if(sliderMetalness) sliderMetalness.value = metalVal;
             const valMetalness = document.getElementById('val-metalness');
             if(valMetalness) valMetalness.textContent = `${metalVal}`;
 
-            const refVal = matData.refraction !== undefined ? matData.refraction : 1.5;
+            const refVal = matData.refraction !== undefined ? matData.refraction : 1.0;
             const sliderRefraction = document.getElementById('slider-refraction');
             if(sliderRefraction) sliderRefraction.value = refVal;
             const valRefraction = document.getElementById('val-refraction');
@@ -1404,35 +1752,17 @@
                 loader.load(url, (tex) => {
                     tex.wrapS = THREE.RepeatWrapping;
                     tex.wrapT = THREE.RepeatWrapping;
-                    tex.center.set(0.5, 0.5);
-                    tex.repeat.set(matData.scale, matData.scale);
-                    tex.rotation = 0; 
                     
-                    if(sphere) {
-                        if (sphere.material[type]) sphere.material[type].dispose();
-                        sphere.material[type] = tex;
+                    if(pbrMesh) {
+                        if (pbrMesh.material[type]) pbrMesh.material[type].dispose();
+                        pbrMesh.material[type] = tex;
                         
                         if(type === 'map') {
-                            sphere.material.color.set(hex);
-                        }
-                        if(type === 'displacementMap') {
-                            sphere.material.displacementScale = Math.abs(bumpVal) * 0.1;
-                            sphere.material.displacementBias = -Math.abs(bumpVal) * 0.05;
+                            const currentHex = document.getElementById('picker-hex')?.value || '#FFFFFF';
+                            pbrMesh.material.color.setHex(parseInt(currentHex.replace('#', '0x')));
                         }
                         
-                        sphere.material.roughness = roughVal;
-                        sphere.material.metalness = metalVal;
-                        sphere.material.ior = Math.max(1.0, refVal);
-                        
-                        const absBump = Math.abs(bumpVal);
-                        const sign = bumpVal >= 0 ? 1 : -1;
-                        const strength = 1.0 + absBump * 4.0;
-                        sphere.material.normalScale.set(sign * strength, sign * strength);
-
-                        const angleRad = matData.angle * (Math.PI / 180);
-                        sphere.rotation.z = -angleRad;
-
-                        sphere.material.needsUpdate = true;
+                        updateMaterialTransform();
                     }
                 });
             };
@@ -1472,21 +1802,21 @@
             const imgDisplacement = document.getElementById('img-displacement');
             if(imgDisplacement) { imgDisplacement.src = ''; imgDisplacement.classList.remove('loaded'); }
 
-            if(sphere) {
+            if(pbrMesh) {
                 ['map', 'normalMap', 'roughnessMap', 'aoMap', 'displacementMap'].forEach(type => {
-                    if (sphere.material[type]) sphere.material[type].dispose();
-                    sphere.material[type] = null;
+                    if (pbrMesh.material[type]) pbrMesh.material[type].dispose();
+                    pbrMesh.material[type] = null;
                 });
                 
-                sphere.material.color.setHex(0xd2d2d7);
-                sphere.material.roughness = 0.5;
-                sphere.material.metalness = 0.1;
-                sphere.material.ior = 1.5;
-                sphere.material.displacementScale = 0;
+                pbrMesh.material.color.setHex(0xd2d2d7);
+                pbrMesh.material.roughness = 0.0;
+                pbrMesh.material.metalness = 0.0;
+                pbrMesh.material.ior = 1.0;
+                pbrMesh.material.displacementScale = 0;
                 
-                sphere.rotation.set(0,0,0);
+                mainGroup.rotation.set(0,0,0);
                 
-                sphere.material.needsUpdate = true;
+                pbrMesh.material.needsUpdate = true;
             }
         };
 
@@ -1523,7 +1853,7 @@
             const valAngle = document.getElementById('val-angle');
             if(valAngle) valAngle.textContent = `${angleDeg}°`;
             const valRoughness = document.getElementById('val-roughness');
-            if(valRoughness) valRoughness.textContent = `${roughness}`;
+            if(valRoughness) valRoughness.textContent = roughness.toFixed(1);
             const valMetalness = document.getElementById('val-metalness');
             if(valMetalness) valMetalness.textContent = `${metalness}`;
             const valRefraction = document.getElementById('val-refraction');
@@ -1538,28 +1868,30 @@
             updateSliderBg(refractionSlider);
             updateSliderBg(bumpSlider);
 
-            const maps = ['map', 'normalMap', 'roughnessMap', 'aoMap', 'displacementMap'];
-            maps.forEach(m => {
-                if(sphere && sphere.material[m]) {
-                    sphere.material[m].repeat.set(scale, scale);
-                    sphere.material[m].rotation = 0; 
-                }
-            });
-            if(sphere) {
-                sphere.material.roughness = roughness;
-                sphere.material.metalness = metalness;
-                sphere.material.ior = Math.max(1.0, refraction);
+            if(pbrMesh) {
+                const maps = ['map', 'normalMap', 'roughnessMap', 'aoMap', 'displacementMap'];
+                maps.forEach(m => {
+                    if(pbrMesh.material[m]) {
+                        pbrMesh.material[m].repeat.set(scale, scale);
+                        pbrMesh.material[m].rotation = 0; 
+                    }
+                });
+
+                pbrMesh.material.roughness = roughness;
+                pbrMesh.material.metalness = metalness;
+                pbrMesh.material.ior = Math.max(0.0, refraction); 
                 
                 const absBump = Math.abs(bump);
-                sphere.material.displacementScale = absBump * 0.1;
-                sphere.material.displacementBias = -absBump * 0.05;
+                pbrMesh.material.displacementScale = absBump * 0.1;
+                pbrMesh.material.displacementBias = -absBump * 0.05;
                 
                 const sign = bump >= 0 ? 1 : -1;
                 const strength = 1.0 + absBump * 4.0;
-                sphere.material.normalScale.set(sign * strength, sign * strength);
+                pbrMesh.material.normalScale.set(sign * strength, sign * strength);
                 
-                sphere.rotation.z = -angleRad;
-                sphere.material.needsUpdate = true;
+                // Group handles object rotation instead of mesh now
+                mainGroup.rotation.z = -angleRad;
+                pbrMesh.material.needsUpdate = true;
             }
             resetIdleTimer();
         };
@@ -1599,8 +1931,9 @@
             const colorOverlay = document.getElementById('result-color-overlay');
             if(colorOverlay) colorOverlay.style.backgroundColor = hex;
 
-            if(sphere) {
-                sphere.material.color.setHex(parseInt(hex.replace('#', '0x')));
+            if(pbrMesh) {
+                pbrMesh.material.color.setHex(parseInt(hex.replace('#', '0x')));
+                pbrMesh.material.needsUpdate = true;
             }
 
             clearTimeout(colorUpdateTimeout);
@@ -1616,10 +1949,10 @@
                         const scaleSlider = document.getElementById('slider-scale');
                         const scale = scaleSlider ? parseFloat(scaleSlider.value) : 1;
                         tex.repeat.set(scale, scale);
-                        if(sphere) {
-                            if (sphere.material.map) sphere.material.map.dispose();
-                            sphere.material.map = tex;
-                            sphere.material.needsUpdate = true;
+                        if(pbrMesh) {
+                            if (pbrMesh.material.map) pbrMesh.material.map.dispose();
+                            pbrMesh.material.map = tex;
+                            pbrMesh.material.needsUpdate = true;
                         }
                     });
                 }
@@ -1667,7 +2000,7 @@
             const span = document.getElementById(id);
             if(!span) return;
             span.addEventListener('dblclick', function() {
-                const currentText = this.textContent.replace('°', '');
+                const currentText = this.textContent.replace('°', '').replace('mm', '');
                 const currentVal = parseFloat(currentText);
                 
                 const input = document.createElement('input');
@@ -1678,12 +2011,13 @@
                 let min, max, step;
                 if(type === 'scale') { step = 0.1; min = 0.1; max = 5; }
                 else if(type === 'angle') { step = 1; min = 0; max = 360; }
-                else if(type === 'roughness') { step = 0.01; min = 0.0; max = 2.0; }
+                else if(type === 'roughness') { step = 0.1; min = 0.0; max = 0.5; }
                 else if(type === 'metalness') { step = 0.01; min = 0.0; max = 1.0; }
                 else if(type === 'refraction') { step = 0.1; min = 0.0; max = 3.0; }
                 else if(type === 'bump') { step = 0.01; min = -0.5; max = 0.5; }
                 else if(type === 'hue') { step = 1; min = -180; max = 180; }
                 else if(type === 'brightness' || type === 'contrast' || type === 'saturation') { step = 1; min = -100; max = 100; }
+                else if(type === 'radius') { step = 0.1; min = 0; max = 10; }
                 
                 input.step = step; input.min = min; input.max = max;
                 
@@ -1691,6 +2025,7 @@
                     let newVal = parseFloat(input.value);
                     if (isNaN(newVal)) newVal = currentVal;
                     newVal = Math.max(min, Math.min(max, newVal));
+                    if (type === 'roughness') newVal = Math.round(newVal * 10) / 10;
                     
                     const sliderScale = document.getElementById('slider-scale');
                     const sliderAngle = document.getElementById('slider-angle');
@@ -1702,6 +2037,7 @@
                     const sliderBrightness = document.getElementById('slider-brightness');
                     const sliderContrast = document.getElementById('slider-contrast');
                     const sliderSaturation = document.getElementById('slider-saturation');
+                    const sliderRadius = document.getElementById('slider-radius');
 
                     if(type === 'scale' && sliderScale) sliderScale.value = newVal;
                     else if(type === 'angle' && sliderAngle) sliderAngle.value = newVal;
@@ -1713,12 +2049,18 @@
                     else if(type === 'brightness' && sliderBrightness) sliderBrightness.value = newVal;
                     else if(type === 'contrast' && sliderContrast) sliderContrast.value = newVal;
                     else if(type === 'saturation' && sliderSaturation) sliderSaturation.value = newVal;
+                    else if(type === 'radius' && sliderRadius) { 
+                        sliderRadius.value = newVal; 
+                        updateBoxGeometry(); 
+                    }
                     
                     span.innerHTML = '';
                     if(type === 'brightness' || type === 'contrast' || type === 'saturation' || type === 'hue') {
                         onColorSliderChange();
-                    } else {
+                    } else if (type !== 'radius') {
                         updateMaterialTransform();
+                    } else {
+                        span.textContent = newVal + 'mm';
                     }
                 };
 
@@ -1744,6 +2086,7 @@
         setupDirectInput('val-brightness', 'brightness');
         setupDirectInput('val-contrast', 'contrast');
         setupDirectInput('val-saturation', 'saturation');
+        setupDirectInput('val-radius', 'radius');
 
         document.getElementById('btn-save-transform')?.addEventListener('click', async () => {
             if(!activeMaterialId) return;
