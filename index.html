@@ -162,7 +162,7 @@
 
     <!-- Login Modal -->
     <div id="login-modal" class="fixed inset-0 z-[60] hidden flex items-center justify-center bg-[var(--overlay-bg)] backdrop-blur-[20px] transition-opacity duration-300">
-        <div class="apple-card p-10 max-w-sm w-full text-center relative border border-[var(--border-color)]">
+        <div class="apple-card p-10 max-w-sm w-full text-center relative border border-[var(--border-color)] translate-y-16">
             <button id="btn-close-login" class="absolute top-4 right-4 text-[var(--text-muted)] hover:text-[var(--text-main)] transition">
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
@@ -170,7 +170,7 @@
             <h2 class="text-card-title text-[var(--text-main)] mb-2">디자이너 로그인</h2>
             <p class="text-caption text-[var(--text-muted)] mb-6">자신의 재질 라이브러리에 접근합니다.</p>
             
-            <div class="space-y-4 mb-6">
+            <div class="space-y-4 mb-6 mt-8">
                 <input type="text" value="found/Founded" readonly class="w-full bg-[var(--bg-main)] border border-[var(--border-color)] text-[var(--text-main)] px-4 py-3 rounded-lg text-body focus:outline-none opacity-70 cursor-not-allowed">
                 <input type="password" id="input-pw" placeholder="비밀번호" class="w-full bg-[var(--bg-main)] border border-[var(--border-color)] text-[var(--text-main)] px-4 py-3 rounded-lg text-body focus:outline-none focus:border-[var(--apple-blue)] transition">
                 <p id="login-error" class="text-xs text-[#ff3b30] hidden text-left">비밀번호가 일치하지 않습니다.</p>
@@ -181,13 +181,13 @@
     </div>
 
     <!-- Initial Required Modal -->
-    <div id="initial-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-[var(--overlay-bg)] backdrop-blur-[20px] transition-opacity duration-300">
-        <div class="apple-card p-10 max-w-sm w-full text-center border border-[var(--border-color)]">
+    <div id="initial-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-[var(--overlay-bg)] backdrop-blur-[20px] transition-opacity duration-500">
+        <div id="initial-modal-card" class="apple-card p-10 max-w-sm w-full text-center border border-[var(--border-color)] translate-y-16 transition-all duration-300">
             <i data-lucide="lock" class="w-10 h-10 text-[var(--text-main)] mx-auto mb-4"></i>
             <h2 class="text-xl font-bold text-[var(--text-main)] mb-2 tracking-tight">디자이너 로그인</h2>
             <p class="text-[14px] text-[var(--text-muted)] mb-6 leading-relaxed font-medium">자신의 재질 라이브러리에 접근합니다.</p>
             
-            <div class="space-y-4 mb-6">
+            <div class="space-y-4 mb-6 mt-8">
                 <input type="text" value="found/Founded" readonly class="w-full bg-[var(--bg-main)] border border-[var(--border-color)] text-[var(--text-main)] px-4 py-3 rounded-lg text-body focus:outline-none opacity-70 cursor-not-allowed">
                 <input type="password" id="initial-input-pw" placeholder="비밀번호" class="w-full bg-[var(--bg-main)] border border-[var(--border-color)] text-[var(--text-main)] px-4 py-3 rounded-lg text-body focus:outline-none focus:border-[var(--apple-blue)] transition">
                 <p id="initial-login-error" class="text-xs text-[#ff3b30] hidden text-left">비밀번호가 일치하지 않습니다.</p>
@@ -197,59 +197,65 @@
             
             <button id="btn-open-guide-from-modal" class="text-[13px] text-[var(--text-muted)] hover:text-[var(--text-main)] transition underline-offset-4 hover:underline mt-2">사용자 가이드 보러가기</button>
         </div>
+
+        <!-- 환영 메시지 UI 추가 -->
+        <div id="welcome-message" class="absolute hidden flex-col items-center justify-center transition-opacity duration-500 opacity-0">
+            <i data-lucide="sparkles" class="w-12 h-12 text-[var(--apple-blue)] mb-4"></i>
+            <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight drop-shadow-xl">파파 디자이너님 환영합니다!</h2>
+        </div>
     </div>
 
     <!-- Guide Modal -->
     <div id="guide-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-[var(--overlay-bg)] backdrop-blur-[20px] transition-opacity duration-300">
-        <div class="apple-card p-12 max-w-3xl w-[90%] relative border border-[var(--border-color)] shadow-2xl">
+        <div class="apple-card p-12 max-w-4xl w-[90%] relative border border-[var(--border-color)] shadow-2xl">
             <button id="btn-close-guide" class="absolute top-6 right-6 text-[var(--text-muted)] hover:text-[var(--text-main)] transition bg-[var(--bg-main)] rounded-full p-2 border border-[var(--border-color)]">
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
             
             <div class="mb-12 text-center">
-                <h2 class="text-2xl font-bold text-[var(--text-main)] mb-3 tracking-tight">PBR Studio Workflow</h2>
-                <p class="text-[var(--text-muted)] text-[15px]">단 한 장의 이미지로 완벽한 Seamless 3D 재질을 생성하는 프로세스</p>
+                <h2 class="text-2xl font-bold text-[var(--text-main)] mb-3 tracking-tight">PBR Studio Workflow v2.0</h2>
+                <p class="text-[var(--text-muted)] text-[15px]">가장 진보된 물리 기반 텍스처 분석 및 심리스 생성 프로세스</p>
             </div>
 
-            <div class="flex items-center justify-between relative mb-12 px-6">
-                <div class="absolute top-1/2 left-16 right-16 h-[2px] bg-gradient-to-r from-[var(--border-color)] via-[var(--apple-blue)] to-[var(--border-color)] -translate-y-1/2 z-0 opacity-40"></div>
+            <div class="flex items-start justify-between relative mb-12 px-2">
+                <div class="absolute top-7 left-12 right-12 h-[2px] bg-gradient-to-r from-[var(--border-color)] via-[var(--apple-blue)] to-[var(--border-color)] z-0 opacity-40"></div>
                 
-                <div class="relative z-10 flex flex-col items-center bg-[var(--bg-card)] px-4">
+                <div class="relative z-10 flex flex-col items-center bg-[var(--bg-card)] px-4 max-w-[180px]">
                     <div class="w-14 h-14 bg-[var(--bg-main)] border-2 border-[var(--border-color)] rounded-full flex items-center justify-center mb-4 text-[var(--text-main)] shadow-sm">
                         <span class="font-bold text-lg">1</span>
                     </div>
-                    <h3 class="text-[14px] font-semibold text-[var(--text-main)]">이미지 업로드</h3>
-                    <span class="text-[12px] text-[var(--text-muted)] mt-1 text-center">텍스처 원본 제공</span>
+                    <h3 class="text-[14px] font-semibold text-[var(--text-main)] mb-1">이미지 업로드</h3>
+                    <span class="text-[12px] text-[var(--text-muted)] text-center leading-relaxed">로컬 AI 알고리즘을 통한<br>자동 Seamless 변환</span>
                 </div>
                 
-                <div class="relative z-10 flex flex-col items-center bg-[var(--bg-card)] px-4">
+                <div class="relative z-10 flex flex-col items-center bg-[var(--bg-card)] px-4 max-w-[180px]">
                     <div class="w-14 h-14 bg-[var(--bg-main)] border-2 border-[var(--apple-blue)] rounded-full flex items-center justify-center mb-4 text-[var(--apple-blue)] shadow-[0_0_15px_rgba(0,113,227,0.25)]">
-                        <i data-lucide="sparkles" class="w-6 h-6"></i>
+                        <i data-lucide="box" class="w-6 h-6"></i>
                     </div>
-                    <h3 class="text-[14px] font-semibold text-[var(--text-main)]">AI 심리스 변환</h3>
-                    <span class="text-[12px] text-[var(--text-muted)] mt-1 text-center">경계선 래핑/마스킹</span>
+                    <h3 class="text-[14px] font-semibold text-[var(--text-main)] mb-1">3D 모델 적용</h3>
+                    <span class="text-[12px] text-[var(--text-muted)] text-center leading-relaxed">구체/직육면체 모델 전환 및<br>모서리 둥글기(R) 제어</span>
                 </div>
                 
-                <div class="relative z-10 flex flex-col items-center bg-[var(--bg-card)] px-4">
+                <div class="relative z-10 flex flex-col items-center bg-[var(--bg-card)] px-4 max-w-[180px]">
                     <div class="w-14 h-14 bg-[var(--bg-main)] border-2 border-[var(--border-color)] rounded-full flex items-center justify-center mb-4 text-[var(--text-main)] shadow-sm">
                         <span class="font-bold text-lg">3</span>
                     </div>
-                    <h3 class="text-[14px] font-semibold text-[var(--text-main)]">파라미터 조정</h3>
-                    <span class="text-[12px] text-[var(--text-muted)] mt-1 text-center">스케일 및 질감 제어</span>
+                    <h3 class="text-[14px] font-semibold text-[var(--text-main)] mb-1">속성 & 색상 튜닝</h3>
+                    <span class="text-[12px] text-[var(--text-muted)] text-center leading-relaxed">PBR 파라미터, 헥스 틴트 조절<br>및 재질 이름 더블클릭 수정</span>
                 </div>
                 
-                <div class="relative z-10 flex flex-col items-center bg-[var(--bg-card)] px-4">
+                <div class="relative z-10 flex flex-col items-center bg-[var(--bg-card)] px-4 max-w-[180px]">
                     <div class="w-14 h-14 bg-[var(--bg-main)] border-2 border-[var(--border-color)] rounded-full flex items-center justify-center mb-4 text-[var(--text-main)] shadow-sm">
-                        <i data-lucide="download-cloud" class="w-5 h-5"></i>
+                        <i data-lucide="heart" class="w-5 h-5"></i>
                     </div>
-                    <h3 class="text-[14px] font-semibold text-[var(--text-main)]">추출 및 저장</h3>
-                    <span class="text-[12px] text-[var(--text-muted)] mt-1 text-center">5 Maps 패키지</span>
+                    <h3 class="text-[14px] font-semibold text-[var(--text-main)] mb-1">라이브러리 저장</h3>
+                    <span class="text-[12px] text-[var(--text-muted)] text-center leading-relaxed">현재 수치 저장, 즐겨찾기 정렬<br>및 5 Maps 패키지 추출</span>
                 </div>
             </div>
             
             <div class="bg-[var(--bg-main)] rounded-xl p-7 border border-[var(--border-color)]">
                 <h3 class="text-[15px] font-semibold text-[var(--text-main)] mb-5 flex items-center gap-2">
-                    <i data-lucide="box" class="w-5 h-5 text-[var(--apple-blue)]"></i> 5 PBR Maps 활용 가이드
+                    <i data-lucide="layers" class="w-5 h-5 text-[var(--apple-blue)]"></i> 5 PBR Maps 활용 가이드
                 </h3>
                 <div class="grid grid-cols-3 gap-5 text-[13px] text-[var(--text-sub)]">
                     <div class="flex flex-col gap-1 pb-2 border-b border-[var(--border-color)]">
@@ -273,7 +279,6 @@
                         <span class="text-[12px]">실제 지오메트리를 변형시키는 <b>변위/범프</b> 채널용 깊이 맵.</span>
                     </div>
                 </div>
-                <p class="text-[12px] text-[var(--text-muted)] mt-5 text-center">※ 생성된 5가지 맵은 완벽한 Seamless 타일링 처리가 되어 있어 끊김 없이 매끄럽게 연결됩니다.</p>
             </div>
         </div>
     </div>
@@ -474,7 +479,7 @@
                         <span class="text-[11px] font-medium text-green-500">추출 완료</span>
                     </div>
                     <div class="flex items-center justify-between mb-3">
-                        <h1 class="text-card-title text-[var(--text-main)] truncate pr-2" id="result-mat-name">커스텀 텍스처</h1>
+                        <h1 class="text-card-title text-[var(--text-main)] truncate pr-2 cursor-pointer hover:text-[var(--apple-blue)] transition" id="result-mat-name" title="더블클릭하여 이름 수정">커스텀 텍스처</h1>
                         <div class="bg-[var(--bg-card)] px-2 py-1 rounded-lg border border-[var(--border-color)] flex items-center gap-2 text-center text-[10px] whitespace-nowrap">
                             <div>
                                 <div class="font-semibold text-[var(--text-main)]">5 Maps</div>
@@ -676,7 +681,7 @@
     <script>
         lucide.createIcons();
 
-        // --- Tabs for Right Control Panel ---
+        // 1. Theme & UI Utilities
         const tabProperties = document.getElementById('tab-properties');
         const tabColors = document.getElementById('tab-colors');
         const containerProperties = document.getElementById('container-properties');
@@ -700,7 +705,6 @@
             containerProperties?.classList.remove('flex');
         });
 
-        // --- Custom Dialog System ---
         const customDialog = document.getElementById('custom-dialog');
         const dialogMessage = document.getElementById('dialog-message');
         const btnDialogCancel = document.getElementById('btn-dialog-cancel');
@@ -717,15 +721,8 @@
                     btnDialogCancel?.classList.add('hidden');
                 }
 
-                const handleConfirm = () => {
-                    cleanup();
-                    resolve(true);
-                };
-
-                const handleCancel = () => {
-                    cleanup();
-                    resolve(false);
-                };
+                const handleConfirm = () => { cleanup(); resolve(true); };
+                const handleCancel = () => { cleanup(); resolve(false); };
 
                 const cleanup = () => {
                     customDialog?.classList.add('hidden');
@@ -738,7 +735,24 @@
             });
         };
 
-        // --- Auth Guard System ---
+        const themeToggleBtn = document.getElementById('btn-theme-toggle');
+        const themeIcon = themeToggleBtn?.querySelector('i');
+        let isLightMode = false;
+        
+        themeToggleBtn?.addEventListener('click', () => {
+            isLightMode = !isLightMode;
+            if (isLightMode) {
+                document.body.setAttribute('data-theme', 'light');
+                themeIcon?.setAttribute('data-lucide', 'moon');
+            } else {
+                document.body.removeAttribute('data-theme');
+                themeIcon?.setAttribute('data-lucide', 'sun');
+            }
+            lucide.createIcons();
+            updateMaterialTransform(); 
+        });
+
+        // 2. Auth & API Key Logic
         let currentUserId = 'guest';
         
         const requireAuth = () => {
@@ -750,22 +764,15 @@
             return true;
         };
 
-        // --- API Key Management (Local Storage) ---
         const inputApiKey = document.getElementById('input-api-key');
         const btnSaveApiKey = document.getElementById('btn-save-api-key');
         const apiAuthOverlay = document.getElementById('api-auth-overlay');
         const btnDisconnectApi = document.getElementById('btn-disconnect-api');
         const LOCAL_STORAGE_API_KEY = 'pbr_studio_gemini_api_key';
-
         let savedApiKey = localStorage.getItem(LOCAL_STORAGE_API_KEY) || '';
 
-        const showAuthState = () => {
-            apiAuthOverlay?.classList.remove('hidden');
-        };
-
-        const hideAuthState = () => {
-            apiAuthOverlay?.classList.add('hidden');
-        };
+        const showAuthState = () => apiAuthOverlay?.classList.remove('hidden');
+        const hideAuthState = () => apiAuthOverlay?.classList.add('hidden');
 
         if (savedApiKey) {
             if(inputApiKey) inputApiKey.value = savedApiKey;
@@ -829,28 +836,12 @@
             await showDialog("Gemini API 연결이 해제되었습니다.<br>로컬 캔버스 모드로 동작합니다.");
         });
 
-
-        // --- Theme Logic ---
-        const themeToggleBtn = document.getElementById('btn-theme-toggle');
-        const themeIcon = themeToggleBtn?.querySelector('i');
-        let isLightMode = false;
-        
-        themeToggleBtn?.addEventListener('click', () => {
-            isLightMode = !isLightMode;
-            if (isLightMode) {
-                document.body.setAttribute('data-theme', 'light');
-                themeIcon?.setAttribute('data-lucide', 'moon');
-            } else {
-                document.body.removeAttribute('data-theme');
-                themeIcon?.setAttribute('data-lucide', 'sun');
-            }
-            lucide.createIcons();
-            updateMaterialTransform(); 
-        });
-
-        // --- IndexedDB Wrapper for Library Logic ---
+        // 3. Database (IndexedDB) & Library
         const DB_NAME = 'PBRStudioDB';
         const STORE_NAME = 'materials';
+        let libraryViewMode = 'grid'; 
+        let activeMaterialId = null;
+        let materialsLib = [];
 
         const openDB = () => {
             return new Promise((resolve, reject) => {
@@ -884,10 +875,6 @@
                 request.onerror = () => reject(request.error);
             });
         };
-
-        let libraryViewMode = 'grid'; 
-        let activeMaterialId = null;
-        let materialsLib = [];
 
         const getLibraryKey = () => `pbr_lib_${currentUserId}`;
 
@@ -930,7 +917,15 @@
                 return;
             }
 
-            materialsLib.forEach(mat => {
+            // Feature: Sort Favorites to Top, then alphabetically by name
+            const sortedLib = [...materialsLib].sort((a, b) => {
+                if (a.isFavorite === b.isFavorite) {
+                    return a.name.localeCompare(b.name); 
+                }
+                return a.isFavorite ? -1 : 1;
+            });
+
+            sortedLib.forEach(mat => {
                 const item = document.createElement('div');
                 const isActive = mat.id === activeMaterialId;
                 
@@ -1048,23 +1043,20 @@
             renderLibrary();
         };
 
-        // --- Gemini API Processing Logic with Material Analysis ---
+        // 4. Image Processing & Generation
         const processImageWithGemini = async (base64Image) => {
             if (!savedApiKey) return null;
-
             const base64Data = base64Image.replace(/^data:image\/(png|jpeg|webp);base64,/, "");
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent?key=${savedApiKey}`;
             
             const payload = {
                 contents: [{
                     parts: [
-                        { text: "Transform the given image into a perfectly seamless, flat albedo texture for 3D PBR mapping. Upscale and enhance the resolution to 4K high-definition. Remove any uneven lighting, shadows, highlights, or perspective distortions. Ensure the pattern is completely tileable. ALSO analyze the material type (e.g. fabric, wood, metal, plastic, stone) and provide a JSON response representing its physical properties. The JSON MUST contain these keys exactly: 'roughness' (float 0.0-0.5, step 0.1, lower is shinier), 'metalness' (float 0.0-1.0), 'bump' (float -0.5 to 0.5, use negative for indented textures like fabric weave or wood pores, positive for protruding bumps), 'ior' (float 0.0-3.0). DO NOT use markdown blocks, return ONLY raw valid JSON text." },
+                        { text: "Transform the given image into a perfectly seamless, flat albedo texture for 3D PBR mapping. CRITICAL: PRESERVE EXACT ORIGINAL COLORS. DO NOT alter brightness, contrast, or hue. Make it tile perfectly WITHOUT any blotchy, patchy, or uneven areas. The pattern must be clean, uniform, and sharp even when repeated 5x times. ALSO analyze the material type (e.g. fabric, wood, metal, plastic, stone) and provide a JSON response representing its physical properties. The JSON MUST contain these keys exactly: 'roughness' (float 0.0-0.5, step 0.1, lower is shinier), 'metalness' (float 0.0-1.0), 'bump' (float -0.5 to 0.5, use negative for indented textures like fabric weave or wood pores, positive for protruding bumps), 'ior' (float 0.0-3.0). DO NOT use markdown blocks, return ONLY raw valid JSON text." },
                         { inlineData: { mimeType: "image/jpeg", data: base64Data } }
                     ]
                 }],
-                generationConfig: {
-                    responseModalities: ['TEXT', 'IMAGE']
-                }
+                generationConfig: { responseModalities: ['TEXT', 'IMAGE'] }
             };
 
             try {
@@ -1073,14 +1065,9 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-
-                if (!response.ok) {
-                    console.error("Gemini API Error:", response.status, response.statusText);
-                    return null;
-                }
+                if (!response.ok) return null;
 
                 const result = await response.json();
-                
                 const imgPart = result.candidates?.[0]?.content?.parts?.find(p => p.inlineData)?.inlineData?.data;
                 const textPart = result.candidates?.[0]?.content?.parts?.find(p => p.text)?.text;
                 
@@ -1095,96 +1082,15 @@
                             if (typeof parsed.bump === 'number') aiParams.bump = parsed.bump;
                             if (typeof parsed.ior === 'number') aiParams.ior = parsed.ior;
                         }
-                    } catch (e) {
-                        console.error('Gemini JSON parsing error', e);
-                    }
+                    } catch (e) {}
                 }
                 
-                if (imgPart) {
-                    return { image: `data:image/jpeg;base64,${imgPart}`, params: aiParams };
-                }
+                if (imgPart) return { image: `data:image/jpeg;base64,${imgPart}`, params: aiParams };
                 return null;
             } catch (error) {
-                console.error("Gemini API Fetch Error:", error);
                 return null;
             }
         };
-
-
-        // --- 3D Viewer Setup ---
-        let scene, camera, renderer, controls, container;
-        let mainGroup, pbrMesh, eyeSphere, eyePlane;
-        let sphereGeom, boxGeom;
-        let currentGeometryType = 'sphere';
-        let currentMaps = {};
-        
-        let idleTimer;
-        let isIdle = true;
-        const resetIdleTimer = () => {
-            isIdle = false;
-            clearTimeout(idleTimer);
-            idleTimer = setTimeout(() => { isIdle = true; }, 5000);
-        };
-
-        // Feature 1: Create Character Eye Texture using Canvas
-        // Added scale parameter to control size on different geometries
-        function createEyeTexture(scaleRatio) {
-            const c = document.createElement('canvas');
-            c.width = 1024; c.height = 1024;
-            const ctx = c.getContext('2d');
-            
-            // Background fully transparent so material underneath shows
-            ctx.clearRect(0, 0, 1024, 1024);
-            
-            ctx.translate(512, 512); // Move origin to center
-            ctx.scale(scaleRatio, scaleRatio); // Apply dynamic scale
-
-            // Style configuration matching the reference image perfectly
-            ctx.fillStyle = '#ffffff';
-            ctx.strokeStyle = '#050505'; // Heavy black stroke
-            ctx.lineWidth = 32;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
-
-            // Right Eye White
-            ctx.beginPath();
-            ctx.ellipse(80, 0, 65, 110, 0, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.stroke();
-
-            // Left Eye White
-            ctx.beginPath();
-            ctx.ellipse(-70, 0, 65, 110, 0, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.stroke();
-
-            // Left Eye Hook (The drooping contour on the left edge)
-            ctx.beginPath();
-            ctx.moveTo(-135, 0); 
-            ctx.quadraticCurveTo(-160, 60, -180, 80);
-            ctx.stroke();
-
-            // Pupils (Looking down/left, located at the bottom left of each eye)
-            ctx.fillStyle = '#050505';
-            ctx.beginPath();
-            ctx.arc(-100, 50, 35, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.arc(50, 50, 35, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Eyelid line (The curved line intersecting both eyes)
-            ctx.beginPath();
-            ctx.moveTo(-150, 20); // Starts inside the hook area
-            ctx.quadraticCurveTo(100, -10, 380, -20); // Smooth organic curve passing to the right
-            ctx.stroke();
-
-            const tex = new THREE.CanvasTexture(c);
-            tex.wrapS = THREE.ClampToEdgeWrapping;
-            tex.wrapT = THREE.ClampToEdgeWrapping;
-            tex.flipY = true;
-            return tex;
-        }
 
         function generatePBRMapsFromCanvas(sourceCanvas) {
             const width = sourceCanvas.width;
@@ -1206,7 +1112,6 @@
                 dispData[i] = dispData[i+1] = dispData[i+2] = lum;
                 dispData[i+3] = 255;
 
-                // Roughness
                 let r = 255 - lum;
                 r = (r - 128) * 1.5 + 128; 
                 roughData[i] = roughData[i+1] = roughData[i+2] = Math.max(0, Math.min(255, r));
@@ -1231,7 +1136,7 @@
                     const lUp     = luminance[yUp * width + x];
                     const lDown   = luminance[yDown * width + x];
 
-                    const strength = 4.0; 
+                    const strength = 2.0; 
                     const dX = (lRight - lLeft) * strength; 
                     const dY = (lDown - lUp) * strength;
                     const dZ = 128.0; 
@@ -1294,6 +1199,21 @@
             });
         };
 
+        // 5. Three.js Viewer Globals
+        let scene, camera, renderer, controls, container;
+        let mainGroup, pbrMesh;
+        let sphereGeom, boxGeom;
+        let currentGeometryType = 'sphere';
+        let currentMaps = {};
+        
+        let idleTimer;
+        let isIdle = true;
+        const resetIdleTimer = () => {
+            isIdle = false;
+            clearTimeout(idleTimer);
+            idleTimer = setTimeout(() => { isIdle = true; }, 5000);
+        };
+
         const handleResize = () => {
             if(!container || container.clientWidth === 0 || container.clientHeight === 0) return;
             camera.aspect = container.clientWidth / container.clientHeight;
@@ -1301,168 +1221,16 @@
             renderer.setSize(container.clientWidth, container.clientHeight);
         };
 
-        // --- Advanced Anti-Tiling Shader Injection ---
-        const applyAntiTiling = (material) => {
-            material.onBeforeCompile = (shader) => {
-                // Common noise hash function
-                shader.fragmentShader = shader.fragmentShader.replace(
-                    '#include <common>',
-                    `
-                    #include <common>
-                    vec4 hash4( vec2 p ) { return fract(sin(vec4( 1.0+dot(p,vec2(37.0,17.0)), 2.0+dot(p,vec2(11.0,47.0)), 3.0+dot(p,vec2(41.0,29.0)), 4.0+dot(p,vec2(23.0,31.0))))*103.0); }
-                    `
-                );
-
-                // Color Map Tiling Prevention
-                shader.fragmentShader = shader.fragmentShader.replace(
-                    '#include <map_fragment>',
-                    `
-                    #ifdef USE_MAP
-                        vec2 uvMap = vUv;
-                        ivec2 iuv = ivec2(floor(uvMap));
-                        vec2 fuv = fract(uvMap);
-                        vec4 ofa = hash4(vec2(iuv + ivec2(0,0)));
-                        vec4 ofb = hash4(vec2(iuv + ivec2(1,0)));
-                        vec4 ofc = hash4(vec2(iuv + ivec2(0,1)));
-                        vec4 ofd = hash4(vec2(iuv + ivec2(1,1)));
-                        vec2 uva = uvMap * sign(ofa.zw - 0.5) + ofa.xy;
-                        vec2 uvb = uvMap * sign(ofb.zw - 0.5) + ofb.xy;
-                        vec2 uvc = uvMap * sign(ofc.zw - 0.5) + ofc.xy;
-                        vec2 uvd = uvMap * sign(ofd.zw - 0.5) + ofd.xy;
-                        vec2 b = smoothstep(0.1, 0.9, fuv);
-                        vec4 colA = texture2D(map, uva);
-                        vec4 colB = texture2D(map, uvb);
-                        vec4 colC = texture2D(map, uvc);
-                        vec4 colD = texture2D(map, uvd);
-                        vec4 sampledDiffuseColor = mix(mix(colA, colB, b.x), mix(colC, colD, b.x), b.y);
-                        sampledDiffuseColor = mapTexelToLinear(sampledDiffuseColor);
-                        diffuseColor *= sampledDiffuseColor;
-                    #endif
-                    `
-                );
-
-                // Normal Map Tiling Prevention
-                shader.fragmentShader = shader.fragmentShader.replace(
-                    '#include <normal_fragment_maps>',
-                    `
-                    #ifdef USE_NORMALMAP
-                        vec2 uvN = vUv;
-                        ivec2 iuvN = ivec2(floor(uvN));
-                        vec2 fuvN = fract(uvN);
-                        vec4 ofaN = hash4(vec2(iuvN + ivec2(0,0)));
-                        vec4 ofbN = hash4(vec2(iuvN + ivec2(1,0)));
-                        vec4 ofcN = hash4(vec2(iuvN + ivec2(0,1)));
-                        vec4 ofdN = hash4(vec2(iuvN + ivec2(1,1)));
-                        vec2 uvaN = uvN * sign(ofaN.zw - 0.5) + ofaN.xy;
-                        vec2 uvbN = uvN * sign(ofbN.zw - 0.5) + ofbN.xy;
-                        vec2 uvcN = uvN * sign(ofcN.zw - 0.5) + ofcN.xy;
-                        vec2 uvdN = uvN * sign(ofdN.zw - 0.5) + ofdN.xy;
-                        vec2 bN = smoothstep(0.1, 0.9, fuvN);
-                        vec3 nA = texture2D(normalMap, uvaN).xyz;
-                        vec3 nB = texture2D(normalMap, uvbN).xyz;
-                        vec3 nC = texture2D(normalMap, uvcN).xyz;
-                        vec3 nD = texture2D(normalMap, uvdN).xyz;
-                        vec3 normalMapValue = mix(mix(nA, nB, bN.x), mix(nC, nD, bN.x), bN.y);
-                        normalMapValue = normalMapValue * 2.0 - 1.0;
-                        normalMapValue.xy *= normalScale;
-                        #ifdef USE_TANGENT
-                            normal = normalize(vTBN * normalMapValue);
-                        #else
-                            normal = perturbNormal2Arb(-vViewPosition, normal, normalMapValue, faceDirection);
-                        #endif
-                    #elif defined( USE_BUMPMAP )
-                        normal = perturbNormalArb( - vViewPosition, normal, dHdxy_fwd() );
-                    #endif
-                    `
-                );
-                
-                // Roughness Map Tiling Prevention & Custom Matte Blending
-                shader.fragmentShader = shader.fragmentShader.replace(
-                    '#include <roughnessmap_fragment>',
-                    `
-                    float roughnessFactor = roughness;
-                    #ifdef USE_ROUGHNESSMAP
-                        vec2 uvR = vUv;
-                        ivec2 iuvR = ivec2(floor(uvR));
-                        vec2 fuvR = fract(uvR);
-                        vec4 ofaR = hash4(vec2(iuvR + ivec2(0,0)));
-                        vec4 ofbR = hash4(vec2(iuvR + ivec2(1,0)));
-                        vec4 ofcR = hash4(vec2(iuvR + ivec2(0,1)));
-                        vec4 ofdR = hash4(vec2(iuvR + ivec2(1,1)));
-                        vec2 uvaR = uvR * sign(ofaR.zw - 0.5) + ofaR.xy;
-                        vec2 uvbR = uvR * sign(ofbR.zw - 0.5) + ofbR.xy;
-                        vec2 uvcR = uvR * sign(ofcR.zw - 0.5) + ofcR.xy;
-                        vec2 uvdR = uvR * sign(ofdR.zw - 0.5) + ofdR.xy;
-                        vec2 bR = smoothstep(0.1, 0.9, fuvR);
-                        vec4 rA = texture2D(roughnessMap, uvaR);
-                        vec4 rB = texture2D(roughnessMap, uvbR);
-                        vec4 rC = texture2D(roughnessMap, uvcR);
-                        vec4 rD = texture2D(roughnessMap, uvdR);
-                        vec4 texelRoughness = mix(mix(rA, rB, bR.x), mix(rC, rD, bR.x), bR.y);
-                        
-                        // Custom Mix: User's slider (0.0 to 0.5) is mapped to (0.0 to 1.0) internally.
-                        float userRoughness = clamp(roughness * 2.0, 0.0, 1.0);
-                        float mapRough = texelRoughness.g;
-                        
-                        if (userRoughness <= 0.5) {
-                            // Scale down original map towards fully shiny (glossy)
-                            roughnessFactor = mapRough * (userRoughness * 2.0);
-                        } else {
-                            // Scale up towards fully matte (ignoring original map's shiny parts)
-                            roughnessFactor = mix(mapRough, 1.0, (userRoughness - 0.5) * 2.0);
-                        }
-                    #else
-                        roughnessFactor = clamp(roughness * 2.0, 0.0, 1.0);
-                    #endif
-                    `
-                );
-
-                // AO Map Tiling Prevention
-                shader.fragmentShader = shader.fragmentShader.replace(
-                    '#include <aomap_fragment>',
-                    `
-                    #ifndef USE_AOMAP
-                        float ambientOcclusion = 1.0;
-                    #else
-                        vec2 uvAO = vUv2;
-                        ivec2 iuvAO = ivec2(floor(uvAO));
-                        vec2 fuvAO = fract(uvAO);
-                        vec4 ofaAO = hash4(vec2(iuvAO + ivec2(0,0)));
-                        vec4 ofbAO = hash4(vec2(iuvAO + ivec2(1,0)));
-                        vec4 ofcAO = hash4(vec2(iuvAO + ivec2(0,1)));
-                        vec4 ofdAO = hash4(vec2(iuvAO + ivec2(1,1)));
-                        vec2 uvaAO = uvAO * sign(ofaAO.zw - 0.5) + ofaAO.xy;
-                        vec2 uvbAO = uvAO * sign(ofbAO.zw - 0.5) + ofbAO.xy;
-                        vec2 uvcAO = uvAO * sign(ofcAO.zw - 0.5) + ofcAO.xy;
-                        vec2 uvdAO = uvAO * sign(ofdAO.zw - 0.5) + ofdAO.xy;
-                        vec2 bAO = smoothstep(0.1, 0.9, fuvAO);
-                        float aoA = texture2D(aoMap, uvaAO).r;
-                        float aoB = texture2D(aoMap, uvbAO).r;
-                        float aoC = texture2D(aoMap, uvcAO).r;
-                        float aoD = texture2D(aoMap, uvdAO).r;
-                        float texelAO = mix(mix(aoA, aoB, bAO.x), mix(aoC, aoD, bAO.x), bAO.y);
-                        float ambientOcclusion = ( texelAO - 1.0 ) * aoMapIntensity + 1.0;
-                    #endif
-                    `
-                );
-            };
-        };
-
-        // --- Feature 2: Update Box Geometry with Radius Slider ---
         const updateBoxGeometry = () => {
             if (currentGeometryType !== 'box') return;
-            const rValue = parseFloat(document.getElementById('slider-radius').value); // 0 to 10
-            
+            const rValue = parseFloat(document.getElementById('slider-radius').value);
             if(boxGeom) boxGeom.dispose();
-
             if (rValue === 0) {
                 boxGeom = new THREE.BoxGeometry(1.5, 1.5, 1.5, 128, 128, 128);
             } else {
-                // Map 0~10mm to 0.0 ~ 0.3 radius in ThreeJS space visually
                 const radiusInThree = rValue * 0.03; 
                 boxGeom = new THREE.RoundedBoxGeometry(1.5, 1.5, 1.5, 16, radiusInThree);
             }
-            
             boxGeom.setAttribute('uv2', new THREE.BufferAttribute(boxGeom.attributes.uv.array, 2));
             pbrMesh.geometry = boxGeom;
         };
@@ -1495,56 +1263,23 @@
             controls = new THREE.OrbitControls(camera, renderer.domElement);
             controls.enableDamping = false;
             
-            controls.mouseButtons = {
-                LEFT: THREE.MOUSE.ROTATE,
-                MIDDLE: THREE.MOUSE.PAN,
-                RIGHT: THREE.MOUSE.ROTATE
-            };
-            
+            controls.mouseButtons = { LEFT: THREE.MOUSE.ROTATE, MIDDLE: THREE.MOUSE.PAN, RIGHT: THREE.MOUSE.ROTATE };
             controls.addEventListener('start', resetIdleTimer);
             controls.addEventListener('change', resetIdleTimer);
 
             mainGroup = new THREE.Group();
             scene.add(mainGroup);
 
-            // Geometries setup
-            sphereGeom = new THREE.SphereGeometry(1, 128, 128);
+            sphereGeom = new THREE.SphereGeometry(1, 256, 256);
             sphereGeom.setAttribute('uv2', new THREE.BufferAttribute(sphereGeom.attributes.uv.array, 2));
 
             boxGeom = new THREE.BoxGeometry(1.5, 1.5, 1.5, 128, 128, 128);
             boxGeom.setAttribute('uv2', new THREE.BufferAttribute(boxGeom.attributes.uv.array, 2));
 
-            // Default Metalness set to 0.0, Default Roughness 0.0
+            // Default Material (No Anti-tiling shader)
             pbrMesh = new THREE.Mesh(sphereGeom, new THREE.MeshPhysicalMaterial({ color: 0xd2d2d7, roughness: 0.0, metalness: 0.0, ior: 1.0 }));
-            applyAntiTiling(pbrMesh.material);
             mainGroup.add(pbrMesh);
 
-            // --- Feature 1: Independent Eye Overlay System (Separated Scales) ---
-            
-            // Sphere version of eyes (1/3 of the box's size -> 0.1 scale)
-            const eyeTexSphere = createEyeTexture(0.1);
-            const eyeMatSphere = new THREE.MeshBasicMaterial({ 
-                map: eyeTexSphere, 
-                transparent: true, 
-                depthWrite: false
-            });
-            eyeSphere = new THREE.Mesh(new THREE.SphereGeometry(1.003, 128, 128), eyeMatSphere);
-            mainGroup.add(eyeSphere);
-
-            // Box version of eyes (Original size -> 0.3 scale)
-            const eyeTexBox = createEyeTexture(0.3);
-            const eyeMatBox = new THREE.MeshBasicMaterial({ 
-                map: eyeTexBox, 
-                transparent: true, 
-                depthWrite: false
-            });
-            eyePlane = new THREE.Mesh(new THREE.PlaneGeometry(1.5, 1.5), eyeMatBox);
-            eyePlane.position.z = 0.751; // Just in front of the box
-            eyePlane.visible = false; // Hidden initially
-            mainGroup.add(eyePlane);
-
-
-            // Shape Toggle Handlers
             const btnShapeSphere = document.getElementById('btn-shape-sphere');
             const btnShapeBox = document.getElementById('btn-shape-box');
             const radiusContainer = document.getElementById('radius-control-container');
@@ -1552,30 +1287,21 @@
             btnShapeSphere?.addEventListener('click', () => {
                 pbrMesh.geometry = sphereGeom;
                 currentGeometryType = 'sphere';
-                
-                eyeSphere.visible = true;
-                eyePlane.visible = false;
                 radiusContainer.classList.add('hidden');
-
                 btnShapeSphere.className = 'w-9 h-9 rounded-lg bg-[var(--hover-bg)] text-[var(--apple-blue)] flex items-center justify-center transition shadow-sm';
                 if(btnShapeBox) btnShapeBox.className = 'w-9 h-9 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--hover-bg)] flex items-center justify-center transition';
-                updateMaterialTransform(); // Re-apply current material settings
+                updateMaterialTransform();
             });
 
             btnShapeBox?.addEventListener('click', () => {
                 currentGeometryType = 'box';
                 updateBoxGeometry();
-                
-                eyeSphere.visible = false;
-                eyePlane.visible = true;
                 radiusContainer.classList.remove('hidden');
-
                 btnShapeBox.className = 'w-9 h-9 rounded-lg bg-[var(--hover-bg)] text-[var(--apple-blue)] flex items-center justify-center transition shadow-sm';
                 if(btnShapeSphere) btnShapeSphere.className = 'w-9 h-9 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--hover-bg)] flex items-center justify-center transition';
                 updateMaterialTransform();
             });
 
-            // Zoom Reset Handler
             document.getElementById('btn-zoom-reset')?.addEventListener('click', () => {
                 if(camera && controls) {
                     camera.position.set(0, 0, 3.5);
@@ -1585,7 +1311,6 @@
                 }
             });
 
-            // Radius Slider Handler
             const sliderRadius = document.getElementById('slider-radius');
             const valRadius = document.getElementById('val-radius');
             sliderRadius?.addEventListener('input', (e) => {
@@ -1596,9 +1321,7 @@
             const view3dContainer = document.getElementById('view-3d');
             const animate = () => {
                 requestAnimationFrame(animate);
-                
                 if(view3dContainer && view3dContainer.classList.contains('hidden')) return;
-
                 if(isIdle && !controls.state) {
                     mainGroup.rotation.y += 0.0015;
                     mainGroup.rotation.x += 0.0005;
@@ -1651,7 +1374,6 @@
             const origImgEl = document.getElementById('result-original-image');
             if(origImgEl) origImgEl.src = matData.original || currentMaps.albedo;
             
-            // Set UI values
             const scaleSlider = document.getElementById('slider-scale');
             if(scaleSlider) scaleSlider.value = matData.scale;
             const valScale = document.getElementById('val-scale');
@@ -1752,6 +1474,7 @@
                 loader.load(url, (tex) => {
                     tex.wrapS = THREE.RepeatWrapping;
                     tex.wrapT = THREE.RepeatWrapping;
+                    tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
                     
                     if(pbrMesh) {
                         if (pbrMesh.material[type]) pbrMesh.material[type].dispose();
@@ -1815,7 +1538,6 @@
                 pbrMesh.material.displacementScale = 0;
                 
                 mainGroup.rotation.set(0,0,0);
-                
                 pbrMesh.material.needsUpdate = true;
             }
         };
@@ -1826,7 +1548,6 @@
             const max = parseFloat(slider.max) || 100;
             const val = parseFloat(slider.value);
             const percentage = (val - min) / (max - min);
-            
             slider.style.setProperty('--slider-percent', `calc(6px + (100% - 12px) * ${percentage})`);
         };
 
@@ -1870,9 +1591,13 @@
 
             if(pbrMesh) {
                 const maps = ['map', 'normalMap', 'roughnessMap', 'aoMap', 'displacementMap'];
+                // Sphere squashing fix
+                const scaleX = currentGeometryType === 'sphere' ? scale * 2.0 : scale;
+                const scaleY = scale;
+
                 maps.forEach(m => {
                     if(pbrMesh.material[m]) {
-                        pbrMesh.material[m].repeat.set(scale, scale);
+                        pbrMesh.material[m].repeat.set(scaleX, scaleY);
                         pbrMesh.material[m].rotation = 0; 
                     }
                 });
@@ -1889,7 +1614,6 @@
                 const strength = 1.0 + absBump * 4.0;
                 pbrMesh.material.normalScale.set(sign * strength, sign * strength);
                 
-                // Group handles object rotation instead of mesh now
                 mainGroup.rotation.z = -angleRad;
                 pbrMesh.material.needsUpdate = true;
             }
@@ -1946,9 +1670,13 @@
                     new THREE.TextureLoader().load(newAlbedoUrl, (tex) => {
                         tex.wrapS = THREE.RepeatWrapping;
                         tex.wrapT = THREE.RepeatWrapping;
+                        tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+                        
                         const scaleSlider = document.getElementById('slider-scale');
                         const scale = scaleSlider ? parseFloat(scaleSlider.value) : 1;
-                        tex.repeat.set(scale, scale);
+                        const scaleX = currentGeometryType === 'sphere' ? scale * 2.0 : scale;
+                        tex.repeat.set(scaleX, scale);
+
                         if(pbrMesh) {
                             if (pbrMesh.material.map) pbrMesh.material.map.dispose();
                             pbrMesh.material.map = tex;
@@ -1958,6 +1686,35 @@
                 }
             }, 300);
         };
+
+        const setupEditableName = () => {
+            const matNameEl = document.getElementById('result-mat-name');
+            if(!matNameEl) return;
+            matNameEl.addEventListener('dblclick', function() {
+                const currentName = this.textContent;
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.value = currentName;
+                input.className = 'w-full bg-transparent border-b border-[var(--apple-blue)] text-[var(--text-main)] outline-none text-card-title';
+                
+                const finishEdit = () => {
+                    const newName = input.value.trim() || currentName;
+                    this.innerHTML = '';
+                    this.textContent = newName;
+                };
+
+                input.addEventListener('blur', finishEdit);
+                input.addEventListener('keydown', (e) => {
+                    if(e.key === 'Enter') input.blur();
+                });
+
+                this.innerHTML = '';
+                this.appendChild(input);
+                input.focus();
+                input.select();
+            });
+        };
+        setupEditableName();
 
         document.getElementById('slider-scale')?.addEventListener('input', updateMaterialTransform);
         document.getElementById('slider-angle')?.addEventListener('input', updateMaterialTransform);
@@ -2109,6 +1866,7 @@
                     const sliderSaturation = document.getElementById('slider-saturation');
                     const sliderHue = document.getElementById('slider-hue');
                     const pickerHex = document.getElementById('picker-hex');
+                    const nameEl = document.getElementById('result-mat-name');
 
                     if(sliderScale) mat.scale = parseFloat(sliderScale.value);
                     if(sliderAngle) mat.angle = parseFloat(sliderAngle.value);
@@ -2121,11 +1879,66 @@
                     if(sliderSaturation) mat.saturation = parseFloat(sliderSaturation.value);
                     if(sliderHue) mat.hue = parseFloat(sliderHue.value);
                     if(pickerHex) mat.hex = pickerHex.value;
+                    if(nameEl && nameEl.textContent) mat.name = nameEl.textContent; // Edited Name
                     
                     if (!mat.baseAlbedo) mat.baseAlbedo = mat.maps.albedo;
 
                     const filteredCanvas = await applyFilters(mat.baseAlbedo, mat.brightness, mat.contrast, mat.saturation, mat.hue, mat.hex);
-                    const newMaps = generatePBRMapsFromCanvas(filteredCanvas);
+                    
+                    const c = document.createElement('canvas'); c.width = 1024; c.height = 1024;
+                    const ctx = c.getContext('2d'); ctx.imageSmoothingQuality = 'high';
+                    
+                    const origCanvas = document.createElement('canvas'); origCanvas.width = 1024; origCanvas.height = 1024;
+                    const origCtx = origCanvas.getContext('2d'); origCtx.imageSmoothingQuality = 'high';
+                    origCtx.drawImage(filteredCanvas, 0, 0, 1024, 1024);
+
+                    if (!mat.usedAI) {
+                        const offsetCanvas = document.createElement('canvas'); offsetCanvas.width = 1024; offsetCanvas.height = 1024;
+                        const offsetCtx = offsetCanvas.getContext('2d'); offsetCtx.imageSmoothingQuality = 'high';
+                        const HALF = 512;
+                        
+                        offsetCtx.drawImage(origCanvas, HALF, HALF, HALF, HALF, 0, 0, HALF, HALF); 
+                        offsetCtx.drawImage(origCanvas, 0, HALF, HALF, HALF, HALF, 0, HALF, HALF); 
+                        offsetCtx.drawImage(origCanvas, HALF, 0, HALF, HALF, 0, HALF, HALF, HALF); 
+                        offsetCtx.drawImage(origCanvas, 0, 0, HALF, HALF, HALF, HALF, HALF, HALF); 
+
+                        const maskCanvas = document.createElement('canvas'); maskCanvas.width = 1024; maskCanvas.height = 1024;
+                        const maskCtx = maskCanvas.getContext('2d');
+                        
+                        // New Smooth Edge Blending (Cross Fade)
+                        const gradX = maskCtx.createLinearGradient(0, 0, 1024, 0);
+                        gradX.addColorStop(0, 'rgba(0,0,0,0)');
+                        gradX.addColorStop(0.25, 'rgba(0,0,0,1)');
+                        gradX.addColorStop(0.75, 'rgba(0,0,0,1)');
+                        gradX.addColorStop(1, 'rgba(0,0,0,0)');
+                        
+                        const gradY = maskCtx.createLinearGradient(0, 0, 0, 1024);
+                        gradY.addColorStop(0, 'rgba(0,0,0,0)');
+                        gradY.addColorStop(0.25, 'rgba(0,0,0,1)');
+                        gradY.addColorStop(0.75, 'rgba(0,0,0,1)');
+                        gradY.addColorStop(1, 'rgba(0,0,0,0)');
+
+                        maskCtx.fillStyle = gradX;
+                        maskCtx.fillRect(0, 0, 1024, 1024);
+                        maskCtx.globalCompositeOperation = 'destination-in';
+                        maskCtx.fillStyle = gradY;
+                        maskCtx.fillRect(0, 0, 1024, 1024);
+
+                        const topCanvas = document.createElement('canvas'); topCanvas.width = 1024; topCanvas.height = 1024;
+                        const topCtx = topCanvas.getContext('2d'); topCtx.imageSmoothingQuality = 'high';
+                        topCtx.drawImage(origCanvas, 0, 0);
+                        topCtx.globalCompositeOperation = 'destination-in';
+                        topCtx.drawImage(maskCanvas, 0, 0);
+
+                        offsetCtx.globalCompositeOperation = 'source-over';
+                        offsetCtx.drawImage(topCanvas, 0, 0);
+
+                        ctx.drawImage(offsetCanvas, 0, 0);
+                    } else {
+                        ctx.drawImage(origCanvas, 0, 0);
+                    }
+
+                    const newMaps = generatePBRMapsFromCanvas(c);
                     
                     mat.maps = newMaps;
                     await saveLibrary();
@@ -2208,16 +2021,52 @@
         btnInitialLogin?.addEventListener('click', async () => {
             if(initialInputPw && initialInputPw.value === '3377') {
                 currentUserId = 'foundfounded';
-                initialModal?.classList.add('hidden');
-                if(btnLoginToggle) btnLoginToggle.textContent = '로그아웃';
-                userDisplay?.classList.remove('hidden');
+                initialLoginError?.classList.add('hidden');
                 
-                await loadLibrary(); 
-                if(materialsLib.length > 0) {
-                    loadMaterialToViewer(materialsLib[0]);
-                } else {
-                    setViewerToEmptyState();
-                }
+                const card = document.getElementById('initial-modal-card');
+                const welcomeMsg = document.getElementById('welcome-message');
+                
+                // 1. 카드 사라짐 애니메이션
+                card.style.opacity = '0';
+                card.style.transform = 'scale(0.95) translateY(4rem)';
+                
+                setTimeout(() => {
+                    card.classList.add('hidden');
+                    
+                    // 2. 환영 메시지 나타남
+                    welcomeMsg.classList.remove('hidden');
+                    welcomeMsg.classList.add('flex');
+                    
+                    // 리플로우 강제 트리거
+                    void welcomeMsg.offsetWidth;
+                    welcomeMsg.classList.remove('opacity-0');
+                    lucide.createIcons();
+                    
+                    // 3. 1.5초 대기 후 전체 모달 및 배경 페이드아웃
+                    setTimeout(() => {
+                        initialModal.style.opacity = '0';
+                        
+                        setTimeout(async () => {
+                            initialModal.classList.add('hidden');
+                            initialModal.style.opacity = ''; // 상태 초기화
+                            card.classList.remove('hidden');
+                            card.style.opacity = '';
+                            card.style.transform = '';
+                            welcomeMsg.classList.add('hidden', 'opacity-0');
+                            welcomeMsg.classList.remove('flex');
+                            
+                            if(btnLoginToggle) btnLoginToggle.textContent = '로그아웃';
+                            userDisplay?.classList.remove('hidden');
+                            
+                            await loadLibrary(); 
+                            if(materialsLib.length > 0) {
+                                loadMaterialToViewer(materialsLib[0]);
+                            } else {
+                                setViewerToEmptyState();
+                            }
+                        }, 500); // 배경 페이드아웃 완료 대기
+                    }, 1500); // 1.5초간 환영 메시지 유지
+                }, 300); // 카드 페이드아웃 완료 대기
             } else {
                 initialLoginError?.classList.remove('hidden');
             }
@@ -2377,35 +2226,59 @@
                     const OUTPUT_SIZE = 1024; 
                     const c = document.createElement('canvas'); c.width=OUTPUT_SIZE; c.height=OUTPUT_SIZE;
                     const ctx = c.getContext('2d');
+                    ctx.imageSmoothingQuality = 'high';
                     
-                    const tCanvas = document.createElement('canvas');
-                    tCanvas.width = OUTPUT_SIZE; tCanvas.height = OUTPUT_SIZE;
-                    tCanvas.getContext('2d').drawImage(img, 0, 0, OUTPUT_SIZE, OUTPUT_SIZE);
+                    const origCanvas = document.createElement('canvas'); origCanvas.width = OUTPUT_SIZE; origCanvas.height = OUTPUT_SIZE;
+                    const origCtx = origCanvas.getContext('2d');
+                    origCtx.imageSmoothingQuality = 'high';
+                    origCtx.drawImage(img, 0, 0, OUTPUT_SIZE, OUTPUT_SIZE);
 
                     if (!usedAI) {
+                        const offsetCanvas = document.createElement('canvas'); offsetCanvas.width = OUTPUT_SIZE; offsetCanvas.height = OUTPUT_SIZE;
+                        const offsetCtx = offsetCanvas.getContext('2d');
+                        offsetCtx.imageSmoothingQuality = 'high';
                         const HALF = OUTPUT_SIZE / 2;
-                        ctx.drawImage(tCanvas, HALF, HALF, HALF, HALF, 0, 0, HALF, HALF); 
-                        ctx.drawImage(tCanvas, 0, HALF, HALF, HALF, HALF, 0, HALF, HALF); 
-                        ctx.drawImage(tCanvas, HALF, 0, HALF, HALF, 0, HALF, HALF, HALF); 
-                        ctx.drawImage(tCanvas, 0, 0, HALF, HALF, HALF, HALF, HALF, HALF); 
-
-                        const mCanvas = document.createElement('canvas');
-                        mCanvas.width = OUTPUT_SIZE; mCanvas.height = OUTPUT_SIZE;
-                        const mCtx = mCanvas.getContext('2d');
-                        mCtx.drawImage(tCanvas, 0, 0);
-
-                        mCtx.globalCompositeOperation = 'destination-in';
                         
-                        const grad = mCtx.createRadialGradient(HALF, HALF, OUTPUT_SIZE * 0.1, HALF, HALF, HALF);
-                        grad.addColorStop(0, 'rgba(0,0,0,1)');
-                        grad.addColorStop(0.5, 'rgba(0,0,0,1)');
-                        grad.addColorStop(1, 'rgba(0,0,0,0)');
-                        mCtx.fillStyle = grad;
-                        mCtx.fillRect(0, 0, OUTPUT_SIZE, OUTPUT_SIZE);
+                        offsetCtx.drawImage(origCanvas, HALF, HALF, HALF, HALF, 0, 0, HALF, HALF); 
+                        offsetCtx.drawImage(origCanvas, 0, HALF, HALF, HALF, HALF, 0, HALF, HALF); 
+                        offsetCtx.drawImage(origCanvas, HALF, 0, HALF, HALF, 0, HALF, HALF, HALF); 
+                        offsetCtx.drawImage(origCanvas, 0, 0, HALF, HALF, HALF, HALF, HALF, HALF); 
 
-                        ctx.drawImage(mCanvas, 0, 0);
+                        const maskCanvas = document.createElement('canvas'); maskCanvas.width = OUTPUT_SIZE; maskCanvas.height = OUTPUT_SIZE;
+                        const maskCtx = maskCanvas.getContext('2d');
+                        
+                        // New Smooth Edge Blending (Cross Fade)
+                        const gradX = maskCtx.createLinearGradient(0, 0, OUTPUT_SIZE, 0);
+                        gradX.addColorStop(0, 'rgba(0,0,0,0)');
+                        gradX.addColorStop(0.25, 'rgba(0,0,0,1)');
+                        gradX.addColorStop(0.75, 'rgba(0,0,0,1)');
+                        gradX.addColorStop(1, 'rgba(0,0,0,0)');
+                        
+                        const gradY = maskCtx.createLinearGradient(0, 0, 0, OUTPUT_SIZE);
+                        gradY.addColorStop(0, 'rgba(0,0,0,0)');
+                        gradY.addColorStop(0.25, 'rgba(0,0,0,1)');
+                        gradY.addColorStop(0.75, 'rgba(0,0,0,1)');
+                        gradY.addColorStop(1, 'rgba(0,0,0,0)');
+
+                        maskCtx.fillStyle = gradX;
+                        maskCtx.fillRect(0, 0, OUTPUT_SIZE, OUTPUT_SIZE);
+                        maskCtx.globalCompositeOperation = 'destination-in';
+                        maskCtx.fillStyle = gradY;
+                        maskCtx.fillRect(0, 0, OUTPUT_SIZE, OUTPUT_SIZE);
+
+                        const topCanvas = document.createElement('canvas'); topCanvas.width = OUTPUT_SIZE; topCanvas.height = OUTPUT_SIZE;
+                        const topCtx = topCanvas.getContext('2d');
+                        topCtx.imageSmoothingQuality = 'high';
+                        topCtx.drawImage(origCanvas, 0, 0);
+                        topCtx.globalCompositeOperation = 'destination-in';
+                        topCtx.drawImage(maskCanvas, 0, 0);
+
+                        offsetCtx.globalCompositeOperation = 'source-over';
+                        offsetCtx.drawImage(topCanvas, 0, 0);
+
+                        ctx.drawImage(offsetCanvas, 0, 0);
                     } else {
-                        ctx.drawImage(tCanvas, 0, 0);
+                        ctx.drawImage(origCanvas, 0, 0);
                     }
 
                     const newMaps = generatePBRMapsFromCanvas(c);
