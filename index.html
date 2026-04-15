@@ -4,15 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PBR Studio - Texture & Material Library</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Three.js & OrbitControls & RoomEnvironment -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/environments/RoomEnvironment.js"></script>
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- JSZip for Zip Downloads -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
         /* Apple Design System & Theme Variables */
@@ -135,11 +131,22 @@
         ::-webkit-scrollbar-thumb:hover { background: var(--hover-bg); }
 
         .heart-icon.active { color: #ff3b30; fill: #ff3b30; }
+
+        /* Progressive Loading & Image Optimization */
+        .img-lazy {
+            opacity: 0;
+            filter: blur(5px);
+            transition: opacity 0.4s ease-out, filter 0.4s ease-out;
+            will-change: opacity, filter;
+        }
+        .img-lazy.loaded {
+            opacity: 1;
+            filter: blur(0);
+        }
     </style>
 </head>
 <body class="h-screen flex flex-col">
 
-    <!-- Custom Alert/Confirm Modal -->
     <div id="custom-dialog" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-[var(--overlay-bg)] backdrop-blur-[10px] transition-opacity duration-300">
         <div class="apple-card p-8 max-w-sm w-full text-center border border-[var(--border-color)]">
             <p id="dialog-message" class="text-body text-[var(--text-main)] mb-6 leading-relaxed"></p>
@@ -150,7 +157,6 @@
         </div>
     </div>
 
-    <!-- Login Modal -->
     <div id="login-modal" class="fixed inset-0 z-[60] hidden flex items-center justify-center bg-[var(--overlay-bg)] backdrop-blur-[20px] transition-opacity duration-300">
         <div class="apple-card p-10 max-w-sm w-full text-center relative border border-[var(--border-color)]">
             <button id="btn-close-login" class="absolute top-4 right-4 text-[var(--text-muted)] hover:text-[var(--text-main)] transition">
@@ -170,7 +176,6 @@
         </div>
     </div>
 
-    <!-- Initial Popup Modal -->
     <div id="initial-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-[var(--overlay-bg)] backdrop-blur-[20px] transition-opacity duration-300">
         <div class="apple-card p-10 max-w-sm w-full text-center border border-[var(--border-color)]">
             <i data-lucide="lock" class="w-10 h-10 text-[var(--text-main)] mx-auto mb-4"></i>
@@ -189,7 +194,6 @@
         </div>
     </div>
 
-    <!-- Guide Modal -->
     <div id="guide-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-[var(--overlay-bg)] backdrop-blur-[20px] transition-opacity duration-300">
         <div class="apple-card p-12 max-w-3xl w-[90%] relative border border-[var(--border-color)] shadow-2xl">
             <button id="btn-close-guide" class="absolute top-6 right-6 text-[var(--text-muted)] hover:text-[var(--text-main)] transition bg-[var(--bg-main)] rounded-full p-2 border border-[var(--border-color)]">
@@ -201,12 +205,9 @@
                 <p class="text-[var(--text-muted)] text-[15px]">단 한 장의 이미지로 완벽한 Seamless 3D 재질을 생성하는 프로세스</p>
             </div>
 
-            <!-- Minimal Infographic -->
             <div class="flex items-center justify-between relative mb-12 px-6">
-                <!-- Connecting Line -->
                 <div class="absolute top-1/2 left-16 right-16 h-[2px] bg-gradient-to-r from-[var(--border-color)] via-[var(--apple-blue)] to-[var(--border-color)] -translate-y-1/2 z-0 opacity-40"></div>
                 
-                <!-- Step 1 -->
                 <div class="relative z-10 flex flex-col items-center bg-[var(--bg-card)] px-4">
                     <div class="w-14 h-14 bg-[var(--bg-main)] border-2 border-[var(--border-color)] rounded-full flex items-center justify-center mb-4 text-[var(--text-main)] shadow-sm">
                         <span class="font-bold text-lg">1</span>
@@ -215,7 +216,6 @@
                     <span class="text-[12px] text-[var(--text-muted)] mt-1 text-center">텍스처 원본 제공</span>
                 </div>
                 
-                <!-- Step 2 -->
                 <div class="relative z-10 flex flex-col items-center bg-[var(--bg-card)] px-4">
                     <div class="w-14 h-14 bg-[var(--bg-main)] border-2 border-[var(--apple-blue)] rounded-full flex items-center justify-center mb-4 text-[var(--apple-blue)] shadow-[0_0_15px_rgba(0,113,227,0.25)]">
                         <i data-lucide="sparkles" class="w-6 h-6"></i>
@@ -224,7 +224,6 @@
                     <span class="text-[12px] text-[var(--text-muted)] mt-1 text-center">경계선 래핑/마스킹</span>
                 </div>
                 
-                <!-- Step 3 -->
                 <div class="relative z-10 flex flex-col items-center bg-[var(--bg-card)] px-4">
                     <div class="w-14 h-14 bg-[var(--bg-main)] border-2 border-[var(--border-color)] rounded-full flex items-center justify-center mb-4 text-[var(--text-main)] shadow-sm">
                         <span class="font-bold text-lg">3</span>
@@ -233,22 +232,20 @@
                     <span class="text-[12px] text-[var(--text-muted)] mt-1 text-center">스케일 및 질감 제어</span>
                 </div>
                 
-                <!-- Step 4 -->
                 <div class="relative z-10 flex flex-col items-center bg-[var(--bg-card)] px-4">
                     <div class="w-14 h-14 bg-[var(--bg-main)] border-2 border-[var(--border-color)] rounded-full flex items-center justify-center mb-4 text-[var(--text-main)] shadow-sm">
                         <i data-lucide="download-cloud" class="w-5 h-5"></i>
                     </div>
                     <h3 class="text-[14px] font-semibold text-[var(--text-main)]">추출 및 저장</h3>
-                    <span class="text-[12px] text-[var(--text-muted)] mt-1 text-center">5 Maps 패키지</span>
+                    <span class="text-[12px] text-[var(--text-muted)] mt-1 text-center">Dual-set 패키지</span>
                 </div>
             </div>
             
-            <!-- Minimal KeyShot Guide -->
             <div class="bg-[var(--bg-main)] rounded-xl p-7 border border-[var(--border-color)]">
                 <h3 class="text-[15px] font-semibold text-[var(--text-main)] mb-5 flex items-center gap-2">
-                    <i data-lucide="box" class="w-5 h-5 text-[var(--apple-blue)]"></i> 5 PBR Maps 활용 가이드
+                    <i data-lucide="box" class="w-5 h-5 text-[var(--apple-blue)]"></i> Dual-set 활용 가이드
                 </h3>
-                <div class="grid grid-cols-3 gap-5 text-[13px] text-[var(--text-sub)]">
+                <div class="grid grid-cols-2 gap-5 text-[13px] text-[var(--text-sub)]">
                     <div class="flex flex-col gap-1 pb-2 border-b border-[var(--border-color)]">
                         <strong class="text-[var(--apple-blue-dark)]">1. Color (Albedo)</strong>
                         <span class="text-[12px]">표면의 기본 색상. <b>디퓨즈/확산</b> 채널에 연결합니다.</span>
@@ -257,25 +254,12 @@
                         <strong class="text-[var(--apple-blue-dark)]">2. Normal</strong>
                         <span class="text-[12px]">빛의 반사를 조작하여 세밀한 입체감을 주는 <b>노말/범프</b> 채널용 맵.</span>
                     </div>
-                    <div class="flex flex-col gap-1 pb-2 border-b border-[var(--border-color)]">
-                        <strong class="text-[var(--apple-blue-dark)]">3. Roughness</strong>
-                        <span class="text-[12px]">표면의 거친 정도. <b>거칠기/광택</b> 채널에 연결합니다.</span>
-                    </div>
-                    <div class="flex flex-col gap-1 pb-2 border-b border-[var(--border-color)]">
-                        <strong class="text-[var(--apple-blue-dark)]">4. Ambient Occlusion</strong>
-                        <span class="text-[12px]">깊숙한 틈새의 그림자를 강조하는 <b>오클루전</b> 맵.</span>
-                    </div>
-                    <div class="flex flex-col gap-1 pb-2 border-b border-[var(--border-color)]">
-                        <strong class="text-[var(--apple-blue-dark)]">5. Displacement</strong>
-                        <span class="text-[12px]">실제 지오메트리를 변형시키는 <b>변위/범프</b> 채널용 깊이 맵.</span>
-                    </div>
                 </div>
-                <p class="text-[12px] text-[var(--text-muted)] mt-5 text-center">※ 생성된 5가지 맵은 완벽한 Seamless 타일링 처리가 되어 있어 끊김 없이 매끄럽게 연결됩니다.</p>
+                <p class="text-[12px] text-[var(--text-muted)] mt-5 text-center">※ 생성된 맵은 완벽한 Seamless 타일링 처리가 되어 있어 끊김 없이 매끄럽게 연결됩니다.</p>
             </div>
         </div>
     </div>
 
-    <!-- Image Preview Lightbox Modal -->
     <div id="lightbox-modal" class="fixed inset-0 z-[70] hidden flex items-center justify-center bg-black/80 backdrop-blur-[10px] transition-opacity duration-300">
         <button id="btn-close-lightbox" class="absolute top-6 right-6 text-white/50 hover:text-white transition z-10 p-2 bg-black/20 rounded-full">
             <i data-lucide="x" class="w-8 h-8"></i>
@@ -285,7 +269,6 @@
         </div>
     </div>
 
-    <!-- Header -->
     <header class="apple-nav-glass h-[56px] border-b border-[var(--border-color)] flex items-center justify-between px-6 shrink-0 z-10 w-full fixed top-0">
         <div class="flex items-center gap-8">
             <button onclick="window.location.reload()" class="text-body-strong tracking-tight text-[var(--text-main)] flex items-center gap-2 hover:opacity-80 transition cursor-pointer">
@@ -297,16 +280,13 @@
             </nav>
         </div>
         <div class="flex items-center gap-3 text-caption">
-            <!-- API Key Input Field -->
             <div id="api-key-container" class="relative flex items-center bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg overflow-hidden h-8 group transition-all duration-300 w-[140px] focus-within:w-[210px] hover:w-[210px]" title="Gemini API Key를 입력하면 AI 변환이 활성화됩니다.">
-                <!-- Input Area -->
                 <div id="api-input-area" class="flex items-center w-full h-full">
                     <input type="password" id="input-api-key" placeholder="Gemini API Key" class="bg-transparent text-[var(--text-main)] px-3 text-xs outline-none w-full h-full transition-colors placeholder-[var(--text-muted)]">
                     <button id="btn-save-api-key" class="bg-[var(--hover-bg)] hover:bg-[var(--apple-blue)] hover:text-white px-3 h-full transition text-[var(--text-muted)] border-l border-[var(--border-color)] shrink-0">
                         <i data-lucide="key" class="w-3 h-3"></i>
                     </button>
                 </div>
-                <!-- Authenticated State Overlay -->
                 <div id="api-auth-overlay" class="absolute inset-0 bg-[var(--bg-card)] flex items-center justify-between px-3 hidden w-full">
                     <div class="flex items-center gap-1.5 text-[var(--apple-blue)] text-xs font-semibold whitespace-nowrap">
                         <i data-lucide="check-circle" class="w-3.5 h-3.5"></i> <span class="mt-px">API 연동됨</span>
@@ -317,7 +297,6 @@
             
             <div class="w-[1px] h-4 bg-[var(--border-color)] mx-1"></div>
 
-            <!-- Dark / Light Theme Toggle -->
             <button id="btn-theme-toggle" class="hover:text-[var(--text-main)] text-[var(--text-sub)] transition flex items-center justify-center w-8 h-8 rounded-full bg-[var(--bg-card)] border border-[var(--border-color)] shadow-sm">
                 <i data-lucide="sun" class="w-4 h-4"></i>
             </button>
@@ -327,12 +306,9 @@
         </div>
     </header>
 
-    <!-- Main Workspace -->
     <main class="flex-1 flex overflow-hidden relative mt-[56px]">
         
-        <!-- Center: Viewer Area -->
         <div class="flex-1 flex flex-col relative bg-[var(--bg-main)]">
-            <!-- View Tabs -->
             <div class="absolute top-6 left-1/2 -translate-x-1/2 bg-[var(--bg-card)] rounded-[980px] p-1 z-10 flex shadow-lg border border-[var(--border-color)]">
                 <button id="btn-3d" class="apple-pill-tab active text-[var(--text-main)] flex items-center gap-2">
                     <i data-lucide="box" class="w-4 h-4"></i> 3D 뷰어
@@ -345,7 +321,6 @@
                 </button>
             </div>
 
-            <!-- 3D Canvas -->
             <div id="view-3d" class="w-full h-full relative flex flex-col">
                 <div id="canvas-container" class="flex-1 w-full"></div>
 
@@ -354,61 +329,38 @@
                     <button id="btn-zoom-out" class="w-10 h-10 bg-[var(--bg-card)] border border-[var(--border-color)] hover:bg-[var(--hover-bg)] text-[var(--text-main)] rounded-full flex items-center justify-center transition shadow-md"><i data-lucide="minus" class="w-5 h-5"></i></button>
                 </div>
 
-                <!-- AI Processing Overlay -->
                 <div id="loading" class="absolute inset-0 bg-[var(--overlay-bg)] backdrop-blur-[10px] flex items-center justify-center z-20 hidden">
                     <div class="flex flex-col items-center gap-6">
                         <i data-lucide="loader-2" class="w-12 h-12 text-[var(--apple-blue)] animate-spin"></i>
-                        <span id="loading-text" class="text-body-strong text-[var(--text-main)] text-center">AI가 고화질 PBR 5종 맵을 추출 중입니다...</span>
+                        <span id="loading-text" class="text-body-strong text-[var(--text-main)] text-center">AI가 고화질 PBR 맵을 추출 중입니다...</span>
                     </div>
                 </div>
             </div>
 
-            <!-- 2D Maps Grid (5 Maps Display) -->
             <div id="view-2d" class="w-full h-full hidden overflow-y-auto p-12 pt-24 bg-[var(--bg-main)]">
-                <div class="max-w-6xl mx-auto mb-8 flex justify-between items-end">
+                <div class="max-w-4xl mx-auto mb-8 flex justify-between items-end">
                     <div>
-                        <h2 class="text-title text-[var(--text-main)] mb-1">추출된 PBR 맵 데이터 (5 Maps)</h2>
-                        <p class="text-body text-[var(--text-muted)]">이미지를 클릭하면 원본 크기로 확인할 수 있습니다.</p>
+                        <h2 class="text-title text-[var(--text-main)] mb-1">2D 맵 데이터 (Dual-set)</h2>
+                        <p class="text-body text-[var(--text-muted)]">최적화를 위해 원본(Albedo)과 Normal 맵만 고해상도로 제공됩니다.</p>
                     </div>
                 </div>
                 
-                <div class="grid grid-cols-3 gap-6 max-w-6xl mx-auto mb-10">
-                    <!-- Row 1 -->
-                    <div class="apple-card p-4 border border-[var(--border-color)] flex flex-col">
-                        <h3 class="text-[14px] font-semibold text-[var(--text-sub)] mb-3 flex items-center gap-2"><i data-lucide="image" class="w-4 h-4"></i> Color (Albedo)</h3>
-                        <div class="aspect-square bg-[var(--bg-main)] border border-[var(--border-color)] rounded-lg overflow-hidden flex-1">
-                            <img id="img-color" src="" class="w-full h-full object-cover cursor-pointer hover:scale-105 transition duration-500" title="클릭하여 확대">
+                <div class="grid grid-cols-2 gap-8 max-w-4xl mx-auto mb-10">
+                    <div class="apple-card p-5 border border-[var(--border-color)] flex flex-col">
+                        <h3 class="text-[14px] font-semibold text-[var(--text-sub)] mb-4 flex items-center gap-2"><i data-lucide="image" class="w-4 h-4"></i> Original (Color)</h3>
+                        <div class="aspect-square bg-[var(--bg-panel)] border border-[var(--border-color)] rounded-lg overflow-hidden flex-1">
+                            <img id="img-color" src="" class="w-full h-full object-cover cursor-pointer hover:scale-105 transition-transform duration-500 img-lazy" loading="lazy" decoding="async" title="클릭하여 확대" onload="this.classList.add('loaded')">
                         </div>
                     </div>
-                    <div class="apple-card p-4 border border-[var(--border-color)] flex flex-col">
-                        <h3 class="text-[14px] font-semibold text-[var(--text-sub)] mb-3 flex items-center gap-2"><i data-lucide="layers" class="w-4 h-4"></i> Normal</h3>
-                        <div class="aspect-square bg-[var(--bg-main)] border border-[var(--border-color)] rounded-lg overflow-hidden flex-1">
-                            <img id="img-normal" src="" class="w-full h-full object-cover cursor-pointer hover:scale-105 transition duration-500" title="클릭하여 확대">
-                        </div>
-                    </div>
-                    <div class="apple-card p-4 border border-[var(--border-color)] flex flex-col">
-                        <h3 class="text-[14px] font-semibold text-[var(--text-sub)] mb-3 flex items-center gap-2"><i data-lucide="droplet" class="w-4 h-4"></i> Roughness</h3>
-                        <div class="aspect-square bg-[var(--bg-main)] border border-[var(--border-color)] rounded-lg overflow-hidden flex-1">
-                            <img id="img-roughness" src="" class="w-full h-full object-cover cursor-pointer hover:scale-105 transition duration-500" title="클릭하여 확대">
-                        </div>
-                    </div>
-                    <!-- Row 2 -->
-                    <div class="apple-card p-4 border border-[var(--border-color)] flex flex-col">
-                        <h3 class="text-[14px] font-semibold text-[var(--text-sub)] mb-3 flex items-center gap-2"><i data-lucide="moon" class="w-4 h-4"></i> Ambient Occlusion</h3>
-                        <div class="aspect-square bg-[var(--bg-main)] border border-[var(--border-color)] rounded-lg overflow-hidden flex-1">
-                            <img id="img-ao" src="" class="w-full h-full object-cover cursor-pointer hover:scale-105 transition duration-500" title="클릭하여 확대">
-                        </div>
-                    </div>
-                    <div class="apple-card p-4 border border-[var(--border-color)] flex flex-col">
-                        <h3 class="text-[14px] font-semibold text-[var(--text-sub)] mb-3 flex items-center gap-2"><i data-lucide="mountain" class="w-4 h-4"></i> Displacement</h3>
-                        <div class="aspect-square bg-[var(--bg-main)] border border-[var(--border-color)] rounded-lg overflow-hidden flex-1">
-                            <img id="img-displacement" src="" class="w-full h-full object-cover cursor-pointer hover:scale-105 transition duration-500" title="클릭하여 확대">
+                    <div class="apple-card p-5 border border-[var(--border-color)] flex flex-col">
+                        <h3 class="text-[14px] font-semibold text-[var(--text-sub)] mb-4 flex items-center gap-2"><i data-lucide="layers" class="w-4 h-4"></i> Normal</h3>
+                        <div class="aspect-square bg-[var(--bg-panel)] border border-[var(--border-color)] rounded-lg overflow-hidden flex-1">
+                            <img id="img-normal" src="" class="w-full h-full object-cover cursor-pointer hover:scale-105 transition-transform duration-500 img-lazy" loading="lazy" decoding="async" title="클릭하여 확대" onload="this.classList.add('loaded')">
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Library View -->
             <div id="view-library" class="w-full h-full hidden overflow-y-auto p-12 pt-24 bg-[var(--bg-main)]">
                 <div class="max-w-5xl mx-auto mb-8 flex justify-between items-end border-b border-[var(--border-color)] pb-6">
                     <div>
@@ -422,19 +374,15 @@
                 </div>
                 
                 <div id="library-list" class="max-w-5xl mx-auto">
-                    <!-- 라이브러리 아이템 렌더링 영역 -->
-                </div>
+                    </div>
             </div>
             
         </div>
 
-        <!-- Right: Control Panel (Made fully responsive, dense layout for 100% scale) -->
         <div class="w-[380px] apple-surface flex flex-col z-20 shadow-2xl border-l border-[var(--border-color)] relative h-full">
             
-            <!-- Generate trigger invisible button logic -->
             <button id="btn-generate" class="hidden">PBR 자동 생성 (Invisible Trigger)</button>
 
-            <!-- Upload Section (Initial) -->
             <div id="panel-upload" class="p-6 flex-1 flex flex-col">
                 <h1 class="text-card-title text-[var(--text-main)] mb-2">새 재질 생성</h1>
                 <p class="text-caption text-[var(--text-muted)] mb-4">질감 이미지를 첨부하는 즉시 분석이 시작됩니다.</p>
@@ -449,10 +397,8 @@
                 <img id="source-image-preview" class="hidden">
             </div>
 
-            <!-- Result Section -->
             <div id="panel-result" class="hidden flex-col h-full overflow-hidden">
                 
-                <!-- Fixed Header Area -->
                 <div class="p-4 pb-3 border-b border-[var(--border-color)] shrink-0">
                     <div class="flex items-center gap-2 mb-1.5">
                         <div class="w-2 h-2 rounded-full bg-green-500"></div>
@@ -462,7 +408,7 @@
                         <h1 class="text-card-title text-[var(--text-main)] truncate" id="result-mat-name">커스텀 텍스처</h1>
                         <div class="bg-[var(--bg-card)] px-2 py-1 rounded-lg border border-[var(--border-color)] flex items-center gap-2 text-center text-[10px]">
                             <div>
-                                <div class="font-semibold text-[var(--text-main)]">5 Maps</div>
+                                <div class="font-semibold text-[var(--text-main)]">Dual-Set</div>
                             </div>
                             <div class="w-px h-3 bg-[var(--border-color)]"></div>
                             <div>
@@ -496,19 +442,15 @@
                     </div>
                 </div>
 
-                <!-- Tab Menu for Sliders -->
                 <div class="px-5 pt-3 border-b border-[var(--border-color)] shrink-0 flex gap-6">
                     <button id="tab-properties" class="text-[12px] font-semibold text-[var(--text-main)] pb-2 border-b-2 border-[var(--apple-blue)] transition">속성 메뉴</button>
                     <button id="tab-colors" class="text-[12px] font-medium text-[var(--text-muted)] pb-2 border-b-2 border-transparent transition hover:text-[var(--text-main)]">색상 메뉴</button>
                 </div>
 
-                <!-- Scrollable Sliders Area (Single Column, Divided by Tabs) -->
                 <div class="px-5 py-4 flex-1 overflow-y-auto min-h-0 custom-scrollbar">
                     
-                    <!-- 1. 속성 메뉴 (Properties) -->
                     <div id="container-properties" class="flex flex-col gap-y-5">
                         
-                        <!-- Scale Slider -->
                         <div class="flex flex-col">
                             <div class="flex justify-between items-center mb-1">
                                 <span class="text-[11px] text-[var(--text-main)]">스케일 (Scale)</span>
@@ -521,7 +463,6 @@
                             </div>
                         </div>
 
-                        <!-- Roughness Slider -->
                         <div class="flex flex-col">
                             <div class="flex justify-between items-center mb-1">
                                 <span class="text-[11px] text-[var(--text-main)] flex items-center gap-1">거칠기 <i id="icon-ai-roughness" data-lucide="sparkles" class="w-2.5 h-2.5 text-[var(--apple-blue)] hidden" title="AI 적용됨"></i></span>
@@ -534,7 +475,6 @@
                             </div>
                         </div>
 
-                        <!-- Displacement/Bump Slider -->
                         <div class="flex flex-col">
                             <div class="flex justify-between items-center mb-1">
                                 <span class="text-[11px] text-[var(--text-main)] flex items-center gap-1">범프 강도 <i id="icon-ai-bump" data-lucide="sparkles" class="w-2.5 h-2.5 text-[var(--apple-blue)] hidden" title="AI 적용됨"></i></span>
@@ -547,7 +487,6 @@
                             </div>
                         </div>
 
-                        <!-- Angle Slider -->
                         <div class="flex flex-col">
                             <div class="flex justify-between items-center mb-1">
                                 <span class="text-[11px] text-[var(--text-main)]">각도 (Angle)</span>
@@ -560,7 +499,6 @@
                             </div>
                         </div>
 
-                        <!-- Metalness Slider -->
                         <div class="flex flex-col">
                             <div class="flex justify-between items-center mb-1">
                                 <span class="text-[11px] text-[var(--text-main)] flex items-center gap-1">금속성 <i id="icon-ai-metalness" data-lucide="sparkles" class="w-2.5 h-2.5 text-[var(--apple-blue)] hidden" title="AI 적용됨"></i></span>
@@ -573,7 +511,6 @@
                             </div>
                         </div>
 
-                        <!-- Refraction Slider -->
                         <div class="flex flex-col">
                             <div class="flex justify-between items-center mb-1">
                                 <span class="text-[11px] text-[var(--text-main)] flex items-center gap-1">굴절률 <i id="icon-ai-ior" data-lucide="sparkles" class="w-2.5 h-2.5 text-[var(--apple-blue)] hidden" title="AI 적용됨"></i></span>
@@ -587,10 +524,8 @@
                         </div>
                     </div>
 
-                    <!-- 2. 색상 메뉴 (Colors) -->
                     <div id="container-colors" class="hidden flex-col gap-y-5">
                         
-                        <!-- Brightness Slider -->
                         <div class="flex flex-col">
                             <div class="flex justify-between items-center mb-1">
                                 <span class="text-[11px] text-[var(--text-main)]">명도</span>
@@ -603,7 +538,6 @@
                             </div>
                         </div>
 
-                        <!-- Saturation Slider -->
                         <div class="flex flex-col">
                             <div class="flex justify-between items-center mb-1">
                                 <span class="text-[11px] text-[var(--text-main)]">채도</span>
@@ -616,7 +550,6 @@
                             </div>
                         </div>
 
-                        <!-- Contrast Slider -->
                         <div class="flex flex-col">
                             <div class="flex justify-between items-center mb-1">
                                 <span class="text-[11px] text-[var(--text-main)]">대비</span>
@@ -629,7 +562,6 @@
                             </div>
                         </div>
 
-                        <!-- Hue Slider -->
                         <div class="flex flex-col">
                             <div class="flex justify-between items-center mb-1">
                                 <span class="text-[11px] text-[var(--text-main)]">색조 (Hue)</span>
@@ -644,7 +576,6 @@
                             </div>
                         </div>
 
-                        <!-- Tint Color Picker (HEX) -->
                         <div class="mt-1 pt-3 border-t border-[var(--border-color)]">
                             <div class="flex justify-between items-center">
                                 <span class="text-[11px] text-[var(--text-main)]">색상 틴트 (HEX)</span>
@@ -659,7 +590,6 @@
                     </div>
                 </div>
 
-                <!-- Always visible Buttons Area -->
                 <div class="p-4 pt-3 flex flex-col gap-2 bg-[var(--bg-panel)] border-t border-[var(--border-color)] shrink-0 z-10 shadow-[0_-10px_20px_rgba(0,0,0,0.1)]">
                     <button id="btn-save-transform" class="w-full apple-btn-dark text-[12px] py-2 transition border border-[var(--border-color)] shadow-sm font-semibold">현재 수치값 저장</button>
                     <div class="flex gap-2">
@@ -940,7 +870,7 @@
                     item.className = `apple-card p-4 flex flex-col cursor-pointer transition border ${isActive ? 'border-[var(--apple-blue)] bg-[var(--hover-bg)]' : 'border-transparent hover:border-[var(--border-color)]'}`;
                     item.innerHTML = `
                         <div class="relative w-full aspect-square mb-4 rounded-lg overflow-hidden bg-[var(--bg-main)] border border-[var(--border-color)]">
-                            <img src="${mat.original || mat.maps.albedo}" class="w-full h-full object-cover hover:scale-105 transition duration-500">
+                            <img src="${mat.original || mat.maps.albedo}" loading="lazy" decoding="async" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500 img-lazy" onload="this.classList.add('loaded')">
                             <button class="btn-download absolute top-3 left-3 p-2 bg-[var(--glass-bg)] backdrop-blur-md rounded-full hover:brightness-125 transition text-[var(--text-main)]" data-id="${mat.id}" title="zip 파일 다운로드">
                                 <i data-lucide="download-cloud" class="w-4 h-4"></i>
                             </button>
@@ -960,7 +890,7 @@
                     item.className = `p-4 rounded-xl flex items-center justify-between cursor-pointer transition border ${isActive ? 'bg-[var(--hover-bg)] border-[var(--apple-blue)]' : 'bg-[var(--bg-card)] hover:bg-[var(--hover-bg)] border-transparent'}`;
                     item.innerHTML = `
                         <div class="flex items-center gap-5 flex-1 overflow-hidden">
-                            <img src="${mat.original || mat.maps.albedo}" class="w-16 h-16 rounded-lg shadow-sm border border-[var(--border-color)] object-cover flex-shrink-0">
+                            <img src="${mat.original || mat.maps.albedo}" loading="lazy" decoding="async" class="w-16 h-16 rounded-lg shadow-sm border border-[var(--border-color)] object-cover flex-shrink-0 img-lazy" onload="this.classList.add('loaded')">
                             <div>
                                 <div class="flex items-center gap-2">
                                     <h3 class="text-body-strong text-[var(--text-main)] truncate">${mat.name}</h3>
@@ -1147,7 +1077,7 @@
 
                 // Roughness
                 let r = 255 - lum;
-                r = (r - 128) * 1.5 + 128; // 대비 증가로 거칠기 변화 극대화
+                r = (r - 128) * 1.5 + 128; 
                 roughData[i] = roughData[i+1] = roughData[i+2] = Math.max(0, Math.min(255, r));
                 roughData[i+3] = 255;
 
@@ -1170,7 +1100,6 @@
                     const lUp     = luminance[yUp * width + x];
                     const lDown   = luminance[yDown * width + x];
 
-                    // 노말맵 강도를 극대화하여 입체감을 확실하게 살립니다.
                     const strength = 4.0; 
                     const dX = (lRight - lLeft) * strength; 
                     const dY = (lDown - lUp) * strength;
@@ -1257,12 +1186,12 @@
 
             renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             renderer.setSize(container.clientWidth, container.clientHeight || 1);
-            renderer.setPixelRatio(window.devicePixelRatio);
+            // 최적화 1: 레티나 디스플레이 등에서 과도한 해상도로 인한 프레임 드랍을 막기 위해 픽셀 비율을 최대 1.5로 제한합니다.
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
             renderer.toneMapping = THREE.ACESFilmicToneMapping;
             renderer.toneMappingExposure = 1.0;
             container.appendChild(renderer.domElement);
 
-            // 현실적인 PBR 반사를 위해 가상의 스튜디오 환경(RoomEnvironment)을 추가합니다.
             const pmremGenerator = new THREE.PMREMGenerator(renderer);
             pmremGenerator.compileEquirectangularShader();
             scene.environment = pmremGenerator.fromScene(new THREE.RoomEnvironment(), 0.04).texture;
@@ -1285,14 +1214,20 @@
             sphereGroup = new THREE.Group();
             scene.add(sphereGroup);
 
-            const geometry = new THREE.SphereGeometry(1, 256, 256);
+            // 최적화 2: 구체의 폴리곤(면) 개수를 256x256에서 128x128로 줄여 GPU 연산 부하를 크게 줄입니다.
+            const geometry = new THREE.SphereGeometry(1, 128, 128);
             geometry.setAttribute('uv2', new THREE.BufferAttribute(geometry.attributes.uv.array, 2));
 
             sphere = new THREE.Mesh(geometry, new THREE.MeshPhysicalMaterial({ color: 0xd2d2d7, roughness: 0.5, metalness: 0.1, ior: 1.5 }));
             sphereGroup.add(sphere);
 
+            const view3dContainer = document.getElementById('view-3d');
             const animate = () => {
                 requestAnimationFrame(animate);
+                
+                // 최적화 3: 3D 뷰어 탭이 화면에 보이지 않을 때는 렌더링을 완전히 일시 중단하여 시스템 리소스(CPU/GPU)를 확보합니다.
+                if(view3dContainer && view3dContainer.classList.contains('hidden')) return;
+
                 if(isIdle && !controls.state) {
                     sphereGroup.rotation.y += 0.0015;
                 }
@@ -1425,15 +1360,15 @@
             if(colorOverlay) colorOverlay.style.backgroundColor = hex;
 
             const imgColor = document.getElementById('img-color');
-            if(imgColor) imgColor.src = currentMaps.albedo;
+            if(imgColor) { 
+                imgColor.classList.remove('loaded');
+                imgColor.src = currentMaps.albedo; 
+            }
             const imgNormal = document.getElementById('img-normal');
-            if(imgNormal) imgNormal.src = currentMaps.normal;
-            const imgRoughness = document.getElementById('img-roughness');
-            if(imgRoughness) imgRoughness.src = currentMaps.roughness;
-            const imgAo = document.getElementById('img-ao');
-            if(imgAo) imgAo.src = currentMaps.ao;
-            const imgDisplacement = document.getElementById('img-displacement');
-            if(imgDisplacement) imgDisplacement.src = currentMaps.displacement;
+            if(imgNormal) { 
+                imgNormal.classList.remove('loaded');
+                imgNormal.src = currentMaps.normal; 
+            }
 
             const loader = new THREE.TextureLoader();
             const applyTexture = (url, type) => {
@@ -1445,6 +1380,7 @@
                     tex.rotation = 0; 
                     
                     if(sphere) {
+                        if (sphere.material[type]) sphere.material[type].dispose();
                         sphere.material[type] = tex;
                         
                         if(type === 'map') {
@@ -1493,22 +1429,15 @@
             document.getElementById('result-empty-content')?.classList.add('flex');
 
             const imgColor = document.getElementById('img-color');
-            if(imgColor) imgColor.src = '';
+            if(imgColor) { imgColor.src = ''; imgColor.classList.remove('loaded'); }
             const imgNormal = document.getElementById('img-normal');
-            if(imgNormal) imgNormal.src = '';
-            const imgRoughness = document.getElementById('img-roughness');
-            if(imgRoughness) imgRoughness.src = '';
-            const imgAo = document.getElementById('img-ao');
-            if(imgAo) imgAo.src = '';
-            const imgDisplacement = document.getElementById('img-displacement');
-            if(imgDisplacement) imgDisplacement.src = '';
+            if(imgNormal) { imgNormal.src = ''; imgNormal.classList.remove('loaded'); }
 
             if(sphere) {
-                sphere.material.map = null;
-                sphere.material.normalMap = null;
-                sphere.material.roughnessMap = null;
-                sphere.material.aoMap = null;
-                sphere.material.displacementMap = null;
+                ['map', 'normalMap', 'roughnessMap', 'aoMap', 'displacementMap'].forEach(type => {
+                    if (sphere.material[type]) sphere.material[type].dispose();
+                    sphere.material[type] = null;
+                });
                 
                 sphere.material.color.setHex(0xd2d2d7);
                 sphere.material.roughness = 0.5;
@@ -1649,6 +1578,7 @@
                         const scale = scaleSlider ? parseFloat(scaleSlider.value) : 1;
                         tex.repeat.set(scale, scale);
                         if(sphere) {
+                            if (sphere.material.map) sphere.material.map.dispose();
                             sphere.material.map = tex;
                             sphere.material.needsUpdate = true;
                         }
@@ -2021,7 +1951,7 @@
             loadingOverlay?.classList.remove('hidden');
             let isApiMode = savedApiKey ? true : false;
             if(loadingText) {
-                loadingText.innerHTML = isApiMode ? 'Gemini AI로 고화질 PBR 맵을 생성 및 분석 중입니다...<br><span class="text-sm font-normal text-[var(--text-muted)]">(최대 10~20초 소요)</span>' : '로컬에서 PBR 5종 맵을 추출 중입니다...';
+                loadingText.innerHTML = isApiMode ? 'Gemini AI로 고화질 PBR 맵을 생성 및 분석 중입니다...<br><span class="text-sm font-normal text-[var(--text-muted)]">(최대 10~20초 소요)</span>' : '로컬에서 PBR 맵을 추출 중입니다...';
             }
 
             setTimeout(async () => {
@@ -2062,7 +1992,7 @@
 
                 const img = new Image();
                 img.onload = async () => {
-                    const OUTPUT_SIZE = 2048; 
+                    const OUTPUT_SIZE = 1024; 
                     const c = document.createElement('canvas'); c.width=OUTPUT_SIZE; c.height=OUTPUT_SIZE;
                     const ctx = c.getContext('2d');
                     
@@ -2130,9 +2060,6 @@
 
         document.getElementById('img-color')?.addEventListener('click', function() { openLightbox(this.src); });
         document.getElementById('img-normal')?.addEventListener('click', function() { openLightbox(this.src); });
-        document.getElementById('img-roughness')?.addEventListener('click', function() { openLightbox(this.src); });
-        document.getElementById('img-ao')?.addEventListener('click', function() { openLightbox(this.src); });
-        document.getElementById('img-displacement')?.addEventListener('click', function() { openLightbox(this.src); });
 
         btnCloseLightbox?.addEventListener('click', closeLightbox);
         lightboxModal?.addEventListener('click', (e) => {
@@ -2222,17 +2149,14 @@
                 }
             };
 
-            addFile(`${matName}_Color.jpg`, mat.maps.albedo);
+            addFile(`${matName}_Original_Color.jpg`, mat.maps.albedo);
             addFile(`${matName}_Normal.jpg`, mat.maps.normal);
-            addFile(`${matName}_Roughness.jpg`, mat.maps.roughness);
-            addFile(`${matName}_AO.jpg`, mat.maps.ao);
-            addFile(`${matName}_Displacement.jpg`, mat.maps.displacement);
 
             setTimeout(() => {
                 zip.generateAsync({type:"blob"}).then(function(content) {
                     const a = document.createElement('a');
                     a.href = URL.createObjectURL(content);
-                    a.download = `${matName}_Maps.zip`;
+                    a.download = `${matName}_Dual_Maps.zip`;
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
